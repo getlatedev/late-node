@@ -73,7 +73,7 @@ jobs:
             ## Installation
 
             ```bash
-            npm install late@${{ github.ref_name }}
+            npm install @late/node@${{ github.ref_name }}
             ```
 
             ## Changelog

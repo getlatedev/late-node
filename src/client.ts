@@ -138,7 +138,7 @@ export interface ClientOptions {
  *
  * @example
  * ```typescript
- * import Late from 'late';
+ * import Late from '@late/node';
  *
  * const late = new Late({
  *   apiKey: process.env['LATE_API_KEY'], // This is the default and can be omitted
