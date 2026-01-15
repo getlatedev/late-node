@@ -26,6 +26,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
 
       - name: Install dependencies
@@ -60,10 +61,47 @@ jobs:
             echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Commit and push changes
+      - name: Bump version and commit
         if: steps.changes.outputs.has_changes == 'true'
+        id: version
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git commit -m "chore: regenerate from OpenAPI spec"
+
+          # Bump patch version
+          NEW_VERSION=$(npm version patch --no-git-tag-version)
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+          # Stage version change
+          git add package.json package-lock.json
+
+          # Commit all changes
+          git commit -m "chore: regenerate from OpenAPI spec
+
+          - Auto-generated SDK updates
+          - Version: $NEW_VERSION"
           git push
+
+      - name: Publish to npm
+        if: steps.changes.outputs.has_changes == 'true'
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        if: steps.changes.outputs.has_changes == 'true'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.new_version }}
+          name: ${{ steps.version.outputs.new_version }}
+          generate_release_notes: true
+          body: |
+            ## Auto-generated SDK Update
+
+            This release was automatically generated from the latest OpenAPI spec.
+
+            ```bash
+            npm install @getlatedev/node@${{ steps.version.outputs.new_version }}
+            ```
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
