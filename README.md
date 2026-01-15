@@ -8,13 +8,13 @@ The official Node.js library for the [Late API](https://getlate.dev) - schedule 
 ## Installation
 
 ```bash
-npm install @late/node
+npm install @getlatedev/node
 ```
 
 ## Usage
 
 ```typescript
-import Late from '@late/node';
+import Late from '@getlatedev/node';
 
 const late = new Late({
   apiKey: process.env['LATE_API_KEY'], // This is the default and can be omitted
@@ -171,7 +171,7 @@ await late.webhooks.updateSettings({
 ## Error Handling
 
 ```typescript
-import Late, { LateApiError, RateLimitError, ValidationError } from '@late/node';
+import Late, { LateApiError, RateLimitError, ValidationError } from '@getlatedev/node';
 
 const late = new Late();
 

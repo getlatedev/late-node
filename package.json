@@ -1,5 +1,5 @@
 {
-  "name": "@late/node",
+  "name": "@getlatedev/node",
   "version": "0.1.0",
   "description": "The official Node.js library for the Late API",
   "main": "dist/index.js",
