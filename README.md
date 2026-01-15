@@ -17,12 +17,6 @@
 
 The official Node.js SDK for the [Late API](https://getlate.dev) — schedule and publish social media posts across Instagram, TikTok, YouTube, LinkedIn, X/Twitter, Facebook, Pinterest, Threads, Bluesky, Reddit, Snapchat, Telegram, and Google Business Profile with a single integration.
 
-## Why Late?
-
-- **Single Integration** — Connect once, post to 13 platforms
-- **Zero Maintenance** — We handle OAuth, rate limits, media processing, and API changes
-- **Production Ready** — 99.97% uptime SLA, used by thousands of apps
-
 ## Installation
 
 ```bash
@@ -56,7 +50,7 @@ console.log(`Published to ${post.platforms.length} platforms!`);
 
 ```typescript
 const late = new Late({
-  apiKey: 'sk_...', // Defaults to process.env['LATE_API_KEY']
+  apiKey: 'your-api-key', // Defaults to process.env['LATE_API_KEY']
   baseURL: 'https://getlate.dev/api',
   timeout: 60000,
 });
@@ -93,7 +87,7 @@ const { data: post } = await late.posts.create({
       {
         platform: 'linkedin',
         accountId: 'acc_linkedin',
-        platformSpecificContent: 'Professional tone for LinkedIn with more detail about our announcement.',
+        platformSpecificContent: 'Professional tone for LinkedIn with more detail.',
       },
     ],
     publishNow: true,
@@ -170,52 +164,150 @@ try {
 }
 ```
 
-## Available Methods
+## SDK Reference
 
 ### Posts
-- `posts.list()` — List all posts
-- `posts.create()` — Create and schedule a post
-- `posts.get()` — Get a specific post
-- `posts.update()` — Update a scheduled post
-- `posts.delete()` — Delete a post
-- `posts.retry()` — Retry a failed post
+| Method | Description |
+|--------|-------------|
+| `posts.list()` | List all posts |
+| `posts.create()` | Create and schedule a post |
+| `posts.get()` | Get a specific post |
+| `posts.update()` | Update a scheduled post |
+| `posts.delete()` | Delete a post |
+| `posts.retry()` | Retry a failed post |
+| `posts.bulkUpload()` | Upload multiple posts at once |
+| `posts.getLogs()` | Get publishing logs for a post |
 
 ### Accounts
-- `accounts.list()` — List connected social accounts
-- `accounts.getFollowerStats()` — Get follower growth data
-- `accounts.getAllHealth()` — Check connection status
+| Method | Description |
+|--------|-------------|
+| `accounts.list()` | List connected social accounts |
+| `accounts.update()` | Update account settings |
+| `accounts.delete()` | Disconnect an account |
+| `accounts.getFollowerStats()` | Get follower growth data |
+| `accounts.getAllHealth()` | Check health of all accounts |
+| `accounts.getHealth()` | Check health of a specific account |
+
+### Profiles
+| Method | Description |
+|--------|-------------|
+| `profiles.list()` | List workspace profiles |
+| `profiles.create()` | Create a new profile |
+| `profiles.get()` | Get a specific profile |
+| `profiles.update()` | Update a profile |
+| `profiles.delete()` | Delete a profile |
 
 ### Analytics
-- `analytics.get()` — Get post performance metrics
-- `analytics.getYouTubeDailyViews()` — YouTube-specific analytics
+| Method | Description |
+|--------|-------------|
+| `analytics.get()` | Get post performance metrics |
+| `analytics.getYouTubeDailyViews()` | Get YouTube daily view breakdown |
+| `analytics.getLinkedInAggregate()` | Get LinkedIn organization analytics |
+| `analytics.getLinkedInPostAnalytics()` | Get LinkedIn post-level analytics |
 
-### Media
-- `media.getPresignedUrl()` — Get upload URL for media files
+### Account Groups
+| Method | Description |
+|--------|-------------|
+| `accountGroups.list()` | List account groups |
+| `accountGroups.create()` | Create an account group |
+| `accountGroups.update()` | Update an account group |
+| `accountGroups.delete()` | Delete an account group |
+
+### Queue
+| Method | Description |
+|--------|-------------|
+| `queue.listSlots()` | List queue time slots |
+| `queue.createSlot()` | Create a queue slot |
+| `queue.updateSlot()` | Update a queue slot |
+| `queue.deleteSlot()` | Delete a queue slot |
+| `queue.preview()` | Preview upcoming queued posts |
+| `queue.getNextSlot()` | Get next available slot |
 
 ### Webhooks
-- `webhooks.getSettings()` — Get webhook configuration
-- `webhooks.updateSettings()` — Configure webhooks
-- `webhooks.test()` — Send a test webhook
+| Method | Description |
+|--------|-------------|
+| `webhooks.getSettings()` | Get webhook configuration |
+| `webhooks.createSettings()` | Create webhook settings |
+| `webhooks.updateSettings()` | Update webhook settings |
+| `webhooks.deleteSettings()` | Delete webhook settings |
+| `webhooks.test()` | Send a test webhook |
+| `webhooks.getLogs()` | Get webhook delivery logs |
 
-See the [full API documentation](https://getlate.dev/docs/api) for all available methods.
+### API Keys
+| Method | Description |
+|--------|-------------|
+| `apiKeys.list()` | List API keys |
+| `apiKeys.create()` | Create a new API key |
+| `apiKeys.delete()` | Delete an API key |
 
-## Supported Platforms
+### Media
+| Method | Description |
+|--------|-------------|
+| `media.getPresignedUrl()` | Get presigned URL for file upload |
 
-| Platform | Post Types |
-|----------|-----------|
-| Instagram | Reels, Carousels, Stories, Feed Posts |
-| TikTok | Videos, Photos, Carousels |
-| YouTube | Videos, Shorts |
-| LinkedIn | Posts, Articles, Documents |
-| X (Twitter) | Tweets, Threads |
-| Facebook | Posts, Reels, Stories |
-| Threads | Posts |
-| Pinterest | Pins |
-| Bluesky | Posts |
-| Reddit | Posts |
-| Snapchat | Stories |
-| Telegram | Channel Posts |
-| Google Business | Posts |
+### Tools
+| Method | Description |
+|--------|-------------|
+| `tools.downloadYouTube()` | Download YouTube video |
+| `tools.getYouTubeTranscript()` | Get YouTube video transcript |
+| `tools.downloadInstagram()` | Download Instagram media |
+| `tools.checkInstagramHashtags()` | Check if hashtags are banned |
+| `tools.downloadTikTok()` | Download TikTok video |
+| `tools.downloadTwitter()` | Download Twitter/X media |
+| `tools.downloadFacebook()` | Download Facebook video |
+| `tools.downloadLinkedIn()` | Download LinkedIn video |
+| `tools.downloadBluesky()` | Download Bluesky media |
+
+### Users
+| Method | Description |
+|--------|-------------|
+| `users.list()` | List team users |
+| `users.get()` | Get a specific user |
+
+### Usage
+| Method | Description |
+|--------|-------------|
+| `usage.getStats()` | Get API usage statistics |
+
+### Logs
+| Method | Description |
+|--------|-------------|
+| `logs.list()` | List publishing logs |
+| `logs.get()` | Get a specific log entry |
+
+### Connect (OAuth)
+| Method | Description |
+|--------|-------------|
+| `connect.getUrl()` | Get OAuth URL for a platform |
+| `connect.handleCallback()` | Handle OAuth callback |
+| `connect.facebook.listPages()` | List Facebook pages to connect |
+| `connect.facebook.selectPage()` | Select a Facebook page |
+| `connect.googleBusiness.listLocations()` | List Google Business locations |
+| `connect.googleBusiness.selectLocation()` | Select a location |
+| `connect.linkedIn.listOrganizations()` | List LinkedIn organizations |
+| `connect.linkedIn.selectOrganization()` | Select an organization |
+| `connect.pinterest.listBoards()` | List Pinterest boards |
+| `connect.pinterest.selectBoard()` | Select a board |
+| `connect.snapchat.listProfiles()` | List Snapchat profiles |
+| `connect.snapchat.selectProfile()` | Select a profile |
+| `connect.bluesky.connectCredentials()` | Connect with Bluesky credentials |
+| `connect.telegram.getStatus()` | Get Telegram connection status |
+| `connect.telegram.initiate()` | Start Telegram connection |
+| `connect.telegram.complete()` | Complete Telegram connection |
+
+### Reddit
+| Method | Description |
+|--------|-------------|
+| `reddit.search()` | Search Reddit |
+| `reddit.getFeed()` | Get Reddit feed |
+
+### Invites
+| Method | Description |
+|--------|-------------|
+| `invites.createToken()` | Create an invite token |
+| `invites.list()` | List platform invites |
+| `invites.create()` | Create a platform invite |
+| `invites.delete()` | Delete a platform invite |
 
 ## Requirements
 
@@ -224,10 +316,9 @@ See the [full API documentation](https://getlate.dev/docs/api) for all available
 
 ## Links
 
-- [Documentation](https://getlate.dev/docs)
-- [API Reference](https://getlate.dev/docs/api)
+- [Documentation](https://docs.getlate.dev)
 - [Dashboard](https://getlate.dev/dashboard)
-- [Status](https://status.getlate.dev)
+- [Changelog](https://docs.getlate.dev/changelog)
 
 ## License
 
