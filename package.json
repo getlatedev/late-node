@@ -58,11 +58,11 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/trylate/late-node.git"
+    "url": "git+https://github.com/getlatedev/late-node.git"
   },
   "homepage": "https://getlate.dev/docs/api",
   "bugs": {
-    "url": "https://github.com/trylate/late-node/issues"
+    "url": "https://github.com/getlatedev/late-node/issues"
   },
   "engines": {
     "node": ">=18"

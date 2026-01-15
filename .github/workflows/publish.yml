@@ -72,6 +72,6 @@ jobs:
 
             ## Changelog
 
-            See the [full changelog](https://github.com/trylate/late-node/blob/main/CHANGELOG.md) for details.
+            See the [full changelog](https://github.com/getlatedev/late-node/blob/main/CHANGELOG.md) for details.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
