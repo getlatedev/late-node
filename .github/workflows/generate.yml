@@ -1,0 +1,63 @@
+name: Regenerate
+
+on:
+  # Triggered by the API repository when OpenAPI spec changes
+  repository_dispatch:
+    types: [openapi-updated]
+
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  generate:
+    name: Regenerate from OpenAPI
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Fetch latest OpenAPI spec
+        run: |
+          curl -f -o openapi.yaml https://getlate.dev/openapi.yaml
+          echo "Fetched OpenAPI spec:"
+          head -20 openapi.yaml
+
+      - name: Generate
+        run: npm run generate
+
+      - name: Build
+        run: npm run build
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git add -A
+          if git diff --staged --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push changes
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: regenerate from OpenAPI spec"
+          git push

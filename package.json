@@ -1,0 +1,79 @@
+{
+  "name": "late",
+  "version": "0.1.0",
+  "description": "The official Node.js library for the Late API",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./_shims/*": {
+      "types": "./dist/_shims/*.d.ts",
+      "import": "./dist/_shims/*.mjs",
+      "require": "./dist/_shims/*.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "generate": "openapi-ts -i openapi.yaml -o src/generated -c @hey-api/client-fetch",
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build",
+    "fetch-spec": "curl -o openapi.yaml https://getlate.dev/openapi.yaml"
+  },
+  "keywords": [
+    "late",
+    "social-media",
+    "scheduling",
+    "api",
+    "sdk",
+    "instagram",
+    "tiktok",
+    "youtube",
+    "linkedin",
+    "twitter",
+    "x",
+    "facebook",
+    "pinterest",
+    "threads",
+    "bluesky",
+    "snapchat",
+    "telegram"
+  ],
+  "author": "Late <support@getlate.dev>",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trylate/late-node.git"
+  },
+  "homepage": "https://getlate.dev/docs/api",
+  "bugs": {
+    "url": "https://github.com/trylate/late-node/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@hey-api/client-fetch": "^0.6.0",
+    "@hey-api/openapi-ts": "^0.61.0",
+    "@types/node": "^20.11.0",
+    "eslint": "^8.56.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  }
+}
