@@ -36,7 +36,11 @@ jobs:
           head -20 openapi.yaml
 
       - name: Generate
-        run: npm run generate
+        run: |
+          echo "Starting generation..."
+          npm run generate
+          echo "Generation complete. Checking generated files:"
+          ls -la src/generated/
 
       - name: Build
         run: npm run build
