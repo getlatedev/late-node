@@ -38,12 +38,18 @@ jobs:
           echo "Fetched OpenAPI spec:"
           head -20 openapi.yaml
 
-      - name: Generate
+      - name: Generate SDK
         run: |
-          echo "Starting generation..."
+          echo "Starting SDK generation..."
           npm run generate
           echo "Generation complete. Checking generated files:"
           ls -la src/generated/
+
+      - name: Generate README SDK Reference
+        run: |
+          echo "Starting README SDK Reference generation..."
+          npx tsx scripts/generate-readme-reference.ts
+          echo "README SDK Reference generation complete."
 
       - name: Build
         run: npm run build

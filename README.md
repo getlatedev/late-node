@@ -174,16 +174,16 @@ try {
 | `posts.getPost()` | Get a specific post |
 | `posts.updatePost()` | Update a scheduled post |
 | `posts.deletePost()` | Delete a post |
-| `posts.retryPost()` | Retry a failed post |
 | `posts.bulkUploadPosts()` | Upload multiple posts at once |
+| `posts.retryPost()` | Retry a failed post |
 
 ### Accounts
 | Method | Description |
 |--------|-------------|
 | `accounts.listAccounts()` | List connected social accounts |
+| `accounts.getFollowerStats()` | Get follower growth data |
 | `accounts.updateAccount()` | Update account settings |
 | `accounts.deleteAccount()` | Disconnect an account |
-| `accounts.getFollowerStats()` | Get follower growth data |
 | `accounts.getAllAccountsHealth()` | Check health of all accounts |
 | `accounts.getAccountHealth()` | Check health of a specific account |
 | `accounts.getGoogleBusinessReviews()` | Get Google Business reviews |
@@ -289,6 +289,20 @@ try {
 | `connect.updatePinterestBoards()` | Update Pinterest boards |
 | `connect.getRedditSubreddits()` | Get Reddit subreddits |
 | `connect.updateRedditSubreddits()` | Update Reddit subreddits |
+| `connect.listFacebookPages()` | List Facebook Pages |
+| `connect.selectFacebookPage()` | Select Facebook Page |
+| `connect.listGoogleBusinessLocations()` | List Google Business Locations |
+| `connect.selectGoogleBusinessLocation()` | Select Google Business Location |
+| `connect.listLinkedInOrganizations()` | List Linked In Organizations |
+| `connect.selectLinkedInOrganization()` | Select Linked In Organization |
+| `connect.listPinterestBoardsForSelection()` | List Pinterest Boards For Selection |
+| `connect.selectPinterestBoard()` | Select Pinterest Board |
+| `connect.listSnapchatProfiles()` | List Snapchat Profiles |
+| `connect.selectSnapchatProfile()` | Select Snapchat Profile |
+| `connect.connectBlueskyCredentials()` | Connect Bluesky Credentials |
+| `connect.getTelegramConnectStatus()` | Get Telegram Connect Status |
+| `connect.initiateTelegramConnect()` | Initiate Telegram Connect |
+| `connect.completeTelegramConnect()` | Complete Telegram Connect |
 | `connect.facebook.listFacebookPages()` | List Facebook pages to connect |
 | `connect.facebook.selectFacebookPage()` | Select a Facebook page |
 | `connect.googleBusiness.listGoogleBusinessLocations()` | List Google Business locations |
