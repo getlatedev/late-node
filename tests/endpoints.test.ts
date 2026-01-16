@@ -129,76 +129,6 @@ describe('Endpoint Methods', () => {
       expect(client.connect.handleOAuthCallback).toBeTypeOf('function');
     });
 
-    it('should have listFacebookPages method', () => {
-      expect(client.connect.listFacebookPages).toBeDefined();
-      expect(client.connect.listFacebookPages).toBeTypeOf('function');
-    });
-
-    it('should have selectFacebookPage method', () => {
-      expect(client.connect.selectFacebookPage).toBeDefined();
-      expect(client.connect.selectFacebookPage).toBeTypeOf('function');
-    });
-
-    it('should have listGoogleBusinessLocations method', () => {
-      expect(client.connect.listGoogleBusinessLocations).toBeDefined();
-      expect(client.connect.listGoogleBusinessLocations).toBeTypeOf('function');
-    });
-
-    it('should have selectGoogleBusinessLocation method', () => {
-      expect(client.connect.selectGoogleBusinessLocation).toBeDefined();
-      expect(client.connect.selectGoogleBusinessLocation).toBeTypeOf('function');
-    });
-
-    it('should have listLinkedInOrganizations method', () => {
-      expect(client.connect.listLinkedInOrganizations).toBeDefined();
-      expect(client.connect.listLinkedInOrganizations).toBeTypeOf('function');
-    });
-
-    it('should have selectLinkedInOrganization method', () => {
-      expect(client.connect.selectLinkedInOrganization).toBeDefined();
-      expect(client.connect.selectLinkedInOrganization).toBeTypeOf('function');
-    });
-
-    it('should have listPinterestBoardsForSelection method', () => {
-      expect(client.connect.listPinterestBoardsForSelection).toBeDefined();
-      expect(client.connect.listPinterestBoardsForSelection).toBeTypeOf('function');
-    });
-
-    it('should have selectPinterestBoard method', () => {
-      expect(client.connect.selectPinterestBoard).toBeDefined();
-      expect(client.connect.selectPinterestBoard).toBeTypeOf('function');
-    });
-
-    it('should have listSnapchatProfiles method', () => {
-      expect(client.connect.listSnapchatProfiles).toBeDefined();
-      expect(client.connect.listSnapchatProfiles).toBeTypeOf('function');
-    });
-
-    it('should have selectSnapchatProfile method', () => {
-      expect(client.connect.selectSnapchatProfile).toBeDefined();
-      expect(client.connect.selectSnapchatProfile).toBeTypeOf('function');
-    });
-
-    it('should have connectBlueskyCredentials method', () => {
-      expect(client.connect.connectBlueskyCredentials).toBeDefined();
-      expect(client.connect.connectBlueskyCredentials).toBeTypeOf('function');
-    });
-
-    it('should have getTelegramConnectStatus method', () => {
-      expect(client.connect.getTelegramConnectStatus).toBeDefined();
-      expect(client.connect.getTelegramConnectStatus).toBeTypeOf('function');
-    });
-
-    it('should have initiateTelegramConnect method', () => {
-      expect(client.connect.initiateTelegramConnect).toBeDefined();
-      expect(client.connect.initiateTelegramConnect).toBeTypeOf('function');
-    });
-
-    it('should have completeTelegramConnect method', () => {
-      expect(client.connect.completeTelegramConnect).toBeDefined();
-      expect(client.connect.completeTelegramConnect).toBeTypeOf('function');
-    });
-
     it('should have updateFacebookPage method', () => {
       expect(client.connect.updateFacebookPage).toBeDefined();
       expect(client.connect.updateFacebookPage).toBeTypeOf('function');
@@ -232,6 +162,97 @@ describe('Endpoint Methods', () => {
     it('should have updateRedditSubreddits method', () => {
       expect(client.connect.updateRedditSubreddits).toBeDefined();
       expect(client.connect.updateRedditSubreddits).toBeTypeOf('function');
+    });
+
+  });
+
+  describe('connect.bluesky', () => {
+    it('should have connectBlueskyCredentials method', () => {
+      expect(client.connect.bluesky.connectBlueskyCredentials).toBeDefined();
+      expect(client.connect.bluesky.connectBlueskyCredentials).toBeTypeOf('function');
+    });
+
+  });
+
+  describe('connect.facebook', () => {
+    it('should have listFacebookPages method', () => {
+      expect(client.connect.facebook.listFacebookPages).toBeDefined();
+      expect(client.connect.facebook.listFacebookPages).toBeTypeOf('function');
+    });
+
+    it('should have selectFacebookPage method', () => {
+      expect(client.connect.facebook.selectFacebookPage).toBeDefined();
+      expect(client.connect.facebook.selectFacebookPage).toBeTypeOf('function');
+    });
+
+  });
+
+  describe('connect.google Business', () => {
+    it('should have listGoogleBusinessLocations method', () => {
+      expect(client.connect.googleBusiness.listGoogleBusinessLocations).toBeDefined();
+      expect(client.connect.googleBusiness.listGoogleBusinessLocations).toBeTypeOf('function');
+    });
+
+    it('should have selectGoogleBusinessLocation method', () => {
+      expect(client.connect.googleBusiness.selectGoogleBusinessLocation).toBeDefined();
+      expect(client.connect.googleBusiness.selectGoogleBusinessLocation).toBeTypeOf('function');
+    });
+
+  });
+
+  describe('connect.linkedin', () => {
+    it('should have listLinkedInOrganizations method', () => {
+      expect(client.connect.linkedin.listLinkedInOrganizations).toBeDefined();
+      expect(client.connect.linkedin.listLinkedInOrganizations).toBeTypeOf('function');
+    });
+
+    it('should have selectLinkedInOrganization method', () => {
+      expect(client.connect.linkedin.selectLinkedInOrganization).toBeDefined();
+      expect(client.connect.linkedin.selectLinkedInOrganization).toBeTypeOf('function');
+    });
+
+  });
+
+  describe('connect.pinterest', () => {
+    it('should have listPinterestBoardsForSelection method', () => {
+      expect(client.connect.pinterest.listPinterestBoardsForSelection).toBeDefined();
+      expect(client.connect.pinterest.listPinterestBoardsForSelection).toBeTypeOf('function');
+    });
+
+    it('should have selectPinterestBoard method', () => {
+      expect(client.connect.pinterest.selectPinterestBoard).toBeDefined();
+      expect(client.connect.pinterest.selectPinterestBoard).toBeTypeOf('function');
+    });
+
+  });
+
+  describe('connect.snapchat', () => {
+    it('should have listSnapchatProfiles method', () => {
+      expect(client.connect.snapchat.listSnapchatProfiles).toBeDefined();
+      expect(client.connect.snapchat.listSnapchatProfiles).toBeTypeOf('function');
+    });
+
+    it('should have selectSnapchatProfile method', () => {
+      expect(client.connect.snapchat.selectSnapchatProfile).toBeDefined();
+      expect(client.connect.snapchat.selectSnapchatProfile).toBeTypeOf('function');
+    });
+
+  });
+
+  describe('connect.telegram', () => {
+    it('should have getTelegramConnectStatus method', () => {
+      expect(client.connect.telegram.getTelegramConnectStatus).toBeDefined();
+      expect(client.connect.telegram.getTelegramConnectStatus).toBeTypeOf('function');
+    });
+
+    it('should have initiateTelegramConnect method', () => {
+      expect(client.connect.telegram.initiateTelegramConnect).toBeDefined();
+      expect(client.connect.telegram.initiateTelegramConnect).toBeTypeOf('function');
+    });
+
+    it('should have completeTelegramConnect method', () => {
+      expect(client.connect.telegram.completeTelegramConnect).toBeDefined();
+      expect(client.connect.telegram.completeTelegramConnect).toBeTypeOf('function');
     });
 
   });
