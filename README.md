@@ -170,24 +170,24 @@ try {
 | Method | Description |
 |--------|-------------|
 | `posts.listPosts()` | List all posts |
+| `posts.bulkUploadPosts()` | Upload multiple posts at once |
 | `posts.createPost()` | Create and schedule a post |
 | `posts.getPost()` | Get a specific post |
 | `posts.updatePost()` | Update a scheduled post |
 | `posts.deletePost()` | Delete a post |
-| `posts.bulkUploadPosts()` | Upload multiple posts at once |
 | `posts.retryPost()` | Retry a failed post |
 
 ### Accounts
 | Method | Description |
 |--------|-------------|
-| `accounts.listAccounts()` | List connected social accounts |
-| `accounts.getFollowerStats()` | Get follower growth data |
-| `accounts.updateAccount()` | Update account settings |
-| `accounts.deleteAccount()` | Disconnect an account |
 | `accounts.getAllAccountsHealth()` | Check health of all accounts |
+| `accounts.listAccounts()` | List connected social accounts |
 | `accounts.getAccountHealth()` | Check health of a specific account |
+| `accounts.getFollowerStats()` | Get follower growth data |
 | `accounts.getGoogleBusinessReviews()` | Get Google Business reviews |
 | `accounts.getLinkedInMentions()` | Get LinkedIn mentions |
+| `accounts.updateAccount()` | Update account settings |
+| `accounts.deleteAccount()` | Disconnect an account |
 
 ### Profiles
 | Method | Description |
@@ -202,9 +202,9 @@ try {
 | Method | Description |
 |--------|-------------|
 | `analytics.getAnalytics()` | Get post performance metrics |
-| `analytics.getYouTubeDailyViews()` | Get YouTube daily view breakdown |
 | `analytics.getLinkedInAggregateAnalytics()` | Get LinkedIn organization analytics |
 | `analytics.getLinkedInPostAnalytics()` | Get LinkedIn post-level analytics |
+| `analytics.getYouTubeDailyViews()` | Get YouTube daily view breakdown |
 
 ### Account Groups
 | Method | Description |
@@ -219,20 +219,20 @@ try {
 |--------|-------------|
 | `queue.listQueueSlots()` | List queue time slots |
 | `queue.createQueueSlot()` | Create a queue slot |
+| `queue.getNextQueueSlot()` | Get next available slot |
 | `queue.updateQueueSlot()` | Update a queue slot |
 | `queue.deleteQueueSlot()` | Delete a queue slot |
 | `queue.previewQueue()` | Preview upcoming queued posts |
-| `queue.getNextQueueSlot()` | Get next available slot |
 
 ### Webhooks
 | Method | Description |
 |--------|-------------|
-| `webhooks.getWebhookSettings()` | Get webhook configuration |
 | `webhooks.createWebhookSettings()` | Create webhook settings |
+| `webhooks.getWebhookLogs()` | Get webhook delivery logs |
+| `webhooks.getWebhookSettings()` | Get webhook configuration |
 | `webhooks.updateWebhookSettings()` | Update webhook settings |
 | `webhooks.deleteWebhookSettings()` | Delete webhook settings |
 | `webhooks.testWebhook()` | Send a test webhook |
-| `webhooks.getWebhookLogs()` | Get webhook delivery logs |
 
 ### API Keys
 | Method | Description |
@@ -249,15 +249,15 @@ try {
 ### Tools
 | Method | Description |
 |--------|-------------|
-| `tools.downloadYouTubeVideo()` | Download YouTube video |
 | `tools.getYouTubeTranscript()` | Get YouTube video transcript |
-| `tools.downloadInstagramMedia()` | Download Instagram media |
 | `tools.checkInstagramHashtags()` | Check if hashtags are banned |
+| `tools.downloadBlueskyMedia()` | Download Bluesky media |
+| `tools.downloadFacebookVideo()` | Download Facebook video |
+| `tools.downloadInstagramMedia()` | Download Instagram media |
+| `tools.downloadLinkedInVideo()` | Download LinkedIn video |
 | `tools.downloadTikTokVideo()` | Download TikTok video |
 | `tools.downloadTwitterMedia()` | Download Twitter/X media |
-| `tools.downloadFacebookVideo()` | Download Facebook video |
-| `tools.downloadLinkedInVideo()` | Download LinkedIn video |
-| `tools.downloadBlueskyMedia()` | Download Bluesky media |
+| `tools.downloadYouTubeVideo()` | Download YouTube video |
 
 ### Users
 | Method | Description |
@@ -280,29 +280,29 @@ try {
 ### Connect (OAuth)
 | Method | Description |
 |--------|-------------|
-| `connect.getConnectUrl()` | Get OAuth URL for a platform |
-| `connect.handleOAuthCallback()` | Handle OAuth callback |
-| `connect.updateFacebookPage()` | Update Facebook page settings |
-| `connect.getLinkedInOrganizations()` | Get LinkedIn organizations |
-| `connect.updateLinkedInOrganization()` | Update LinkedIn organization |
-| `connect.getPinterestBoards()` | Get Pinterest boards |
-| `connect.updatePinterestBoards()` | Update Pinterest boards |
-| `connect.getRedditSubreddits()` | Get Reddit subreddits |
-| `connect.updateRedditSubreddits()` | Update Reddit subreddits |
 | `connect.listFacebookPages()` | List Facebook Pages |
-| `connect.selectFacebookPage()` | Select Facebook Page |
 | `connect.listGoogleBusinessLocations()` | List Google Business Locations |
-| `connect.selectGoogleBusinessLocation()` | Select Google Business Location |
 | `connect.listLinkedInOrganizations()` | List Linked In Organizations |
-| `connect.selectLinkedInOrganization()` | Select Linked In Organization |
 | `connect.listPinterestBoardsForSelection()` | List Pinterest Boards For Selection |
-| `connect.selectPinterestBoard()` | Select Pinterest Board |
 | `connect.listSnapchatProfiles()` | List Snapchat Profiles |
-| `connect.selectSnapchatProfile()` | Select Snapchat Profile |
-| `connect.connectBlueskyCredentials()` | Connect Bluesky Credentials |
+| `connect.getConnectUrl()` | Get OAuth URL for a platform |
+| `connect.getLinkedInOrganizations()` | Get LinkedIn organizations |
+| `connect.getPinterestBoards()` | Get Pinterest boards |
+| `connect.getRedditSubreddits()` | Get Reddit subreddits |
 | `connect.getTelegramConnectStatus()` | Get Telegram Connect Status |
-| `connect.initiateTelegramConnect()` | Initiate Telegram Connect |
+| `connect.updateFacebookPage()` | Update Facebook page settings |
+| `connect.updateLinkedInOrganization()` | Update LinkedIn organization |
+| `connect.updatePinterestBoards()` | Update Pinterest boards |
+| `connect.updateRedditSubreddits()` | Update Reddit subreddits |
 | `connect.completeTelegramConnect()` | Complete Telegram Connect |
+| `connect.connectBlueskyCredentials()` | Connect Bluesky Credentials |
+| `connect.handleOAuthCallback()` | Handle OAuth callback |
+| `connect.initiateTelegramConnect()` | Initiate Telegram Connect |
+| `connect.selectFacebookPage()` | Select Facebook Page |
+| `connect.selectGoogleBusinessLocation()` | Select Google Business Location |
+| `connect.selectLinkedInOrganization()` | Select Linked In Organization |
+| `connect.selectPinterestBoard()` | Select Pinterest Board |
+| `connect.selectSnapchatProfile()` | Select Snapchat Profile |
 | `connect.facebook.listFacebookPages()` | List Facebook pages to connect |
 | `connect.facebook.selectFacebookPage()` | Select a Facebook page |
 | `connect.googleBusiness.listGoogleBusinessLocations()` | List Google Business locations |
@@ -315,20 +315,20 @@ try {
 | `connect.snapchat.selectSnapchatProfile()` | Select a profile |
 | `connect.bluesky.connectBlueskyCredentials()` | Connect with Bluesky credentials |
 | `connect.telegram.getTelegramConnectStatus()` | Get Telegram connection status |
-| `connect.telegram.initiateTelegramConnect()` | Start Telegram connection |
 | `connect.telegram.completeTelegramConnect()` | Complete Telegram connection |
+| `connect.telegram.initiateTelegramConnect()` | Start Telegram connection |
 
 ### Reddit
 | Method | Description |
 |--------|-------------|
-| `reddit.searchReddit()` | Search Reddit |
 | `reddit.getRedditFeed()` | Get Reddit feed |
+| `reddit.searchReddit()` | Search Reddit |
 
 ### Invites
 | Method | Description |
 |--------|-------------|
-| `invites.createInviteToken()` | Create an invite token |
 | `invites.listPlatformInvites()` | List platform invites |
+| `invites.createInviteToken()` | Create an invite token |
 | `invites.createPlatformInvite()` | Create a platform invite |
 | `invites.deletePlatformInvite()` | Delete a platform invite |
 

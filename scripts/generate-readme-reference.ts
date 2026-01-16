@@ -169,6 +169,48 @@ interface Resource {
   nested?: Record<string, ResourceMethod[]>;
 }
 
+/**
+ * Generate a sort key for consistent method ordering.
+ *
+ * Ordering rules (CRUD-style):
+ * 1. list/getAll methods first
+ * 2. create methods
+ * 3. get (single) methods
+ * 4. update methods
+ * 5. delete methods
+ * 6. Everything else alphabetically
+ *
+ * This ensures consistent output regardless of how methods are discovered.
+ */
+function getMethodSortKey(methodName: string): [number, string] {
+  const nameLower = methodName.toLowerCase();
+
+  if (nameLower.startsWith('list') || nameLower.startsWith('getall')) {
+    return [0, methodName];
+  } else if (nameLower.startsWith('create') || nameLower === 'bulkuploadposts') {
+    return [1, methodName];
+  } else if (nameLower.startsWith('get') && !nameLower.startsWith('getall')) {
+    return [2, methodName];
+  } else if (nameLower.startsWith('update')) {
+    return [3, methodName];
+  } else if (nameLower.startsWith('delete')) {
+    return [4, methodName];
+  } else {
+    return [5, methodName];
+  }
+}
+
+function sortMethods(methods: ResourceMethod[]): ResourceMethod[] {
+  return [...methods].sort((a, b) => {
+    const keyA = getMethodSortKey(a.name);
+    const keyB = getMethodSortKey(b.name);
+    if (keyA[0] !== keyB[0]) {
+      return keyA[0] - keyB[0];
+    }
+    return keyA[1].localeCompare(keyB[1]);
+  });
+}
+
 function parseClientFile(clientPath: string): Resource[] {
   const content = fs.readFileSync(clientPath, 'utf-8');
   const resources: Resource[] = [];
@@ -262,16 +304,18 @@ function generateReferenceSection(resources: Resource[]): string {
     lines.push('| Method | Description |');
     lines.push('|--------|-------------|');
 
-    // Top-level methods
-    for (const method of resource.methods) {
+    // Top-level methods (sorted with CRUD ordering)
+    const sortedMethods = sortMethods(resource.methods);
+    for (const method of sortedMethods) {
       const desc = generateDescription(method.fullPath);
       lines.push(`| \`${method.fullPath}()\` | ${desc} |`);
     }
 
-    // Nested methods
+    // Nested methods (sorted with CRUD ordering)
     if (resource.nested) {
       for (const [nestedName, nestedMethods] of Object.entries(resource.nested)) {
-        for (const method of nestedMethods) {
+        const sortedNestedMethods = sortMethods(nestedMethods);
+        for (const method of sortedNestedMethods) {
           const desc = generateDescription(method.fullPath);
           lines.push(`| \`${method.fullPath}()\` | ${desc} |`);
         }
