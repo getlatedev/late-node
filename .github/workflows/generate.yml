@@ -51,6 +51,12 @@ jobs:
           npx tsx scripts/generate-readme-reference.ts
           echo "README SDK Reference generation complete."
 
+      - name: Generate endpoint tests
+        run: |
+          echo "Starting endpoint tests generation..."
+          npx tsx scripts/generate-endpoint-tests.ts
+          echo "Endpoint tests generation complete."
+
       - name: Build
         run: npm run build
 
