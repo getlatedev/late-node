@@ -4,7 +4,7 @@
  * Run with: npx tsx examples/create-post.ts
  */
 
-import Late, { LateApiError } from 'late';
+import Late, { LateApiError } from '@getlatedev/node';
 
 async function main() {
   // Initialize the client (uses LATE_API_KEY env var by default)
@@ -12,7 +12,7 @@ async function main() {
 
   try {
     // First, list available accounts
-    const { data: accountsData } = await late.accounts.list();
+    const { data: accountsData } = await late.accounts.listAccounts();
     console.log('Connected accounts:');
     for (const account of accountsData.accounts) {
       console.log(`  - ${account.platform}: @${account.username} (${account._id})`);
@@ -26,7 +26,7 @@ async function main() {
     }
 
     // Create a post (publish immediately)
-    const { data: post } = await late.posts.create({
+    const { data: post } = await late.posts.createPost({
       body: {
         content: 'Hello from the Late SDK! This is a test post. 🚀',
         platforms: [
