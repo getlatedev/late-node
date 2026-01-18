@@ -169,168 +169,154 @@ try {
 ### Posts
 | Method | Description |
 |--------|-------------|
-| `posts.listPosts()` | List all posts |
-| `posts.bulkUploadPosts()` | Upload multiple posts at once |
-| `posts.createPost()` | Create and schedule a post |
-| `posts.getPost()` | Get a specific post |
-| `posts.updatePost()` | Update a scheduled post |
+| `posts.listPosts()` | List posts visible to the authenticated user |
+| `posts.bulkUploadPosts()` | Validate and schedule multiple posts from CSV |
+| `posts.createPost()` | Create a draft, scheduled, or immediate post |
+| `posts.getPost()` | Get a single post |
+| `posts.updatePost()` | Update a post |
 | `posts.deletePost()` | Delete a post |
-| `posts.retryPost()` | Retry a failed post |
+| `posts.retryPost()` | Retry publishing a failed or partial post |
 
 ### Accounts
 | Method | Description |
 |--------|-------------|
-| `accounts.getAllAccountsHealth()` | Check health of all accounts |
+| `accounts.getAllAccountsHealth()` | Check health of all connected accounts |
 | `accounts.listAccounts()` | List connected social accounts |
 | `accounts.getAccountHealth()` | Check health of a specific account |
-| `accounts.getFollowerStats()` | Get follower growth data |
-| `accounts.getGoogleBusinessReviews()` | Get Google Business reviews |
-| `accounts.getLinkedInMentions()` | Get LinkedIn mentions |
-| `accounts.updateAccount()` | Update account settings |
-| `accounts.deleteAccount()` | Disconnect an account |
+| `accounts.getFollowerStats()` | Get follower stats and growth metrics |
+| `accounts.getGoogleBusinessReviews()` | Get Google Business Profile reviews |
+| `accounts.getLinkedInMentions()` | Resolve a LinkedIn profile or company URL to a URN for @mentions |
+| `accounts.updateAccount()` | Update a social account |
+| `accounts.deleteAccount()` | Disconnect a social account |
 
 ### Profiles
 | Method | Description |
 |--------|-------------|
-| `profiles.listProfiles()` | List workspace profiles |
+| `profiles.listProfiles()` | List profiles visible to the authenticated user |
 | `profiles.createProfile()` | Create a new profile |
-| `profiles.getProfile()` | Get a specific profile |
+| `profiles.getProfile()` | Get a profile by id |
 | `profiles.updateProfile()` | Update a profile |
-| `profiles.deleteProfile()` | Delete a profile |
+| `profiles.deleteProfile()` | Delete a profile (must have no connected accounts) |
 
 ### Analytics
 | Method | Description |
 |--------|-------------|
-| `analytics.getAnalytics()` | Get post performance metrics |
-| `analytics.getLinkedInAggregateAnalytics()` | Get LinkedIn organization analytics |
-| `analytics.getLinkedInPostAnalytics()` | Get LinkedIn post-level analytics |
-| `analytics.getYouTubeDailyViews()` | Get YouTube daily view breakdown |
+| `analytics.getAnalytics()` | Unified analytics for posts |
+| `analytics.getLinkedInAggregateAnalytics()` | Get aggregate analytics for a LinkedIn personal account |
+| `analytics.getLinkedInPostAnalytics()` | Get analytics for a specific LinkedIn post by URN |
+| `analytics.getYouTubeDailyViews()` | YouTube daily views breakdown |
 
 ### Account Groups
 | Method | Description |
 |--------|-------------|
-| `accountGroups.listAccountGroups()` | List account groups |
-| `accountGroups.createAccountGroup()` | Create an account group |
+| `accountGroups.listAccountGroups()` | List account groups for the authenticated user |
+| `accountGroups.createAccountGroup()` | Create a new account group |
 | `accountGroups.updateAccountGroup()` | Update an account group |
 | `accountGroups.deleteAccountGroup()` | Delete an account group |
 
 ### Queue
 | Method | Description |
 |--------|-------------|
-| `queue.listQueueSlots()` | List queue time slots |
-| `queue.createQueueSlot()` | Create a queue slot |
-| `queue.getNextQueueSlot()` | Get next available slot |
-| `queue.updateQueueSlot()` | Update a queue slot |
-| `queue.deleteQueueSlot()` | Delete a queue slot |
-| `queue.previewQueue()` | Preview upcoming queued posts |
+| `queue.listQueueSlots()` | Get queue schedules for a profile |
+| `queue.createQueueSlot()` | Create a new queue for a profile |
+| `queue.getNextQueueSlot()` | Get the next available queue slot for a profile |
+| `queue.updateQueueSlot()` | Create or update a queue schedule |
+| `queue.deleteQueueSlot()` | Delete a queue schedule |
+| `queue.previewQueue()` | Preview upcoming queue slots for a profile |
 
 ### Webhooks
 | Method | Description |
 |--------|-------------|
-| `webhooks.createWebhookSettings()` | Create webhook settings |
+| `webhooks.createWebhookSettings()` | Create a new webhook |
 | `webhooks.getWebhookLogs()` | Get webhook delivery logs |
-| `webhooks.getWebhookSettings()` | Get webhook configuration |
-| `webhooks.updateWebhookSettings()` | Update webhook settings |
-| `webhooks.deleteWebhookSettings()` | Delete webhook settings |
-| `webhooks.testWebhook()` | Send a test webhook |
+| `webhooks.getWebhookSettings()` | List all webhooks |
+| `webhooks.updateWebhookSettings()` | Update a webhook |
+| `webhooks.deleteWebhookSettings()` | Delete a webhook |
+| `webhooks.testWebhook()` | Send test webhook |
 
 ### API Keys
 | Method | Description |
 |--------|-------------|
-| `apiKeys.listApiKeys()` | List API keys |
+| `apiKeys.listApiKeys()` | List API keys for the current user |
 | `apiKeys.createApiKey()` | Create a new API key |
 | `apiKeys.deleteApiKey()` | Delete an API key |
 
 ### Media
 | Method | Description |
 |--------|-------------|
-| `media.getMediaPresignedUrl()` | Get presigned URL for file upload |
+| `media.getMediaPresignedUrl()` | Get a presigned URL for direct file upload (up to 5GB) |
 
 ### Tools
 | Method | Description |
 |--------|-------------|
 | `tools.getYouTubeTranscript()` | Get YouTube video transcript |
-| `tools.checkInstagramHashtags()` | Check if hashtags are banned |
-| `tools.downloadBlueskyMedia()` | Download Bluesky media |
+| `tools.checkInstagramHashtags()` | Check Instagram hashtags for bans |
+| `tools.downloadBlueskyMedia()` | Download Bluesky video |
 | `tools.downloadFacebookVideo()` | Download Facebook video |
-| `tools.downloadInstagramMedia()` | Download Instagram media |
+| `tools.downloadInstagramMedia()` | Download Instagram reel or post |
 | `tools.downloadLinkedInVideo()` | Download LinkedIn video |
 | `tools.downloadTikTokVideo()` | Download TikTok video |
-| `tools.downloadTwitterMedia()` | Download Twitter/X media |
-| `tools.downloadYouTubeVideo()` | Download YouTube video |
+| `tools.downloadTwitterMedia()` | Download Twitter/X video |
+| `tools.downloadYouTubeVideo()` | Download YouTube video or audio |
 
 ### Users
 | Method | Description |
 |--------|-------------|
-| `users.listUsers()` | List team users |
-| `users.getUser()` | Get a specific user |
+| `users.listUsers()` | List team users (root + invited) |
+| `users.getUser()` | Get user by id (self or invited) |
 
 ### Usage
 | Method | Description |
 |--------|-------------|
-| `usage.getUsageStats()` | Get API usage statistics |
+| `usage.getUsageStats()` | Get plan and usage stats for current account |
 
 ### Logs
 | Method | Description |
 |--------|-------------|
-| `logs.listLogs()` | List publishing logs |
-| `logs.getLog()` | Get a specific log entry |
+| `logs.listLogs()` | Get publishing logs |
+| `logs.getLog()` | Get a single log entry |
 | `logs.getPostLogs()` | Get logs for a specific post |
 
 ### Connect (OAuth)
 | Method | Description |
 |--------|-------------|
-| `connect.listFacebookPages()` | List Facebook Pages |
-| `connect.listGoogleBusinessLocations()` | List Google Business Locations |
-| `connect.listLinkedInOrganizations()` | List Linked In Organizations |
-| `connect.listPinterestBoardsForSelection()` | List Pinterest Boards For Selection |
-| `connect.listSnapchatProfiles()` | List Snapchat Profiles |
-| `connect.getConnectUrl()` | Get OAuth URL for a platform |
-| `connect.getLinkedInOrganizations()` | Get LinkedIn organizations |
-| `connect.getPinterestBoards()` | Get Pinterest boards |
-| `connect.getRedditSubreddits()` | Get Reddit subreddits |
-| `connect.getTelegramConnectStatus()` | Get Telegram Connect Status |
-| `connect.updateFacebookPage()` | Update Facebook page settings |
-| `connect.updateLinkedInOrganization()` | Update LinkedIn organization |
-| `connect.updatePinterestBoards()` | Update Pinterest boards |
-| `connect.updateRedditSubreddits()` | Update Reddit subreddits |
-| `connect.completeTelegramConnect()` | Complete Telegram Connect |
-| `connect.connectBlueskyCredentials()` | Connect Bluesky Credentials |
-| `connect.handleOAuthCallback()` | Handle OAuth callback |
-| `connect.initiateTelegramConnect()` | Initiate Telegram Connect |
-| `connect.selectFacebookPage()` | Select Facebook Page |
-| `connect.selectGoogleBusinessLocation()` | Select Google Business Location |
-| `connect.selectLinkedInOrganization()` | Select Linked In Organization |
-| `connect.selectPinterestBoard()` | Select Pinterest Board |
-| `connect.selectSnapchatProfile()` | Select Snapchat Profile |
-| `connect.facebook.listFacebookPages()` | List Facebook pages to connect |
-| `connect.facebook.selectFacebookPage()` | Select a Facebook page |
-| `connect.googleBusiness.listGoogleBusinessLocations()` | List Google Business locations |
-| `connect.googleBusiness.selectGoogleBusinessLocation()` | Select a location |
-| `connect.linkedin.listLinkedInOrganizations()` | List LinkedIn organizations |
-| `connect.linkedin.selectLinkedInOrganization()` | Select an organization |
-| `connect.pinterest.listPinterestBoardsForSelection()` | List Pinterest boards |
-| `connect.pinterest.selectPinterestBoard()` | Select a board |
-| `connect.snapchat.listSnapchatProfiles()` | List Snapchat profiles |
-| `connect.snapchat.selectSnapchatProfile()` | Select a profile |
-| `connect.bluesky.connectBlueskyCredentials()` | Connect with Bluesky credentials |
-| `connect.telegram.getTelegramConnectStatus()` | Get Telegram connection status |
-| `connect.telegram.completeTelegramConnect()` | Complete Telegram connection |
-| `connect.telegram.initiateTelegramConnect()` | Start Telegram connection |
+| `connect.listFacebookPages()` | List Facebook Pages after OAuth (Headless Mode) |
+| `connect.listGoogleBusinessLocations()` | List Google Business Locations after OAuth (Headless Mode) |
+| `connect.listLinkedInOrganizations()` | Fetch full LinkedIn organization details (Headless Mode) |
+| `connect.listPinterestBoardsForSelection()` | List Pinterest Boards after OAuth (Headless Mode) |
+| `connect.listSnapchatProfiles()` | List Snapchat Public Profiles after OAuth (Headless Mode) |
+| `connect.getConnectUrl()` | Start OAuth connection for a platform |
+| `connect.getLinkedInOrganizations()` | Get available LinkedIn organizations for a connected account |
+| `connect.getPinterestBoards()` | List Pinterest boards for a connected account |
+| `connect.getRedditSubreddits()` | List Reddit subreddits for a connected account |
+| `connect.getTelegramConnectStatus()` | Generate Telegram access code |
+| `connect.updateFacebookPage()` | Update selected Facebook page for a connected account |
+| `connect.updateLinkedInOrganization()` | Switch LinkedIn account type (personal/organization) |
+| `connect.updatePinterestBoards()` | Set default Pinterest board on the connection |
+| `connect.updateRedditSubreddits()` | Set default subreddit on the connection |
+| `connect.completeTelegramConnect()` | Check Telegram connection status |
+| `connect.connectBlueskyCredentials()` | Connect Bluesky using app password |
+| `connect.handleOAuthCallback()` | Complete OAuth token exchange manually (for server-side flows) |
+| `connect.initiateTelegramConnect()` | Direct Telegram connection (power users) |
+| `connect.selectFacebookPage()` | Select a Facebook Page to complete the connection (Headless Mode) |
+| `connect.selectGoogleBusinessLocation()` | Select a Google Business location to complete the connection (Headless Mode) |
+| `connect.selectLinkedInOrganization()` | Select LinkedIn organization or personal account after OAuth |
+| `connect.selectPinterestBoard()` | Select a Pinterest Board to complete the connection (Headless Mode) |
+| `connect.selectSnapchatProfile()` | Select a Snapchat Public Profile to complete the connection (Headless Mode) |
 
 ### Reddit
 | Method | Description |
 |--------|-------------|
-| `reddit.getRedditFeed()` | Get Reddit feed |
-| `reddit.searchReddit()` | Search Reddit |
+| `reddit.getRedditFeed()` | Fetch subreddit feed via a connected account |
+| `reddit.searchReddit()` | Search Reddit posts via a connected account |
 
 ### Invites
 | Method | Description |
 |--------|-------------|
-| `invites.listPlatformInvites()` | List platform invites |
-| `invites.createInviteToken()` | Create an invite token |
-| `invites.createPlatformInvite()` | Create a platform invite |
-| `invites.deletePlatformInvite()` | Delete a platform invite |
+| `invites.listPlatformInvites()` | List platform connection invites |
+| `invites.createInviteToken()` | Create a team member invite token |
+| `invites.createPlatformInvite()` | Create a platform connection invite |
+| `invites.deletePlatformInvite()` | Revoke a platform connection invite |
 
 ## Requirements
 
