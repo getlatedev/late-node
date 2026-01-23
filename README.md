@@ -219,7 +219,7 @@ try {
 |--------|-------------|
 | `queue.listQueueSlots()` | Get queue schedules for a profile |
 | `queue.createQueueSlot()` | Create a new queue for a profile |
-| `queue.getNextQueueSlot()` | Get the next available queue slot for a profile |
+| `queue.getNextQueueSlot()` | Preview the next available queue slot (informational only) |
 | `queue.updateQueueSlot()` | Create or update a queue schedule |
 | `queue.deleteQueueSlot()` | Delete a queue schedule |
 | `queue.previewQueue()` | Preview upcoming queue slots for a profile |
