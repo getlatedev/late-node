@@ -369,14 +369,20 @@ export class Late {
   };
 
   /**
-   * inbox API
+   * messages API
    */
-  inbox = {
+  messages = {
     listInboxConversations: listInboxConversations,
     getInboxConversation: getInboxConversation,
     updateInboxConversation: updateInboxConversation,
     getInboxConversationMessages: getInboxConversationMessages,
     sendInboxMessage: sendInboxMessage,
+  };
+
+  /**
+   * comments API
+   */
+  comments = {
     listInboxComments: listInboxComments,
     getInboxPostComments: getInboxPostComments,
     replyToInboxPost: replyToInboxPost,
@@ -385,6 +391,12 @@ export class Late {
     unhideInboxComment: unhideInboxComment,
     likeInboxComment: likeInboxComment,
     unlikeInboxComment: unlikeInboxComment,
+  };
+
+  /**
+   * reviews API
+   */
+  reviews = {
     listInboxReviews: listInboxReviews,
     replyToInboxReview: replyToInboxReview,
     deleteInboxReviewReply: deleteInboxReviewReply,
