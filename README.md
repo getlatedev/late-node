@@ -314,6 +314,35 @@ try {
 | `reddit.getRedditFeed()` | Fetch subreddit feed via a connected account |
 | `reddit.searchReddit()` | Search Reddit posts via a connected account |
 
+### Comments (Inbox)
+| Method | Description |
+|--------|-------------|
+| `comments.listInboxComments()` | List posts with comments across all accounts |
+| `comments.getInboxPostComments()` | Get comments for a post |
+| `comments.deleteInboxComment()` | Delete a comment |
+| `comments.hideInboxComment()` | Hide a comment |
+| `comments.likeInboxComment()` | Like a comment |
+| `comments.replyToInboxPost()` | Reply to a post or comment |
+| `comments.sendPrivateReplyToComment()` | Send private reply to comment author |
+| `comments.unhideInboxComment()` | Unhide a comment |
+| `comments.unlikeInboxComment()` | Unlike a comment |
+
+### Messages (Inbox)
+| Method | Description |
+|--------|-------------|
+| `messages.listInboxConversations()` | List conversations across all accounts |
+| `messages.getInboxConversation()` | Get conversation details |
+| `messages.getInboxConversationMessages()` | Get messages in a conversation |
+| `messages.updateInboxConversation()` | Update conversation status |
+| `messages.sendInboxMessage()` | Send a message |
+
+### Reviews (Inbox)
+| Method | Description |
+|--------|-------------|
+| `reviews.listInboxReviews()` | List reviews across all accounts |
+| `reviews.deleteInboxReviewReply()` | Delete a review reply |
+| `reviews.replyToInboxReview()` | Reply to a review |
+
 ### Invites
 | Method | Description |
 |--------|-------------|
