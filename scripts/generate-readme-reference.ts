@@ -4,6 +4,9 @@
  *
  * This script parses the OpenAPI spec and generates markdown tables
  * documenting all available methods with descriptions from the spec.
+ *
+ * New tags added to the OpenAPI spec are auto-discovered and included
+ * in the README. Only special cases need explicit configuration below.
  */
 
 import * as fs from 'fs';
@@ -20,34 +23,35 @@ interface OperationObject {
   summary?: string;
 }
 
-// Map OpenAPI tags to SDK namespace names and display names
-const TAG_TO_RESOURCE: Record<string, [string, string]> = {
-  'Posts': ['posts', 'Posts'],
-  'Accounts': ['accounts', 'Accounts'],
-  'Profiles': ['profiles', 'Profiles'],
-  'Analytics': ['analytics', 'Analytics'],
-  'Account Groups': ['accountGroups', 'Account Groups'],
-  'Queue': ['queue', 'Queue'],
-  'Webhooks': ['webhooks', 'Webhooks'],
-  'API Keys': ['apiKeys', 'API Keys'],
-  'Media': ['media', 'Media'],
-  'Tools': ['tools', 'Tools'],
-  'Users': ['users', 'Users'],
-  'Usage': ['usage', 'Usage'],
-  'Logs': ['logs', 'Logs'],
-  'Connect': ['connect', 'Connect (OAuth)'],
-  'Reddit Search': ['reddit', 'Reddit'],
-  'Invites': ['invites', 'Invites'],
-  'Messages': ['messages', 'Messages (Inbox)'],
-  'Comments': ['comments', 'Comments (Inbox)'],
-  'Reviews': ['reviews', 'Reviews (Inbox)'],
-  // Group these under existing resources
-  'GMB Reviews': ['accounts', 'Accounts'],
-  'LinkedIn Mentions': ['accounts', 'Accounts'],
+// Tags that should be merged into another resource instead of getting their own section
+const TAG_MERGE: Record<string, string> = {
+  'GMB Reviews': 'accounts',
+  'LinkedIn Mentions': 'accounts',
 };
 
-// Order of resources in the README
-const RESOURCE_ORDER = [
+// Tags to skip entirely (no SDK methods)
+const SKIP_TAGS = new Set([
+  'Inbox Access',
+]);
+
+// Override display names (tag → display name). Unmatched tags use the tag name as-is.
+const DISPLAY_NAME_OVERRIDES: Record<string, string> = {
+  'Connect': 'Connect (OAuth)',
+  'Reddit Search': 'Reddit',
+  'Messages': 'Messages (Inbox)',
+  'Comments': 'Comments (Inbox)',
+  'Reviews': 'Reviews (Inbox)',
+};
+
+// Override resource key names (tag → camelCase key). Unmatched tags are auto-converted.
+const RESOURCE_KEY_OVERRIDES: Record<string, string> = {
+  'Account Groups': 'accountGroups',
+  'API Keys': 'apiKeys',
+  'Reddit Search': 'reddit',
+};
+
+// Preferred ordering for known resources. Auto-discovered resources appear after these.
+const PREFERRED_ORDER = [
   'posts',
   'accounts',
   'profiles',
@@ -63,21 +67,29 @@ const RESOURCE_ORDER = [
   'logs',
   'connect',
   'reddit',
-  'messages',
-  'comments',
-  'reviews',
-  'invites',
 ];
 
-// Nested resources mapping (for connect sub-resources)
-const NESTED_RESOURCES: Record<string, string[]> = {
-  'connect': ['facebook', 'googleBusiness', 'linkedin', 'pinterest', 'snapchat', 'bluesky', 'telegram'],
-};
+// Resources that should always appear last, in this order
+const LAST_RESOURCES = [
+  'invites',
+];
 
 interface ResourceMethod {
   name: string;
   fullPath: string;
   description: string;
+}
+
+/**
+ * Convert a tag name to a camelCase resource key.
+ * e.g. "Account Groups" → "accountGroups", "Messages" → "messages"
+ */
+function tagToResourceKey(tag: string): string {
+  if (RESOURCE_KEY_OVERRIDES[tag]) return RESOURCE_KEY_OVERRIDES[tag];
+  const words = tag.split(/\s+/);
+  return words
+    .map((w, i) => (i === 0 ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()))
+    .join('');
 }
 
 /**
@@ -117,11 +129,14 @@ function loadOpenAPISpec(specPath: string): OpenAPISpec {
   return yaml.parse(content);
 }
 
-function extractMethodsFromSpec(spec: OpenAPISpec): Record<string, ResourceMethod[]> {
+function extractMethodsFromSpec(spec: OpenAPISpec): {
+  resources: Record<string, ResourceMethod[]>;
+  resourceOrder: string[];
+  displayNames: Record<string, string>;
+} {
   const resources: Record<string, ResourceMethod[]> = {};
-  for (const name of RESOURCE_ORDER) {
-    resources[name] = [];
-  }
+  const displayNames: Record<string, string> = {};
+  const discoveredResources = new Set<string>();
 
   for (const [pathStr, pathItem] of Object.entries(spec.paths || {})) {
     for (const [method, operation] of Object.entries(pathItem)) {
@@ -133,15 +148,25 @@ function extractMethodsFromSpec(spec: OpenAPISpec): Record<string, ResourceMetho
       if (tags.length === 0) continue;
 
       const tag = tags[0];
-      if (!(tag in TAG_TO_RESOURCE)) continue;
+      if (SKIP_TAGS.has(tag)) continue;
 
-      const [resourceName] = TAG_TO_RESOURCE[tag];
       const operationId = operation.operationId || '';
-      const summary = operation.summary || '';
-
       if (!operationId) continue;
 
-      // Use summary as description, or generate from operationId
+      // Resolve the resource key: merged tags go to their parent, others auto-generate
+      const resourceName = TAG_MERGE[tag] || tagToResourceKey(tag);
+      discoveredResources.add(resourceName);
+
+      // Track display name (non-merged tags only)
+      if (!TAG_MERGE[tag]) {
+        displayNames[resourceName] = DISPLAY_NAME_OVERRIDES[tag] || tag;
+      }
+
+      if (!resources[resourceName]) {
+        resources[resourceName] = [];
+      }
+
+      const summary = operation.summary || '';
       const description = summary || operationId.replace(/([A-Z])/g, ' $1').trim();
 
       resources[resourceName].push({
@@ -152,24 +177,37 @@ function extractMethodsFromSpec(spec: OpenAPISpec): Record<string, ResourceMetho
     }
   }
 
+  // Build final order: preferred first, then auto-discovered, then last resources
+  const preferredSet = new Set(PREFERRED_ORDER);
+  const lastSet = new Set(LAST_RESOURCES);
+  const autoDiscovered = [...discoveredResources]
+    .filter((r) => !preferredSet.has(r) && !lastSet.has(r))
+    .sort();
+
+  const resourceOrder = [
+    ...PREFERRED_ORDER.filter((r) => discoveredResources.has(r)),
+    ...autoDiscovered,
+    ...LAST_RESOURCES.filter((r) => discoveredResources.has(r)),
+  ];
+
   // Sort methods within each resource
-  for (const resourceName of RESOURCE_ORDER) {
-    resources[resourceName] = sortMethods(resources[resourceName]);
+  for (const resourceName of resourceOrder) {
+    if (resources[resourceName]) {
+      resources[resourceName] = sortMethods(resources[resourceName]);
+    }
   }
 
-  return resources;
+  return { resources, resourceOrder, displayNames };
 }
 
-function generateReferenceSection(resources: Record<string, ResourceMethod[]>): string {
+function generateReferenceSection(
+  resources: Record<string, ResourceMethod[]>,
+  resourceOrder: string[],
+  displayNames: Record<string, string>
+): string {
   const lines: string[] = ['## SDK Reference', ''];
 
-  // Get display names
-  const displayNames: Record<string, string> = {};
-  for (const [, [name, display]] of Object.entries(TAG_TO_RESOURCE)) {
-    displayNames[name] = display;
-  }
-
-  for (const resourceName of RESOURCE_ORDER) {
+  for (const resourceName of resourceOrder) {
     const methods = resources[resourceName] || [];
     if (methods.length === 0) continue;
 
@@ -213,8 +251,8 @@ function main(): void {
   const readmePath = path.join(scriptDir, '..', 'README.md');
 
   const spec = loadOpenAPISpec(specPath);
-  const resources = extractMethodsFromSpec(spec);
-  const referenceSection = generateReferenceSection(resources);
+  const { resources, resourceOrder, displayNames } = extractMethodsFromSpec(spec);
+  const referenceSection = generateReferenceSection(resources, resourceOrder, displayNames);
 
   if (process.argv.includes('--print')) {
     console.log(referenceSection);
