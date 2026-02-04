@@ -38,6 +38,9 @@ const TAG_TO_RESOURCE: Record<string, [string, string]> = {
   'Connect': ['connect', 'Connect (OAuth)'],
   'Reddit Search': ['reddit', 'Reddit'],
   'Invites': ['invites', 'Invites'],
+  'Messages': ['messages', 'Messages (Inbox)'],
+  'Comments': ['comments', 'Comments (Inbox)'],
+  'Reviews': ['reviews', 'Reviews (Inbox)'],
   // Group these under existing resources
   'GMB Reviews': ['accounts', 'Accounts'],
   'LinkedIn Mentions': ['accounts', 'Accounts'],
@@ -60,6 +63,9 @@ const RESOURCE_ORDER = [
   'logs',
   'connect',
   'reddit',
+  'messages',
+  'comments',
+  'reviews',
   'invites',
 ];
 
