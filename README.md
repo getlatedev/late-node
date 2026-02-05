@@ -327,6 +327,12 @@ try {
 | `comments.unhideInboxComment()` | Unhide a comment |
 | `comments.unlikeInboxComment()` | Unlike a comment |
 
+### GMB Food Menus
+| Method | Description |
+|--------|-------------|
+| `gmbFoodMenus.getGoogleBusinessFoodMenus()` | Get Google Business Profile food menus |
+| `gmbFoodMenus.updateGoogleBusinessFoodMenus()` | Update Google Business Profile food menus |
+
 ### Messages (Inbox)
 | Method | Description |
 |--------|-------------|

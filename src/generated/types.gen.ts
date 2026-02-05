@@ -164,6 +164,79 @@ export type FollowerStatsResponse = {
 
 export type aggregation = 'daily' | 'weekly' | 'monthly';
 
+export type FoodMenu = {
+    labels: Array<FoodMenuLabel>;
+    sections?: Array<FoodMenuSection>;
+    /**
+     * Cuisine types (e.g. AMERICAN, ITALIAN, JAPANESE)
+     */
+    cuisines?: Array<(string)>;
+    /**
+     * URL of the original menu source
+     */
+    sourceUrl?: string;
+};
+
+export type FoodMenuItem = {
+    labels: Array<FoodMenuLabel>;
+    attributes?: FoodMenuItemAttributes;
+    /**
+     * Item variants/options (e.g. sizes, preparations)
+     */
+    options?: Array<{
+        labels?: Array<FoodMenuLabel>;
+        attributes?: FoodMenuItemAttributes;
+    }>;
+};
+
+export type FoodMenuItemAttributes = {
+    price?: Money;
+    /**
+     * Spiciness level (e.g. MILD, MEDIUM, HOT)
+     */
+    spiciness?: string;
+    /**
+     * Allergens (e.g. DAIRY, GLUTEN, SHELLFISH)
+     */
+    allergen?: Array<(string)>;
+    /**
+     * Dietary labels (e.g. VEGETARIAN, VEGAN, GLUTEN_FREE)
+     */
+    dietaryRestriction?: Array<(string)>;
+    /**
+     * Number of people the item serves
+     */
+    servesNumPeople?: number;
+    /**
+     * Preparation methods (e.g. GRILLED, FRIED)
+     */
+    preparationMethods?: Array<(string)>;
+    /**
+     * Media references for item photos
+     */
+    mediaKeys?: Array<(string)>;
+};
+
+export type FoodMenuLabel = {
+    /**
+     * Display name of the item/section/menu
+     */
+    displayName: string;
+    /**
+     * Optional description
+     */
+    description?: string;
+    /**
+     * BCP-47 language code (e.g. en, es)
+     */
+    languageCode?: string;
+};
+
+export type FoodMenuSection = {
+    labels: Array<FoodMenuLabel>;
+    items?: Array<FoodMenuItem>;
+};
+
 /**
  * Google Business Profile post settings:
  * - Posts support text content and a single image (no videos)
@@ -512,6 +585,21 @@ export type MediaUploadResponse = {
     files?: Array<UploadedFile>;
 };
 
+export type Money = {
+    /**
+     * ISO 4217 currency code (e.g. USD, EUR)
+     */
+    currencyCode: string;
+    /**
+     * Whole units of the amount
+     */
+    units: string;
+    /**
+     * Nano units (10^-9) of the amount
+     */
+    nanos?: number;
+};
+
 export type Pagination = {
     page?: number;
     limit?: number;
@@ -714,6 +802,10 @@ export type PostAnalytics = {
     likes?: number;
     comments?: number;
     shares?: number;
+    /**
+     * Number of saves/bookmarks (Instagram, Pinterest)
+     */
+    saves?: number;
     clicks?: number;
     views?: number;
     engagementRate?: number;
@@ -3162,6 +3254,61 @@ export type GetGoogleBusinessReviewsResponse = ({
 });
 
 export type GetGoogleBusinessReviewsError = (ErrorResponse | {
+    error?: string;
+});
+
+export type GetGoogleBusinessFoodMenusData = {
+    path: {
+        /**
+         * The Late account ID (from /v1/accounts)
+         */
+        accountId: string;
+    };
+};
+
+export type GetGoogleBusinessFoodMenusResponse = ({
+    success?: boolean;
+    accountId?: string;
+    locationId?: string;
+    /**
+     * Resource name of the food menus
+     */
+    name?: string;
+    menus?: Array<FoodMenu>;
+});
+
+export type GetGoogleBusinessFoodMenusError = (ErrorResponse | {
+    error?: string;
+});
+
+export type UpdateGoogleBusinessFoodMenusData = {
+    body: {
+        /**
+         * Array of food menus to set
+         */
+        menus: Array<FoodMenu>;
+        /**
+         * Field mask for partial updates (e.g. "menus")
+         */
+        updateMask?: string;
+    };
+    path: {
+        /**
+         * The Late account ID (from /v1/accounts)
+         */
+        accountId: string;
+    };
+};
+
+export type UpdateGoogleBusinessFoodMenusResponse = ({
+    success?: boolean;
+    accountId?: string;
+    locationId?: string;
+    name?: string;
+    menus?: Array<FoodMenu>;
+});
+
+export type UpdateGoogleBusinessFoodMenusError = (ErrorResponse | {
     error?: string;
 });
 

@@ -34,6 +34,7 @@ import {
   getFacebookPages,
   getFollowerStats,
   getGmbLocations,
+  getGoogleBusinessFoodMenus,
   getGoogleBusinessReviews,
   getInboxConversation,
   getInboxConversationMessages,
@@ -98,6 +99,7 @@ import {
   updateAccountGroup,
   updateFacebookPage,
   updateGmbLocation,
+  updateGoogleBusinessFoodMenus,
   updateInboxConversation,
   updateLinkedInOrganization,
   updatePinterestBoards,
@@ -334,6 +336,14 @@ export class Late {
       initiateTelegramConnect: initiateTelegramConnect,
       completeTelegramConnect: completeTelegramConnect,
     },
+  };
+
+  /**
+   * gmbfoodmenus API
+   */
+  gmbfoodmenus = {
+    getGoogleBusinessFoodMenus: getGoogleBusinessFoodMenus,
+    updateGoogleBusinessFoodMenus: updateGoogleBusinessFoodMenus,
   };
 
   /**
