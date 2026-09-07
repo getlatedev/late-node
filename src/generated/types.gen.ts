@@ -8779,10 +8779,12 @@ export type WebhookPayloadReviewNew = {
 export type event24 = 'review.new';
 
 /**
- * Webhook payload for the review.updated event. Fired when the reviewer edits
- * their text or rating, or when a reply is added (via the API or directly on the
- * platform). Same shape as review.new. When a reply is present, review.hasReply
- * is true and review.reply is populated.
+ * Webhook payload for the review.updated event. Fired when the reviewer edits their
+ * text or rating, or when a reply is posted through POST /v1/inbox/reviews/{reviewId}/reply.
+ * A reply written
+ * directly in Google's own interface does NOT fire this event: Google emits no
+ * notification when a reviewReply is written. Same shape as review.new. When a reply
+ * is present, review.hasReply is true and review.reply is populated.
  *
  */
 export type WebhookPayloadReviewUpdated = {
