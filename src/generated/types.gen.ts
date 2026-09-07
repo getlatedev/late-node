@@ -14521,6 +14521,7 @@ export type UpdateGoogleBusinessLocationDetailsData = {
                 nanos?: number;
             };
         }>;
+        [key: string]: unknown | string;
     };
     path: {
         /**
