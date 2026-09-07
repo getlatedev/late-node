@@ -4978,6 +4978,42 @@ export type PostGetResponse = {
     post?: Post;
 };
 
+/**
+ * Body of the 207 returned by createPost and updatePost when the post was saved but the inline publish did not fully succeed. Read `post.status` to tell the three outcomes apart.
+ */
+export type PostPublishIncompleteResponse = {
+    post?: Post;
+    /**
+     * Human-readable summary of the publish outcome.
+     */
+    message?: string;
+    /**
+     * Present when no platform published. Absent on a partial success. Informational only; the per-platform detail is in `platformResults` and in `post.platforms[]`.
+     */
+    error?: string;
+    /**
+     * Per-platform outcome of the publish attempt. Omitted when the attempt aborted before producing per-platform results (for example the post was already being processed); read `post.platforms[]` in that case.
+     */
+    platformResults?: Array<{
+        /**
+         * Platform slug, matching `post.platforms[].platform`.
+         */
+        platform: string;
+        /**
+         * Per-platform status: pending, processing, published, failed, cancelled, uploading.
+         */
+        status: string;
+        /**
+         * Failure detail for this platform, or null when it did not fail.
+         */
+        error: (string) | null;
+    }>;
+    /**
+     * Advisory notices about the post that was still created. Absent when there are none.
+     */
+    warnings?: Array<(string)>;
+};
+
 export type PostRetryResponse = {
     message?: string;
     post?: Post;
@@ -11800,7 +11836,7 @@ export type CreatePostData = {
     };
 };
 
-export type CreatePostResponse = (PostCreateResponse);
+export type CreatePostResponse = (PostCreateResponse | PostPublishIncompleteResponse);
 
 export type CreatePostError = ({
     error?: string;
@@ -11959,7 +11995,7 @@ export type UpdatePostData = {
     };
 };
 
-export type UpdatePostResponse = (PostUpdateResponse | unknown);
+export type UpdatePostResponse = (PostUpdateResponse | PostPublishIncompleteResponse);
 
 export type UpdatePostError = (ErrorResponse | {
     error?: string;
@@ -12003,7 +12039,14 @@ export type RetryPostData = {
     };
 };
 
-export type RetryPostResponse = (PostRetryResponse | unknown);
+export type RetryPostResponse = (PostRetryResponse | {
+    message?: string;
+    /**
+     * Summary of why the retry did not fully succeed.
+     */
+    error?: string;
+    post?: Post;
+});
 
 export type RetryPostError = (ErrorResponse | {
     error?: string;
