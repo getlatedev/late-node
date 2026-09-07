@@ -8156,6 +8156,8 @@ export const getAdTree = <ThrowOnError extends boolean = false>(options?: Option
  * and `backfillPending: true` while the rest is backfilled in the background;
  * repeat the request shortly until it returns 200 with full data.
  *
+ * With adAccountId set to a Google customer id this is the customer-level performance report (clicks, cost, impressions, conversions, all conversions per day).
+ *
  */
 export const getAdsTimeline = <ThrowOnError extends boolean = false>(options: OptionsLegacyParser<GetAdsTimelineData, ThrowOnError>) => {
     return (options?.client ?? client).get<GetAdsTimelineResponse, GetAdsTimelineError, ThrowOnError>({
