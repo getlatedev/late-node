@@ -35264,6 +35264,96 @@ export type SearchAdTargetingError = (unknown | {
     error?: string;
 });
 
+export type SearchAdLibraryData = {
+    query: {
+        /**
+         * Zernio SocialAccount id (facebook / instagram / metaads for Meta, linkedin / linkedinads for LinkedIn). Its token is the one that searches.
+         */
+        accountId: string;
+        /**
+         * Meta only.
+         */
+        adType?: 'ALL' | 'POLITICAL_AND_ISSUE_ADS' | 'HOUSING_ADS' | 'EMPLOYMENT_ADS' | 'FINANCIAL_PRODUCTS_AND_SERVICES_ADS';
+        /**
+         * LinkedIn only. Advertiser (Page) name to search.
+         */
+        advertiser?: string;
+        /**
+         * paging.after of the previous page.
+         */
+        after?: string;
+        /**
+         * Comma-separated ISO 3166-1 alpha-2 codes the ads reached. Meta defaults to ALL (an explicit ALL is Meta-only); LinkedIn searches every market when omitted.
+         */
+        countries?: string;
+        /**
+         * Meta only. Raw Graph projection override, e.g. add spend,impressions,demographic_distribution for political ads.
+         */
+        fields?: string;
+        /**
+         * Meta only. Comma-separated ISO 639-1 codes of the ad text.
+         */
+        languages?: string;
+        /**
+         * Rows per page. LinkedIn accepts at most 25.
+         */
+        limit?: number;
+        /**
+         * Meta only.
+         */
+        mediaType?: 'ALL' | 'IMAGE' | 'MEME' | 'VIDEO' | 'NONE';
+        /**
+         * Meta only. Comma-separated Facebook Page ids (max 10) whose ads to list.
+         */
+        pageIds?: string;
+        /**
+         * Meta only. Comma-separated publisher platforms: FACEBOOK, INSTAGRAM, AUDIENCE_NETWORK, MESSENGER, WHATSAPP, OCULUS, THREADS, STREAMING_SERVICES.
+         */
+        platforms?: string;
+        /**
+         * Keyword search. Meta does not translate it, so write it in the ads' language. Required unless pageIds (Meta) or advertiser (LinkedIn) is given.
+         */
+        q?: string;
+        /**
+         * Meta only. Whether q matches words in any order or as an exact phrase (comma-separate phrases to match all of them).
+         */
+        searchType?: 'KEYWORD_UNORDERED' | 'KEYWORD_EXACT_PHRASE';
+        /**
+         * Earliest delivery date (YYYY-MM-DD).
+         */
+        since?: string;
+        /**
+         * Meta only. ACTIVE = eligible for delivery right now.
+         */
+        status?: 'ACTIVE' | 'INACTIVE' | 'ALL';
+        /**
+         * Latest delivery date (YYYY-MM-DD).
+         */
+        until?: string;
+    };
+};
+
+export type SearchAdLibraryResponse = ({
+    platform: 'meta' | 'linkedin';
+    data: Array<{
+        [key: string]: unknown;
+    }>;
+    paging: {
+        /**
+         * Cursor for the next page; null when exhausted.
+         */
+        after?: (string) | null;
+        /**
+         * LinkedIn only. Total matching ads.
+         */
+        total?: number;
+    };
+});
+
+export type SearchAdLibraryError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
 export type EstimateAdReachData = {
     body: {
         /**

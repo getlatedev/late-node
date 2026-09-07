@@ -473,6 +473,11 @@ try {
 | `adInsights.generateKeywordIdeas()` | Generate keyword ideas (Google Keyword Planner) |
 | `adInsights.queryAdInsights()` | Flexible live insights query |
 
+### Ad Library
+| Method | Description |
+|--------|-------------|
+| `adLibrary.searchAdLibrary()` | Search the public Ad Library |
+
 ### Ad Targeting
 | Method | Description |
 |--------|-------------|

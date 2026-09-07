@@ -478,6 +478,7 @@ import {
   rotateSipTrunkCredentials,
   scheduleBroadcast,
   searchAdInterests,
+  searchAdLibrary,
   searchAdTargeting,
   searchAvailablePhoneNumbers,
   searchAvailableWhatsAppNumbers,
@@ -1664,6 +1665,13 @@ export class Zernio {
     estimateAdReach: this._bind(estimateAdReach),
     getLinkedInBidPricing: this._bind(getLinkedInBidPricing),
     getLinkedInSupplyForecast: this._bind(getLinkedInSupplyForecast),
+  };
+
+  /**
+   * adlibrary API
+   */
+  adlibrary = {
+    searchAdLibrary: this._bind(searchAdLibrary),
   };
 
   /**
