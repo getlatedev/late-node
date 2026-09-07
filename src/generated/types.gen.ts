@@ -19119,7 +19119,7 @@ export type CreateInboxConversationResponse = ({
 
 export type CreateInboxConversationError = ({
     error?: string;
-    code?: 'PLATFORM_NOT_SUPPORTED';
+    code?: 'PLATFORM_NOT_SUPPORTED' | 'PLATFORM_LIMITATION' | 'TEMPLATE_REQUIRED' | 'INVALID_TEMPLATE_PARAMS' | 'INVALID_TEMPLATE_BUTTON_PARAM' | 'DIRECT_SEND_NOT_ELIGIBLE' | 'DIRECT_SEND_LIMITED' | 'DIRECT_SEND_BLOCKED';
 } | {
     error?: string;
 } | unknown | {
@@ -20232,9 +20232,9 @@ export type SendInboxMessageResponse = ({
 export type SendInboxMessageError = ({
     error?: string;
     /**
-     * Stable machine-readable reason. PLATFORM_LIMITATION covers a capability the platform does not offer (e.g. Bluesky and Reddit DMs reject media); MISSING_PARTICIPANT means the stored conversation has no recipient to send to.
+     * Stable machine-readable reason. PLATFORM_LIMITATION covers a capability the platform does not offer (e.g. Bluesky and Reddit DMs reject media); MISSING_PARTICIPANT means the stored conversation has no recipient to send to; DIRECT_SEND_NOT_ELIGIBLE and DIRECT_SEND_BLOCKED mean the WhatsApp Business Account needs Meta to grant or restore Direct Send access; DIRECT_SEND_LIMITED is temporary, Meta lifts it on its own.
      */
-    code?: 'PLATFORM_LIMITATION' | 'MISSING_PARTICIPANT';
+    code?: 'PLATFORM_LIMITATION' | 'MISSING_PARTICIPANT' | 'DIRECT_SEND_NOT_ELIGIBLE' | 'DIRECT_SEND_LIMITED' | 'DIRECT_SEND_BLOCKED';
     /**
      * Instagram/Facebook only. Meta's own diagnostic fields for the rejected send, passed through verbatim so you can tell failure classes apart and quote them to Meta. Absent when the failure did not come from Meta.
      */
