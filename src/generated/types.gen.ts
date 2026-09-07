@@ -661,6 +661,65 @@ export type AdFunnelCounts = {
     messagingFirstReplies?: number;
 };
 
+export type AdKeyword = {
+    id?: string;
+    /**
+     * Social account ID owning the sync
+     */
+    accountId?: string;
+    profileId?: string;
+    platform?: 'google';
+    /**
+     * Google customer ID
+     */
+    adAccountId?: string;
+    campaignId?: string;
+    campaignName?: (string) | null;
+    campaignStatus?: (string) | null;
+    /**
+     * Google ad group ID
+     */
+    adSetId?: string;
+    adSetName?: (string) | null;
+    adSetStatus?: (string) | null;
+    keyword?: string;
+    matchType?: 'exact' | 'phrase' | 'broad' | 'unknown';
+    status?: 'active' | 'paused';
+    negative?: boolean;
+    /**
+     * Google Quality Score, 1-10. Null when unrated.
+     */
+    qualityScore?: (number) | null;
+    syncedAt?: (string) | null;
+    /**
+     * Trailing 30-day window. Null on rows synced before the metrics columns existed (re-synced on the keyword's next weekly sweep).
+     */
+    metrics?: {
+        windowDays?: number;
+        clicks?: number;
+        impressions?: number;
+        /**
+         * Account currency, not USD-normalized
+         */
+        cost?: number;
+        conversions?: number;
+        /**
+         * Account currency
+         */
+        firstPageCpc?: (number) | null;
+        /**
+         * Account currency
+         */
+        firstPositionCpc?: (number) | null;
+    } | null;
+};
+
+export type platform2 = 'google';
+
+export type matchType = 'exact' | 'phrase' | 'broad' | 'unknown';
+
+export type status = 'active' | 'paused';
+
 export type AdMetrics = {
     spend?: number;
     impressions?: number;
@@ -1320,7 +1379,7 @@ export type AnalyticsSinglePostResponse = {
 /**
  * Overall post status. "partial" when some platforms published and others failed.
  */
-export type status = 'published' | 'failed' | 'partial';
+export type status2 = 'published' | 'failed' | 'partial';
 
 /**
  * Overall sync state across all platforms
@@ -1468,7 +1527,7 @@ export type Blog = {
     handle?: string;
 };
 
-export type platform2 = 'shopify';
+export type platform3 = 'shopify';
 
 /**
  * An article inside a blog on the connected platform.
@@ -1757,7 +1816,7 @@ export type channel = 'whatsapp' | 'pstn';
 
 export type direction = 'inbound' | 'outbound';
 
-export type status2 = 'ringing' | 'answered' | 'ended' | 'failed';
+export type status3 = 'ringing' | 'answered' | 'ended' | 'failed';
 
 /**
  * Caller ID presented on the forwarded leg.
@@ -1973,7 +2032,7 @@ export type ConversionDestination = {
  * For LinkedIn, `inactive` means the rule is soft-deleted (`enabled: false`).
  *
  */
-export type status3 = 'active' | 'inactive';
+export type status4 = 'active' | 'inactive';
 
 /**
  * A single conversion event to relay to the ad platform. All PII fields
@@ -2569,7 +2628,7 @@ export type objective = 'OUTCOME_ENGAGEMENT' | 'OUTCOME_SALES' | 'OUTCOME_LEADS'
  * newly created ad(s) after Meta accepts them.
  *
  */
-export type status4 = 'ACTIVE' | 'PAUSED';
+export type status5 = 'ACTIVE' | 'PAUSED';
 
 /**
  * Campaign-level status, same semantics as `POST /v1/ads/create`. Defaults
@@ -2937,7 +2996,7 @@ export type privacy_level = 2;
 /**
  * 1=SCHEDULED, 2=ACTIVE, 3=COMPLETED, 4=CANCELED
  */
-export type status5 = 1 | 2 | 3 | 4;
+export type status6 = 1 | 2 | 3 | 4;
 
 /**
  * 1=STAGE_INSTANCE, 2=VOICE, 3=EXTERNAL
@@ -3694,7 +3753,7 @@ export type InboxWebhookConversation = {
     contactId?: string;
 };
 
-export type status6 = 'active' | 'archived';
+export type status7 = 'active' | 'archived';
 
 /**
  * The message object included in inbox webhook payloads.
@@ -3810,7 +3869,7 @@ export type InboxWebhookMessage = {
     isRead: boolean;
 };
 
-export type platform3 = 'instagram' | 'facebook' | 'telegram' | 'whatsapp' | 'sms';
+export type platform4 = 'instagram' | 'facebook' | 'telegram' | 'whatsapp' | 'sms';
 
 export type direction2 = 'incoming' | 'outgoing';
 
@@ -3938,7 +3997,7 @@ export type InstagramAccountInsightsResponse = {
 /**
  * Platform that served this response.
  */
-export type platform4 = 'facebook' | 'instagram' | 'youtube' | 'linkedin' | 'tiktok';
+export type platform5 = 'facebook' | 'instagram' | 'youtube' | 'linkedin' | 'tiktok';
 
 export type metricType = 'time_series' | 'total_value';
 
@@ -4152,6 +4211,16 @@ export type contentType2 = 'story';
  * MANUAL (graduate from Instagram app) or SS_PERFORMANCE (auto-graduate if performs well with non-followers)
  */
 export type graduationStrategy = 'MANUAL' | 'SS_PERFORMANCE';
+
+/**
+ * A Google Search keyword: a bare string (BROAD match), or an object naming the match type.
+ */
+export type KeywordEntry = string | {
+    text: string;
+    matchType?: 'exact' | 'phrase' | 'broad';
+};
+
+export type matchType2 = 'exact' | 'phrase' | 'broad';
 
 /**
  * LinkedIn-specific options for POST /v1/ads/boost and POST /v1/ads/create: campaign bidding and delivery controls, plus the LinkedIn-only creative formats on /v1/ads/create. Unknown keys are rejected.
@@ -4800,7 +4869,7 @@ export type PlatformAnalytics = {
     errorMessage?: (string) | null;
 };
 
-export type status7 = 'published' | 'failed';
+export type status8 = 'published' | 'failed';
 
 /**
  * Sync state of analytics for this platform
@@ -4931,7 +5000,7 @@ export type Post = {
     updatedAt?: string;
 };
 
-export type status8 = 'draft' | 'scheduled' | 'publishing' | 'published' | 'failed' | 'partial';
+export type status9 = 'draft' | 'scheduled' | 'publishing' | 'published' | 'failed' | 'partial';
 
 export type visibility = 'public' | 'private' | 'unlisted';
 
@@ -5427,7 +5496,7 @@ export type ReviewWebhookReview = {
 /**
  * Platform the review originated on. Currently Google Business Profile only.
  */
-export type platform5 = 'googlebusiness';
+export type platform6 = 'googlebusiness';
 
 /**
  * A Meta Reach & Frequency prediction. Money values in whole units of the ad account currency.
@@ -5590,7 +5659,7 @@ export type SocialAccount = {
     };
 };
 
-export type platform6 = 'tiktok' | 'instagram' | 'facebook' | 'youtube' | 'linkedin' | 'twitter' | 'threads' | 'pinterest' | 'reddit' | 'bluesky' | 'googlebusiness' | 'telegram' | 'snapchat' | 'discord' | 'slack' | 'whatsapp' | 'linkedinads' | 'metaads' | 'pinterestads' | 'tiktokads' | 'xads' | 'googleads' | 'openaiads' | 'sms' | 'phone' | 'rcs';
+export type platform7 = 'tiktok' | 'instagram' | 'facebook' | 'youtube' | 'linkedin' | 'twitter' | 'threads' | 'pinterest' | 'reddit' | 'bluesky' | 'googlebusiness' | 'telegram' | 'snapchat' | 'discord' | 'slack' | 'whatsapp' | 'linkedinads' | 'metaads' | 'pinterestads' | 'tiktokads' | 'xads' | 'googleads' | 'openaiads' | 'sms' | 'phone' | 'rcs';
 
 /**
  * Normalized, platform-agnostic ad-targeting spec. Every field is optional, an
@@ -6056,7 +6125,7 @@ export type TrackingTag = {
     ownerAdAccountId?: string;
 };
 
-export type platform7 = 'metaads';
+export type platform8 = 'metaads';
 
 /**
  * Platform-native flavor of the tag (Meta: `pixel`).
@@ -6156,7 +6225,7 @@ export type UploadTokenResponse = {
     status?: 'pending' | 'completed' | 'expired';
 };
 
-export type status9 = 'pending' | 'completed' | 'expired';
+export type status10 = 'pending' | 'completed' | 'expired';
 
 export type UploadTokenStatusResponse = {
     token?: string;
@@ -6631,7 +6700,7 @@ export type Verification = {
     resend?: boolean;
 };
 
-export type status10 = 'pending' | 'approved' | 'expired' | 'max_attempts_reached' | 'canceled' | 'delivery_failed';
+export type status11 = 'pending' | 'approved' | 'expired' | 'max_attempts_reached' | 'canceled' | 'delivery_failed';
 
 export type channel2 = 'sms';
 
@@ -6750,7 +6819,7 @@ export type WebhookLog = {
 /**
  * Delivery outcome
  */
-export type status11 = 'success' | 'failed';
+export type status12 = 'success' | 'failed';
 
 /**
  * Webhook payload for `account.ads.initial_sync_completed` events.
@@ -6862,7 +6931,7 @@ export type event = 'account.ads.initial_sync_completed';
 /**
  * Overall outcome of the initial sync.
  */
-export type status12 = 'success' | 'failure';
+export type status13 = 'success' | 'failure';
 
 /**
  * Stable category for UX branching. New values may be added; existing ones are
@@ -7489,7 +7558,7 @@ export type WebhookPayloadComment = {
 
 export type event10 = 'comment.received';
 
-export type platform8 = 'instagram' | 'facebook' | 'twitter' | 'youtube' | 'linkedin' | 'bluesky' | 'reddit';
+export type platform9 = 'instagram' | 'facebook' | 'twitter' | 'youtube' | 'linkedin' | 'bluesky' | 'reddit';
 
 /**
  * Fired once when a new conversation begins, in either direction. A conversation
@@ -7546,7 +7615,7 @@ export type WebhookPayloadConversationStarted = {
 
 export type event11 = 'conversation.started';
 
-export type platform9 = 'instagram' | 'facebook' | 'telegram' | 'whatsapp' | 'twitter' | 'reddit' | 'bluesky' | 'sms' | 'slack';
+export type platform10 = 'instagram' | 'facebook' | 'telegram' | 'whatsapp' | 'twitter' | 'reddit' | 'bluesky' | 'sms' | 'slack';
 
 /**
  * Webhook payload for post.external.created / post.external.updated /
@@ -7647,7 +7716,7 @@ export type WebhookPayloadLead = {
 
 export type event13 = 'lead.received';
 
-export type platform10 = 'facebook';
+export type platform11 = 'facebook';
 
 /**
  * Webhook payload for message received events
@@ -8443,7 +8512,7 @@ export type event18 = 'message.sent';
 /**
  * Every platform whose outgoing messages Zernio observes. sms is absent on purpose: its carrier receipts update delivery status and never raise message.sent.
  */
-export type platform11 = 'instagram' | 'facebook' | 'telegram' | 'whatsapp' | 'twitter' | 'reddit' | 'bluesky' | 'slack';
+export type platform12 = 'instagram' | 'facebook' | 'telegram' | 'whatsapp' | 'twitter' | 'reddit' | 'bluesky' | 'slack';
 
 /**
  * WhatsApp send origin. whatsapp_business_app when sent from the WhatsApp Business phone app on a Coexistence number; cloud_api when sent through Zernio (dashboard, API, or broadcasts). Absent on non-WhatsApp platforms. Says where WhatsApp saw the send come from, not which Zernio surface produced it: read sentVia for that.
@@ -8629,7 +8698,7 @@ export type event21 = 'post.platform.published' | 'post.platform.failed' | 'post
 /**
  * Terminal status this event fires on. Matches the event suffix.
  */
-export type status13 = 'published' | 'failed' | 'deleted';
+export type status14 = 'published' | 'failed' | 'deleted';
 
 /**
  * Webhook payload for reaction received events (WhatsApp, Telegram, Slack, Instagram, Facebook Messenger)
@@ -8889,12 +8958,12 @@ export type WebhookPayloadWhatsAppAccountNameStatusUpdated = {
 
 export type event27 = 'whatsapp.account.name_status_updated';
 
-export type platform12 = 'whatsapp';
+export type platform13 = 'whatsapp';
 
 /**
  * Normalized from Meta's `decision` (REJECTED -> DECLINED, DEFERRED -> PENDING_REVIEW; the review is still open on DEFERRED, not a rejection).
  */
-export type status14 = 'APPROVED' | 'DECLINED' | 'PENDING_REVIEW';
+export type status15 = 'APPROVED' | 'DECLINED' | 'PENDING_REVIEW';
 
 /**
  * Webhook payload for the `whatsapp.template.category_updated` event.
@@ -9043,7 +9112,7 @@ export type event29 = 'whatsapp.template.status_updated';
  * request before the template is actually removed.
  *
  */
-export type status15 = 'APPROVED' | 'REJECTED' | 'PENDING' | 'PAUSED' | 'DISABLED' | 'IN_APPEAL' | 'PENDING_DELETION';
+export type status16 = 'APPROVED' | 'REJECTED' | 'PENDING' | 'PAUSED' | 'DISABLED' | 'IN_APPEAL' | 'PENDING_DELETION';
 
 export type WhatsAppBodyComponent = {
     type: 'body';
@@ -9192,7 +9261,7 @@ export type WhatsAppSandboxSession = {
  * list responses.
  *
  */
-export type status16 = 'pending' | 'active';
+export type status17 = 'pending' | 'active';
 
 export type WhatsAppTemplateButton = {
     type: 'quick_reply' | 'url' | 'phone_number' | 'otp' | 'copy_code' | 'flow' | 'mpm' | 'catalog';
@@ -9311,7 +9380,7 @@ export type WorkflowExecutionEvent = {
 
 export type action2 = 'execution_started' | 'execution_completed' | 'execution_exited' | 'execution_paused' | 'execution_resumed' | 'node_started' | 'node_completed' | 'node_failed' | 'node_skipped';
 
-export type status17 = 'success' | 'failed' | 'pending';
+export type status18 = 'success' | 'failed' | 'pending';
 
 /**
  * A node in a workflow graph. `config` shape depends on `type`.
@@ -30406,37 +30475,81 @@ export type ListAdKeywordsData = {
 };
 
 export type ListAdKeywordsResponse = ({
-    keywords?: Array<{
-        id?: string;
-        /**
-         * Social account ID owning the sync
-         */
-        accountId?: string;
-        profileId?: string;
-        platform?: 'google';
-        /**
-         * Google customer ID
-         */
-        adAccountId?: string;
-        campaignId?: string;
-        campaignName?: (string) | null;
-        campaignStatus?: (string) | null;
-        /**
-         * Google ad group ID
-         */
-        adSetId?: string;
-        adSetName?: (string) | null;
-        adSetStatus?: (string) | null;
-        keyword?: string;
-        matchType?: 'exact' | 'phrase' | 'broad' | 'unknown';
-        status?: 'active' | 'paused';
-        negative?: boolean;
-        syncedAt?: (string) | null;
-    }>;
+    keywords?: Array<AdKeyword>;
     pagination?: Pagination;
 });
 
 export type ListAdKeywordsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type AddAdKeywordsData = {
+    body: {
+        /**
+         * Social account ID (Google Ads)
+         */
+        accountId: string;
+        /**
+         * Google ad group ID to add the keywords to
+         */
+        adSetId: string;
+        keywords: Array<(string | {
+    text: string;
+    matchType?: 'exact' | 'phrase' | 'broad';
+})>;
+        /**
+         * Add as ad-group-level negatives instead of positive keywords
+         */
+        negative?: boolean;
+    };
+};
+
+export type AddAdKeywordsResponse = ({
+    keywords?: Array<AdKeyword>;
+});
+
+export type AddAdKeywordsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type UpdateAdKeywordData = {
+    body: {
+        status: 'active' | 'paused';
+    };
+    path: {
+        /**
+         * Zernio keyword ID (not the Google criterion ID)
+         */
+        keywordId: string;
+    };
+};
+
+export type UpdateAdKeywordResponse = ({
+    keyword?: AdKeyword;
+});
+
+export type UpdateAdKeywordError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type RemoveAdKeywordData = {
+    path: {
+        /**
+         * Zernio keyword ID (not the Google criterion ID)
+         */
+        keywordId: string;
+    };
+};
+
+export type RemoveAdKeywordResponse = ({
+    /**
+     * Always true on success
+     */
+    removed?: boolean;
+    keywordId?: string;
+});
+
+export type RemoveAdKeywordError = (ErrorResponse | {
     error?: string;
 } | unknown);
 
@@ -30698,6 +30811,72 @@ export type DeleteAdCampaignResponse = ({
 });
 
 export type DeleteAdCampaignError = ({
+    error?: string;
+} | unknown);
+
+export type ListCampaignNegativeKeywordsData = {
+    path: {
+        /**
+         * Platform campaign ID
+         */
+        campaignId: string;
+    };
+    query?: {
+        /**
+         * Optional and NOT authoritative: the resolved campaign's own platform decides 200 vs 501, never this hint.
+         */
+        platform?: 'facebook' | 'instagram' | 'tiktok' | 'linkedin' | 'pinterest' | 'google' | 'twitter' | 'openai';
+    };
+};
+
+export type ListCampaignNegativeKeywordsResponse = ({
+    keywords?: Array<{
+        criterionId?: string;
+        text?: string;
+        matchType?: 'exact' | 'phrase' | 'broad';
+    }>;
+});
+
+export type ListCampaignNegativeKeywordsError = ({
+    error?: string;
+} | unknown);
+
+export type ReplaceCampaignNegativeKeywordsData = {
+    body: {
+        /**
+         * Optional and NOT authoritative: the resolved campaign's own platform decides 200 vs 501, never this hint.
+         */
+        platform?: 'facebook' | 'instagram' | 'tiktok' | 'linkedin' | 'pinterest' | 'google' | 'twitter' | 'openai';
+        keywords: Array<KeywordEntry>;
+    };
+    path: {
+        /**
+         * Platform campaign ID
+         */
+        campaignId: string;
+    };
+};
+
+export type ReplaceCampaignNegativeKeywordsResponse = ({
+    /**
+     * Negative criteria newly created on Google
+     */
+    created?: number;
+    /**
+     * Negative criteria removed from Google
+     */
+    removed?: number;
+    /**
+     * The full negative-keyword set after the replace
+     */
+    keywords?: Array<{
+        criterionId?: string;
+        text?: string;
+        matchType?: 'exact' | 'phrase' | 'broad';
+    }>;
+});
+
+export type ReplaceCampaignNegativeKeywordsError = (ErrorResponse | {
     error?: string;
 } | unknown);
 
@@ -34214,13 +34393,17 @@ export type CreateStandaloneAdData = {
          */
         campaignType?: 'display' | 'search';
         /**
-         * Google Search only. BROAD-match keywords on the new ad group. Editable later via PUT /v1/ads/{adId} targeting.keywords, which also sets match types.
+         * Google Search only. Keywords on the new ad group; entries are strings (BROAD) or { text, matchType }. Editable later via PUT /v1/ads/{adId} targeting.keywords.
          */
-        keywords?: Array<(string)>;
+        keywords?: Array<KeywordEntry>;
         /**
-         * Google Search only; other platforms return 400. BROAD-match negative keywords on the new ad group. Editable later via PUT /v1/ads/{adId} targeting.negativeKeywords.
+         * Google Search only; other platforms return 400. Ad-group-level negative keywords on the new ad group. Editable later via PUT /v1/ads/{adId} targeting.negativeKeywords.
          */
-        negativeKeywords?: Array<(string)>;
+        negativeKeywords?: Array<KeywordEntry>;
+        /**
+         * Google Search only; other platforms return 400. Campaign-level negative keywords (campaign_criterion.negative), created alongside the ad group. Editable later via PUT /v1/ads/campaigns/{campaignId}/negative-keywords.
+         */
+        campaignNegativeKeywords?: Array<KeywordEntry>;
         /**
          * Google Search RSA only. Extra headlines.
          */

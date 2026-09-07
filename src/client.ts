@@ -3,6 +3,7 @@ import { createClient, createConfig, type Client } from '@hey-api/client-fetch';
 import {
   activateSequence,
   activateWorkflow,
+  addAdKeywords,
   addBroadcastRecipients,
   addConversionAssociations,
   addDiscordMemberRole,
@@ -364,6 +365,7 @@ import {
   listBroadcastRecipients,
   listBroadcasts,
   listCalls,
+  listCampaignNegativeKeywords,
   listCommentAutomationLogs,
   listCommentAutomations,
   listConnectedApps,
@@ -452,6 +454,7 @@ import {
   releaseWhatsAppPhoneNumber,
   remediatePhoneNumber,
   remediateWhatsAppNumber,
+  removeAdKeyword,
   removeBookmark,
   removeConversionAssociations,
   removeDiscordMemberRole,
@@ -459,6 +462,7 @@ import {
   removeTrackingTagSharedAccount,
   removeWhatsAppGroupParticipants,
   replaceAdAudienceCompanies,
+  replaceCampaignNegativeKeywords,
   replyToGoogleBusinessReview,
   replyToInboxPost,
   replyToInboxReview,
@@ -537,6 +541,7 @@ import {
   updateAdCampaign,
   updateAdCampaignStatus,
   updateAdCreative,
+  updateAdKeyword,
   updateAdSet,
   updateAdSetStatus,
   updateAdStatus,
@@ -1530,11 +1535,16 @@ export class Zernio {
   adcampaigns = {
     listAds: this._bind(listAds),
     listAdKeywords: this._bind(listAdKeywords),
+    addAdKeywords: this._bind(addAdKeywords),
+    updateAdKeyword: this._bind(updateAdKeyword),
+    removeAdKeyword: this._bind(removeAdKeyword),
     listAdCampaigns: this._bind(listAdCampaigns),
     createAdCampaign: this._bind(createAdCampaign),
     updateAdCampaignStatus: this._bind(updateAdCampaignStatus),
     updateAdCampaign: this._bind(updateAdCampaign),
     deleteAdCampaign: this._bind(deleteAdCampaign),
+    listCampaignNegativeKeywords: this._bind(listCampaignNegativeKeywords),
+    replaceCampaignNegativeKeywords: this._bind(replaceCampaignNegativeKeywords),
     bulkUpdateAdCampaignStatus: this._bind(bulkUpdateAdCampaignStatus),
     duplicateAdCampaign: this._bind(duplicateAdCampaign),
     duplicateAdSet: this._bind(duplicateAdSet),
@@ -1749,6 +1759,12 @@ export class Zernio {
     listAds: this._bind(listAds),
     /** @deprecated Use `zernio.adcampaigns.listAdKeywords` instead. */
     listAdKeywords: this._bind(listAdKeywords),
+    /** @deprecated Use `zernio.adcampaigns.addAdKeywords` instead. */
+    addAdKeywords: this._bind(addAdKeywords),
+    /** @deprecated Use `zernio.adcampaigns.updateAdKeyword` instead. */
+    updateAdKeyword: this._bind(updateAdKeyword),
+    /** @deprecated Use `zernio.adcampaigns.removeAdKeyword` instead. */
+    removeAdKeyword: this._bind(removeAdKeyword),
     /** @deprecated Use `zernio.adcampaigns.listAdCampaigns` instead. */
     listAdCampaigns: this._bind(listAdCampaigns),
     /** @deprecated Use `zernio.adcampaigns.createAdCampaign` instead. */
@@ -1759,6 +1775,10 @@ export class Zernio {
     updateAdCampaign: this._bind(updateAdCampaign),
     /** @deprecated Use `zernio.adcampaigns.deleteAdCampaign` instead. */
     deleteAdCampaign: this._bind(deleteAdCampaign),
+    /** @deprecated Use `zernio.adcampaigns.listCampaignNegativeKeywords` instead. */
+    listCampaignNegativeKeywords: this._bind(listCampaignNegativeKeywords),
+    /** @deprecated Use `zernio.adcampaigns.replaceCampaignNegativeKeywords` instead. */
+    replaceCampaignNegativeKeywords: this._bind(replaceCampaignNegativeKeywords),
     /** @deprecated Use `zernio.adcampaigns.bulkUpdateAdCampaignStatus` instead. */
     bulkUpdateAdCampaignStatus: this._bind(bulkUpdateAdCampaignStatus),
     /** @deprecated Use `zernio.adcampaigns.duplicateAdCampaign` instead. */

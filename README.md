@@ -418,6 +418,7 @@ try {
 | `adCampaigns.listAdCampaigns()` | List campaigns |
 | `adCampaigns.listAdKeywords()` | List Search keywords |
 | `adCampaigns.listAds()` | List ads |
+| `adCampaigns.listCampaignNegativeKeywords()` | List campaign-level negative keywords |
 | `adCampaigns.bulkUpdateAdCampaignStatus()` | Pause or resume many campaigns |
 | `adCampaigns.createAdCampaign()` | Create a standalone campaign |
 | `adCampaigns.createStandaloneAd()` | Create standalone ad |
@@ -428,17 +429,21 @@ try {
 | `adCampaigns.updateAd()` | Update ad |
 | `adCampaigns.updateAdCampaign()` | Update a campaign |
 | `adCampaigns.updateAdCampaignStatus()` | Pause or resume a campaign |
+| `adCampaigns.updateAdKeyword()` | Pause or enable a Search keyword |
 | `adCampaigns.updateAdSet()` | Update an ad set |
 | `adCampaigns.updateAdSetStatus()` | Pause or resume a single ad set |
 | `adCampaigns.updateAdStatus()` | Pause or resume a single ad |
 | `adCampaigns.deleteAd()` | Cancel an ad |
 | `adCampaigns.deleteAdCampaign()` | Delete a campaign |
 | `adCampaigns.deleteAdSet()` | Delete an ad set |
+| `adCampaigns.addAdKeywords()` | Add Search keywords to an ad group |
 | `adCampaigns.attachCampaignAssets()` | Attach extension assets to a Google Search campaign |
 | `adCampaigns.boostPost()` | Boost post as ad |
 | `adCampaigns.duplicateAd()` | Duplicate an ad |
 | `adCampaigns.duplicateAdCampaign()` | Duplicate a campaign |
 | `adCampaigns.duplicateAdSet()` | Duplicate an ad set |
+| `adCampaigns.removeAdKeyword()` | Remove a Search keyword |
+| `adCampaigns.replaceCampaignNegativeKeywords()` | Replace campaign-level negative keywords |
 
 ### Ad Creatives
 | Method | Description |
