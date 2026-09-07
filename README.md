@@ -381,6 +381,7 @@ try {
 ### Ad Accounts
 | Method | Description |
 |--------|-------------|
+| `adAccounts.listAccountCallouts()` | List account-level callout extensions |
 | `adAccounts.listAdAccounts()` | List ad accounts |
 | `adAccounts.listAdLabels()` | Ad labels |
 | `adAccounts.listAdsBusinessCenters()` | List TikTok Business Centers |
@@ -401,6 +402,8 @@ try {
 | `adAccounts.updateAdAccount()` | Update ad account settings |
 | `adAccounts.updateValueRuleSet()` | Replace a value rule set |
 | `adAccounts.deleteValueRuleSet()` | Delete a value rule set |
+| `adAccounts.addAccountCallouts()` | Add account-level callout extensions |
+| `adAccounts.removeAccountCallout()` | Remove an account-level callout extension |
 
 ### Ad Audiences
 | Method | Description |
@@ -419,14 +422,17 @@ try {
 | `adCampaigns.listAdCampaigns()` | List campaigns |
 | `adCampaigns.listAdKeywords()` | List Search keywords |
 | `adCampaigns.listAds()` | List ads |
+| `adCampaigns.listAdSets()` | List ad sets |
 | `adCampaigns.listCampaignNegativeKeywords()` | List campaign-level negative keywords |
 | `adCampaigns.bulkUpdateAdCampaignStatus()` | Pause or resume many campaigns |
 | `adCampaigns.createAdCampaign()` | Create a standalone campaign |
+| `adCampaigns.createAdSet()` | Create a standalone ad group |
 | `adCampaigns.createStandaloneAd()` | Create standalone ad |
 | `adCampaigns.getAd()` | Get ad details |
 | `adCampaigns.getAdSetDetails()` | Live ad-set details incl. learning phase |
 | `adCampaigns.getAdsTimeline()` | Get daily account metrics |
 | `adCampaigns.getAdTree()` | Get campaign tree |
+| `adCampaigns.getCampaignTargeting()` | Read a Google campaign's device, location, and language targeting |
 | `adCampaigns.updateAd()` | Update ad |
 | `adCampaigns.updateAdCampaign()` | Update a campaign |
 | `adCampaigns.updateAdCampaignStatus()` | Pause or resume a campaign |
@@ -434,6 +440,7 @@ try {
 | `adCampaigns.updateAdSet()` | Update an ad set |
 | `adCampaigns.updateAdSetStatus()` | Pause or resume a single ad set |
 | `adCampaigns.updateAdStatus()` | Pause or resume a single ad |
+| `adCampaigns.updateCampaignTargeting()` | Edit a Google campaign's device, location, or language targeting |
 | `adCampaigns.deleteAd()` | Cancel an ad |
 | `adCampaigns.deleteAdCampaign()` | Delete a campaign |
 | `adCampaigns.deleteAdSet()` | Delete an ad set |
@@ -575,8 +582,10 @@ try {
 ### Conversions
 | Method | Description |
 |--------|-------------|
+| `conversions.listConversionActions()` | List conversion actions and their tag snippets |
 | `conversions.listConversionAssociations()` | List associated campaigns |
 | `conversions.listConversionDestinations()` | List conversion destinations |
+| `conversions.createConversionAction()` | Create a website conversion action |
 | `conversions.createConversionDestination()` | Create a conversion destination |
 | `conversions.getConversionDestination()` | Get a conversion destination |
 | `conversions.getConversionMetrics()` | Get attribution metrics |

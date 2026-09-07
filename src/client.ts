@@ -3,6 +3,7 @@ import { createClient, createConfig, type Client } from '@hey-api/client-fetch';
 import {
   activateSequence,
   activateWorkflow,
+  addAccountCallouts,
   addAdKeywords,
   addBroadcastRecipients,
   addConversionAssociations,
@@ -50,6 +51,7 @@ import {
   createAdCampaign,
   createAdCreative,
   createAdInsightsReport,
+  createAdSet,
   createApiKey,
   createBlog,
   createBlogArticle,
@@ -57,6 +59,7 @@ import {
   createCallAd,
   createCommentAutomation,
   createContact,
+  createConversionAction,
   createConversionDestination,
   createCtwaAd,
   createCustomConversion,
@@ -201,6 +204,7 @@ import {
   getCallRecording,
   getCallsUsage,
   getCampaignAnalytics,
+  getCampaignTargeting,
   getCommentAutomation,
   getConnectUrl,
   getContact,
@@ -344,6 +348,7 @@ import {
   initiateWhatsAppCall,
   likeInboxComment,
   likePost,
+  listAccountCallouts,
   listAccountGroups,
   listAccounts,
   listAdAccounts,
@@ -355,6 +360,7 @@ import {
   listAdImages,
   listAdKeywords,
   listAdLabels,
+  listAdSets,
   listAdStudies,
   listAdVideos,
   listAds,
@@ -370,6 +376,7 @@ import {
   listCommentAutomations,
   listConnectedApps,
   listContacts,
+  listConversionActions,
   listConversionAssociations,
   listConversionDestinations,
   listCustomConversions,
@@ -455,6 +462,7 @@ import {
   releaseWhatsAppPhoneNumber,
   remediatePhoneNumber,
   remediateWhatsAppNumber,
+  removeAccountCallout,
   removeAdKeyword,
   removeBookmark,
   removeConversionAssociations,
@@ -551,6 +559,7 @@ import {
   updateBlogArticle,
   updateBlueskySettings,
   updateBroadcast,
+  updateCampaignTargeting,
   updateCommentAutomation,
   updateContact,
   updateConversionDestination,
@@ -1549,6 +1558,10 @@ export class Zernio {
     replaceCampaignNegativeKeywords: this._bind(replaceCampaignNegativeKeywords),
     bulkUpdateAdCampaignStatus: this._bind(bulkUpdateAdCampaignStatus),
     duplicateAdCampaign: this._bind(duplicateAdCampaign),
+    getCampaignTargeting: this._bind(getCampaignTargeting),
+    updateCampaignTargeting: this._bind(updateCampaignTargeting),
+    listAdSets: this._bind(listAdSets),
+    createAdSet: this._bind(createAdSet),
     duplicateAdSet: this._bind(duplicateAdSet),
     duplicateAd: this._bind(duplicateAd),
     getAdSetDetails: this._bind(getAdSetDetails),
@@ -1636,6 +1649,9 @@ export class Zernio {
     getValueRuleSet: this._bind(getValueRuleSet),
     updateValueRuleSet: this._bind(updateValueRuleSet),
     deleteValueRuleSet: this._bind(deleteValueRuleSet),
+    listAccountCallouts: this._bind(listAccountCallouts),
+    addAccountCallouts: this._bind(addAccountCallouts),
+    removeAccountCallout: this._bind(removeAccountCallout),
     getAdAccountFinance: this._bind(getAdAccountFinance),
     listAdAccounts: this._bind(listAdAccounts),
     updateAdAccount: this._bind(updateAdAccount),
@@ -1706,6 +1722,8 @@ export class Zernio {
     getConversionsQuality: this._bind(getConversionsQuality),
     sendConversions: this._bind(sendConversions),
     adjustConversions: this._bind(adjustConversions),
+    listConversionActions: this._bind(listConversionActions),
+    createConversionAction: this._bind(createConversionAction),
     listConversionDestinations: this._bind(listConversionDestinations),
     createConversionDestination: this._bind(createConversionDestination),
     getConversionDestination: this._bind(getConversionDestination),
@@ -1785,6 +1803,14 @@ export class Zernio {
     bulkUpdateAdCampaignStatus: this._bind(bulkUpdateAdCampaignStatus),
     /** @deprecated Use `zernio.adcampaigns.duplicateAdCampaign` instead. */
     duplicateAdCampaign: this._bind(duplicateAdCampaign),
+    /** @deprecated Use `zernio.adcampaigns.getCampaignTargeting` instead. */
+    getCampaignTargeting: this._bind(getCampaignTargeting),
+    /** @deprecated Use `zernio.adcampaigns.updateCampaignTargeting` instead. */
+    updateCampaignTargeting: this._bind(updateCampaignTargeting),
+    /** @deprecated Use `zernio.adcampaigns.listAdSets` instead. */
+    listAdSets: this._bind(listAdSets),
+    /** @deprecated Use `zernio.adcampaigns.createAdSet` instead. */
+    createAdSet: this._bind(createAdSet),
     /** @deprecated Use `zernio.adcampaigns.duplicateAdSet` instead. */
     duplicateAdSet: this._bind(duplicateAdSet),
     /** @deprecated Use `zernio.adcampaigns.duplicateAd` instead. */
@@ -1841,6 +1867,12 @@ export class Zernio {
     updateValueRuleSet: this._bind(updateValueRuleSet),
     /** @deprecated Use `zernio.adaccounts.deleteValueRuleSet` instead. */
     deleteValueRuleSet: this._bind(deleteValueRuleSet),
+    /** @deprecated Use `zernio.adaccounts.listAccountCallouts` instead. */
+    listAccountCallouts: this._bind(listAccountCallouts),
+    /** @deprecated Use `zernio.adaccounts.addAccountCallouts` instead. */
+    addAccountCallouts: this._bind(addAccountCallouts),
+    /** @deprecated Use `zernio.adaccounts.removeAccountCallout` instead. */
+    removeAccountCallout: this._bind(removeAccountCallout),
     /** @deprecated Use `zernio.adaccounts.getAdAccountFinance` instead. */
     getAdAccountFinance: this._bind(getAdAccountFinance),
     /** @deprecated Use `zernio.adaccounts.listAdAccounts` instead. */
@@ -1935,6 +1967,10 @@ export class Zernio {
     sendConversions: this._bind(sendConversions),
     /** @deprecated Use `zernio.conversions.adjustConversions` instead. */
     adjustConversions: this._bind(adjustConversions),
+    /** @deprecated Use `zernio.conversions.listConversionActions` instead. */
+    listConversionActions: this._bind(listConversionActions),
+    /** @deprecated Use `zernio.conversions.createConversionAction` instead. */
+    createConversionAction: this._bind(createConversionAction),
     /** @deprecated Use `zernio.conversions.listConversionDestinations` instead. */
     listConversionDestinations: this._bind(listConversionDestinations),
     /** @deprecated Use `zernio.conversions.createConversionDestination` instead. */

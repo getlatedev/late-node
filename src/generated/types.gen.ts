@@ -1993,6 +1993,55 @@ export type ConnectedApp = {
 };
 
 /**
+ * A Google Ads conversion action, e.g. a WEBPAGE conversion created via
+ * `createConversionAction`. Returned by `listConversionActions` and
+ * `createConversionAction`.
+ *
+ */
+export type ConversionAction = {
+    /**
+     * Google Ads conversion action id.
+     */
+    id: string;
+    name: string;
+    /**
+     * Google's ConversionActionType, e.g. WEBPAGE, UPLOAD_CLICKS.
+     */
+    type: string;
+    /**
+     * Google's ConversionActionStatus, e.g. ENABLED, REMOVED, HIDDEN.
+     */
+    status: string;
+    /**
+     * Google's ConversionActionCategory, e.g. DEFAULT, PURCHASE, LEAD.
+     */
+    category: string;
+    /**
+     * The code a customer pastes onto their site. Present for types
+     * Google generates a snippet for (e.g. WEBPAGE); empty otherwise.
+     *
+     */
+    tagSnippets: Array<{
+        /**
+         * Google's TrackingCodeType, e.g. WEBPAGE.
+         */
+        type: string;
+        /**
+         * Google's TrackingCodePageFormat, e.g. HTML, AMP.
+         */
+        pageFormat?: string;
+        /**
+         * The gtag.js snippet to install once per site.
+         */
+        globalSiteTag?: string;
+        /**
+         * The per-conversion-page snippet that fires the event.
+         */
+        eventSnippet?: string;
+    }>;
+};
+
+/**
  * A discoverable conversion destination on an ad platform — a Meta pixel,
  * Google conversion action, or LinkedIn conversion rule. Returned by
  * `listConversionDestinations`, `getConversionDestination`,
@@ -31055,6 +31104,198 @@ export type DuplicateAdCampaignError = (unknown | {
     error?: string;
 });
 
+export type GetCampaignTargetingData = {
+    path: {
+        /**
+         * Google platform campaign ID
+         */
+        campaignId: string;
+    };
+    query?: {
+        /**
+         * Disambiguates when the same campaignId string exists on more than one connected platform.
+         */
+        platform?: 'google';
+    };
+};
+
+export type GetCampaignTargetingResponse = ({
+    devices?: Array<{
+        device?: 'MOBILE' | 'DESKTOP' | 'TABLET' | 'CONNECTED_TV';
+        included?: boolean;
+        /**
+         * Always null on this read (see description).
+         */
+        bidModifier?: (number) | null;
+    }>;
+    locations?: Array<{
+        /**
+         * Numeric id from Google's geoTargetConstants/{id}.
+         */
+        geoTargetId?: string;
+        /**
+         * true = excluded location.
+         */
+        negative?: boolean;
+    }>;
+    languages?: Array<{
+        /**
+         * Google's language code (ISO 639-1, plus variants such as `zh_CN`). Empty when the campaign's language_constant id is not in Zernio's checked-in table.
+         */
+        code?: string;
+        /**
+         * Google's languageConstants/{id} numeric id.
+         */
+        id?: string;
+        name?: string;
+    }>;
+});
+
+export type GetCampaignTargetingError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type UpdateCampaignTargetingData = {
+    body: {
+        platform: 'google';
+        targeting: {
+            /**
+             * Devices to include. Devices not listed become excluded (negative) criteria, same contract as the existing devices-only edit.
+             */
+            devices?: Array<('MOBILE' | 'DESKTOP' | 'TABLET' | 'CONNECTED_TV' | {
+    device: 'MOBILE' | 'DESKTOP' | 'TABLET' | 'CONNECTED_TV';
+    /**
+     * Bid modifier for this device; devices without one use the campaign's base bid.
+     */
+    bidModifier: number;
+})>;
+            /**
+             * Bare country-code array, or the nested creation-time shape (countries/regions/cities/zips/metros).
+             */
+            locations?: (Array<(string)> | {
+    countries?: Array<(string)>;
+    regions?: Array<{
+        key: string;
+        name?: string;
+    }>;
+    cities?: Array<{
+        key: string;
+        name?: string;
+    }>;
+    zips?: Array<{
+        key: string;
+        name?: string;
+    }>;
+    metros?: Array<{
+        key: string;
+        name?: string;
+    }>;
+});
+            /**
+             * Google's language codes (ISO 639-1, plus variants such as `zh_CN`), e.g. ["en", "de"].
+             */
+            languages?: Array<(string)>;
+        };
+    };
+    path: {
+        /**
+         * Google platform campaign ID
+         */
+        campaignId: string;
+    };
+};
+
+export type UpdateCampaignTargetingResponse = ({
+    campaignId?: string;
+    /**
+     * Which targeting fields were applied.
+     */
+    updated?: Array<('devices' | 'locations' | 'languages')>;
+});
+
+export type UpdateCampaignTargetingError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type ListAdSetsData = {
+    query?: {
+        /**
+         * Social account ID
+         */
+        accountId?: string;
+        /**
+         * Platform campaign ID
+         */
+        campaignId?: string;
+        platform?: 'facebook' | 'instagram' | 'tiktok' | 'linkedin' | 'pinterest' | 'google' | 'twitter' | 'openai';
+    };
+};
+
+export type ListAdSetsResponse = ({
+    adSets?: Array<{
+        platformAdSetId?: string;
+        platform?: string;
+        adSetName?: (string) | null;
+        status?: (string) | null;
+        platformAdSetStatus?: (string) | null;
+        platformCampaignId?: (string) | null;
+        platformAdAccountId?: string;
+        accountId?: (string) | null;
+        profileId?: string;
+        currency?: (string) | null;
+        budget?: {
+            [key: string]: unknown;
+        } | null;
+        isExternal?: (boolean) | null;
+        platformCreatedAt?: (string) | null;
+    }>;
+});
+
+export type ListAdSetsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type CreateAdSetData = {
+    body: {
+        /**
+         * Zernio SocialAccount id owning the Google Ads connection.
+         */
+        accountId: string;
+        /**
+         * Only "google" is implemented today; every other value returns 501.
+         */
+        platform: 'facebook' | 'instagram' | 'tiktok' | 'linkedin' | 'pinterest' | 'google' | 'twitter' | 'openai';
+        /**
+         * Google platform campaign ID (numeric) the ad group is created under.
+         */
+        campaignId: string;
+        name: string;
+        status?: 'ACTIVE' | 'PAUSED';
+        /**
+         * Numeric Google Ads customer id. Only required when the connection has more than one.
+         */
+        customerId?: string;
+    };
+    headers?: {
+        /**
+         * Optional client-generated unique key (e.g. a UUID) that makes retries safe. Same key + same body replays the original response; same key + different body → 422; key still processing → 409. Only 2xx responses are stored, so a request that failed with a 4xx can be retried with a corrected body under the SAME key.
+         */
+        'Idempotency-Key'?: string;
+    };
+};
+
+export type CreateAdSetResponse = ({
+    /**
+     * Platform id of the new ad group
+     */
+    adSetId?: string;
+    campaignId?: string;
+});
+
+export type CreateAdSetError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
 export type DuplicateAdSetData = {
     body: {
         platform: 'facebook' | 'instagram';
@@ -33171,6 +33412,90 @@ export type DeleteValueRuleSetError = (unknown | {
     error?: string;
 });
 
+export type ListAccountCalloutsData = {
+    query: {
+        /**
+         * Google ads SocialAccount id.
+         */
+        accountId: string;
+        /**
+         * Numeric Google Ads customer id (no dashes). Defaults to the account's connected customer.
+         */
+        customerId?: string;
+    };
+};
+
+export type ListAccountCalloutsResponse = ({
+    customerId?: string;
+    callouts?: Array<{
+        assetId?: string;
+        text?: string;
+        /**
+         * customer_asset.status, e.g. ENABLED, REMOVED, PAUSED.
+         */
+        status?: string;
+    }>;
+});
+
+export type ListAccountCalloutsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type AddAccountCalloutsData = {
+    body: {
+        /**
+         * Zernio SocialAccount id owning the Google Ads connection.
+         */
+        accountId: string;
+        /**
+         * Numeric Google Ads customer id. Only required when the connection has more than one.
+         */
+        customerId?: string;
+        /**
+         * Callout text, 1-25 characters each; up to 20 per request (Google's CalloutAsset limits).
+         */
+        callouts: Array<(string)>;
+    };
+};
+
+export type AddAccountCalloutsResponse = ({
+    customerId?: string;
+    callouts?: Array<{
+        assetId?: string;
+        text?: string;
+    }>;
+});
+
+export type AddAccountCalloutsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type RemoveAccountCalloutData = {
+    body: {
+        /**
+         * Zernio SocialAccount id owning the Google Ads connection.
+         */
+        accountId: string;
+        /**
+         * Numeric Google Ads customer id. Only required when the connection has more than one.
+         */
+        customerId?: string;
+        /**
+         * Numeric asset id from GET /v1/ads/accounts/callouts.
+         */
+        assetId: string;
+    };
+};
+
+export type RemoveAccountCalloutResponse = ({
+    removed?: boolean;
+    customerId?: string;
+});
+
+export type RemoveAccountCalloutError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
 export type GetAdAccountFinanceData = {
     query: {
         /**
@@ -34138,7 +34463,7 @@ export type CreateStandaloneAdData = {
          */
         incomeTier?: 'top_5' | 'top_10' | 'top_10_25' | 'top_25_50';
         /**
-         * Language codes restricting the audience by language. On Meta, ISO 639-1 codes (e.g. ['en'], ['de']); a bare code targets all regional variants ("en" = all English), or use a region-qualified code for a specific one ("en_GB", "pt_BR", "zh_TW"). Unknown codes are rejected. Other ad platforms use their own language-code systems.
+         * e.g. ["en","es"]. Google: campaign language targeting (language_constant) using Google's language codes (ISO 639-1, plus variants such as `zh_CN`); unknown codes return 400. On Meta, a bare code targets all regional variants ("en" = all English), or use a region-qualified code for a specific one ("en_GB", "pt_BR", "zh_TW"); unknown codes are rejected. Other ad platforms use their own language-code systems.
          */
         languages?: Array<(string)>;
         /**
@@ -35514,9 +35839,9 @@ export type SearchAdTargetingData = {
          */
         countryCode?: string;
         /**
-         * What to search. `geo` resolves locations (scope further with `geoType`), `interest`/`behavior` resolve audience entities, `income` resolves income-tier options, `workPosition`/`workEmployer`/`workIndustry` resolve Meta work demographics. Defaults to `interest` for backward compatibility with the deprecated /v1/ads/interests alias.
+         * What to search. `geo` resolves locations (scope further with `geoType`), `interest`/`behavior` resolve audience entities, `income` resolves income-tier options, `language` resolves Google's targetable language_constant table (Google only), `workPosition`/`workEmployer`/`workIndustry` resolve Meta work demographics. Defaults to `interest` for backward compatibility with the deprecated /v1/ads/interests alias.
          */
-        dimension?: 'geo' | 'interest' | 'behavior' | 'income' | 'workPosition' | 'workEmployer' | 'workIndustry';
+        dimension?: 'geo' | 'interest' | 'behavior' | 'income' | 'language' | 'workPosition' | 'workEmployer' | 'workIndustry';
         /**
          * Only used when `dimension=geo`. The kind of location to resolve. `all` searches every type in one relevance-ranked call. Defaults to `city`.
          */
@@ -36419,6 +36744,69 @@ export type AdjustConversionsResponse = ({
 export type AdjustConversionsError = (unknown | {
     error?: string;
 });
+
+export type ListConversionActionsData = {
+    query: {
+        /**
+         * SocialAccount _id (must be a googleads account).
+         */
+        accountId: string;
+        /**
+         * Google Ads customer id (digits only). Resolved automatically when the connection has exactly one accessible customer.
+         */
+        customerId?: string;
+        /**
+         * Filter by Google's ConversionActionType enum (e.g. WEBPAGE, UPLOAD_CLICKS).
+         */
+        type?: string;
+    };
+};
+
+export type ListConversionActionsResponse = ({
+    /**
+     * The Google Ads customer id the actions were read from.
+     */
+    customerId?: string;
+    actions?: Array<ConversionAction>;
+});
+
+export type ListConversionActionsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type CreateConversionActionData = {
+    body: {
+        /**
+         * SocialAccount ID. Must be a `googleads` account.
+         */
+        accountId: string;
+        /**
+         * Google Ads customer id (digits only). Resolved automatically when the connection has exactly one accessible customer.
+         */
+        customerId?: string;
+        name: string;
+        /**
+         * Only WEBPAGE is supported for creation today.
+         */
+        type: 'WEBPAGE';
+        /**
+         * Default conversion value used when an event doesn't carry its own value.
+         */
+        defaultValue?: number;
+        /**
+         * When true, always use defaultValue and ignore any value sent with the event. Defaults to true when defaultValue is set.
+         */
+        alwaysUseDefaultValue?: boolean;
+    };
+};
+
+export type CreateConversionActionResponse = ({
+    action?: ConversionAction;
+});
+
+export type CreateConversionActionError = (ErrorResponse | {
+    error?: string;
+} | unknown);
 
 export type ListConversionDestinationsData = {
     path: {
