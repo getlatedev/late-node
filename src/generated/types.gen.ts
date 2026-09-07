@@ -4728,8 +4728,17 @@ export type PhoneNumberStockWatch = {
      */
     country: string;
     countryName: string;
+    /**
+     * The watched number type, or null when the watch covers every type in the country.
+     */
+    numberType: ('local' | 'mobile' | 'national' | 'toll_free') | null;
     createdAt: string;
 };
+
+/**
+ * The watched number type, or null when the watch covers every type in the country.
+ */
+export type numberType = 'local' | 'mobile' | 'national' | 'toll_free';
 
 export type PinterestPlatformData = {
     /**
@@ -26323,6 +26332,10 @@ export type CreatePhoneNumberStockWatchData = {
          * ISO 3166-1 alpha-2 code of a country listed by GET /v1/phone-numbers/countries.
          */
         country: string;
+        /**
+         * Narrow the watch to one number type. Omit to be notified when any type in the country is back.
+         */
+        numberType?: 'local' | 'mobile' | 'national' | 'toll_free';
     };
 };
 

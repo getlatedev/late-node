@@ -6333,9 +6333,14 @@ export const disableVoiceOnNumber = <ThrowOnError extends boolean = false>(optio
  * Get notified the first time an out-of-stock country has deliverable
  * numbers again: an email to the account holder plus the
  * `phone_number.stock_available` webhook. Stock is re-checked every 6h.
- * One watch per country; a repeat request returns the existing watch
- * (200). The watch is consumed when it fires, so re-create it if you
- * miss the stock. Up to 20 countries can be watched at once.
+ * One watch per country and number type; a repeat request returns the
+ * existing watch (200). The watch is consumed when it fires, so re-create
+ * it if you miss the stock. Up to 20 watches at once.
+ *
+ * Countries and types marked `fulfilment: request` by
+ * GET /v1/phone-numbers/countries can also be watched. Those are sourced
+ * by a carrier request rather than held in stock, so a watch records
+ * interest and no date is implied.
  *
  */
 export const createPhoneNumberStockWatch = <ThrowOnError extends boolean = false>(options: OptionsLegacyParser<CreatePhoneNumberStockWatchData, ThrowOnError>) => {
