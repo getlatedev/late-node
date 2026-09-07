@@ -423,15 +423,18 @@ try {
 | `adCampaigns.listAdKeywords()` | List Search keywords |
 | `adCampaigns.listAds()` | List ads |
 | `adCampaigns.listAdSets()` | List ad sets |
+| `adCampaigns.listBidStrategies()` | List Google Ads portfolio bid strategies |
 | `adCampaigns.listCampaignNegativeKeywords()` | List campaign-level negative keywords |
 | `adCampaigns.bulkUpdateAdCampaignStatus()` | Pause or resume many campaigns |
 | `adCampaigns.createAdCampaign()` | Create a standalone campaign |
 | `adCampaigns.createAdSet()` | Create a standalone ad group |
+| `adCampaigns.createBidStrategy()` | Create a Google Ads portfolio bid strategy |
 | `adCampaigns.createStandaloneAd()` | Create standalone ad |
 | `adCampaigns.getAd()` | Get ad details |
 | `adCampaigns.getAdSetDetails()` | Live ad-set details incl. learning phase |
 | `adCampaigns.getAdsTimeline()` | Get daily account metrics |
 | `adCampaigns.getAdTree()` | Get campaign tree |
+| `adCampaigns.getCampaignBidding()` | Read a campaign's current bidding |
 | `adCampaigns.getCampaignTargeting()` | Read a Google campaign's device, location, and language targeting |
 | `adCampaigns.updateAd()` | Update ad |
 | `adCampaigns.updateAdCampaign()` | Update a campaign |
@@ -440,6 +443,7 @@ try {
 | `adCampaigns.updateAdSet()` | Update an ad set |
 | `adCampaigns.updateAdSetStatus()` | Pause or resume a single ad set |
 | `adCampaigns.updateAdStatus()` | Pause or resume a single ad |
+| `adCampaigns.updateBidStrategy()` | Update a Google Ads portfolio bid strategy |
 | `adCampaigns.updateCampaignTargeting()` | Edit a Google campaign's device, location, or language targeting |
 | `adCampaigns.deleteAd()` | Cancel an ad |
 | `adCampaigns.deleteAdCampaign()` | Delete a campaign |

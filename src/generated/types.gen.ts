@@ -1859,6 +1859,50 @@ export type CampaignAnalyticsResponse = {
 };
 
 /**
+ * A Google campaign's current bidding, mapped onto the same triplet PUT /v1/ads/campaigns/{campaignId} accepts.
+ */
+export type CampaignBidding = {
+    /**
+     * campaign.advertising_channel_type. COST_CAP's underlying Google field differs by channel; see bidStrategy on PUT.
+     */
+    channel?: 'SEARCH' | 'DISPLAY';
+    /**
+     * Google's raw enum: MAXIMIZE_CONVERSIONS, TARGET_CPA, MAXIMIZE_CONVERSION_VALUE, TARGET_ROAS, TARGET_SPEND, MANUAL_CPC, TARGET_IMPRESSION_SHARE, or another Google adds later.
+     */
+    biddingStrategyType?: string;
+    /**
+     * Null when the campaign is on a strategy PUT does not model (Manual CPC, Target Impression Share, ...); show biddingStrategyType instead in that case.
+     */
+    bidSpec?: {
+        bidStrategy?: BidStrategy;
+        /**
+         * Whole currency units. Present for COST_CAP and LOWEST_COST_WITH_BID_CAP, and omitted when the campaign is on a bare TARGET_SPEND with no CPC ceiling set.
+         */
+        bidAmount?: number;
+        /**
+         * Decimal ROAS multiplier (2.0 = 2.0x). Present for LOWEST_COST_WITH_MIN_ROAS.
+         */
+        roasAverageFloor?: number;
+        /**
+         * Present alone (bidStrategy omitted) when the campaign is on a portfolio strategy; see portfolio.
+         */
+        portfolioBidStrategyId?: string;
+    } | null;
+    /**
+     * Set only when the campaign is on a portfolio bid strategy (campaign.bidding_strategy); null otherwise.
+     */
+    portfolio?: {
+        id?: string;
+        name?: string;
+    } | null;
+};
+
+/**
+ * campaign.advertising_channel_type. COST_CAP's underlying Google field differs by channel; see bidStrategy on PUT.
+ */
+export type channel2 = 'SEARCH' | 'DISPLAY';
+
+/**
  * Who a comment automation answers. Instagram only - Meta exposes the follow
  * relationship on no other platform, and only for people who have MESSAGED the
  * account (a comment grants no consent). `whenUnknown` is therefore the important
@@ -5003,6 +5047,51 @@ export type errorCategory = 'auth_expired' | 'user_content' | 'user_abuse' | 'ac
  */
 export type errorSource = 'user' | 'platform' | 'system';
 
+/**
+ * A Google Ads portfolio bid strategy: a named bidding strategy shared across campaigns, with its R.130 report metrics over the queried date range.
+ */
+export type PortfolioBidStrategy = {
+    /**
+     * Numeric bid strategy id; pass as portfolioBidStrategyId or in the {strategyId} path.
+     */
+    id?: string;
+    name?: string;
+    type?: 'TARGET_CPA' | 'TARGET_ROAS' | 'MAXIMIZE_CONVERSIONS' | 'MAXIMIZE_CONVERSION_VALUE';
+    /**
+     * ENABLED or REMOVED.
+     */
+    status?: string;
+    /**
+     * Number of campaigns currently attached.
+     */
+    campaignCount?: number;
+    clicks?: number;
+    /**
+     * Cost in the account's currency units (converted from micros).
+     */
+    cost?: number;
+    /**
+     * Cost per conversion in the account's currency units.
+     */
+    costPerConversion?: number;
+    impressions?: number;
+    /**
+     * Average CPC in the account's currency units.
+     */
+    averageCpc?: number;
+    conversions?: number;
+    /**
+     * Current target, in the account's currency units. Null for a ROAS-family type (TARGET_ROAS, MAXIMIZE_CONVERSION_VALUE), or a Maximize type with no target set. Pre-fills the edit form's target field.
+     */
+    targetCpa?: (number) | null;
+    /**
+     * Current target as a decimal multiplier (2.0 = 2.0x). Null for a CPA-family type (TARGET_CPA, MAXIMIZE_CONVERSIONS), or a Maximize type with no target set.
+     */
+    targetRoas?: (number) | null;
+};
+
+export type type8 = 'TARGET_CPA' | 'TARGET_ROAS' | 'MAXIMIZE_CONVERSIONS' | 'MAXIMIZE_CONVERSION_VALUE';
+
 export type Post = {
     _id?: string;
     userId?: (string | User);
@@ -6271,7 +6360,7 @@ export type UploadedFile = {
     mimeType?: string;
 };
 
-export type type8 = 'image' | 'video' | 'document';
+export type type9 = 'image' | 'video' | 'document';
 
 export type UploadTokenResponse = {
     token?: string;
@@ -6757,7 +6846,7 @@ export type Verification = {
 
 export type status11 = 'pending' | 'approved' | 'expired' | 'max_attempts_reached' | 'canceled' | 'delivery_failed';
 
-export type channel2 = 'sms';
+export type channel3 = 'sms';
 
 /**
  * Individual webhook configuration for receiving real-time notifications
@@ -9350,7 +9439,7 @@ export type WhatsAppTemplateButton = {
     navigate_screen?: string;
 };
 
-export type type9 = 'quick_reply' | 'url' | 'phone_number' | 'otp' | 'copy_code' | 'flow' | 'mpm' | 'catalog';
+export type type10 = 'quick_reply' | 'url' | 'phone_number' | 'otp' | 'copy_code' | 'flow' | 'mpm' | 'catalog';
 
 /**
  * Required when type is otp
@@ -9512,7 +9601,7 @@ export type WorkflowNode = {
  * integrations (webhook, ai, handoff, start_call).
  *
  */
-export type type10 = 'trigger' | 'send_message' | 'wait_for_reply' | 'condition' | 'set_variable' | 'delay' | 'webhook' | 'ai' | 'handoff' | 'start_call' | 'a_b_split' | 'set_field' | 'enroll_sequence' | 'add_tag' | 'remove_tag' | 'end';
+export type type11 = 'trigger' | 'send_message' | 'wait_for_reply' | 'condition' | 'set_variable' | 'delay' | 'webhook' | 'ai' | 'handoff' | 'start_call' | 'a_b_split' | 'set_field' | 'enroll_sequence' | 'add_tag' | 'remove_tag' | 'end';
 
 /**
  * A single X API operation with its per-call price and the Zernio platform methods that trigger it.
@@ -9648,7 +9737,7 @@ export type XArticleBlock = {
     entity_ranges?: Array<XArticleEntityRange>;
 };
 
-export type type11 = 'unstyled' | 'header-one' | 'header-two' | 'header-three' | 'unordered-list-item' | 'ordered-list-item' | 'blockquote' | 'atomic';
+export type type12 = 'unstyled' | 'header-one' | 'header-two' | 'header-three' | 'unordered-list-item' | 'ordered-list-item' | 'blockquote' | 'atomic';
 
 /**
  * X's snake_case content-state shape. Standard DraftJS camelCase fields such as entityMap, inlineStyleRanges, and entityRanges are rejected.
@@ -9727,7 +9816,7 @@ export type XArticleEntity = {
 
 export type mutability = 'immutable' | 'mutable' | 'segmented';
 
-export type type12 = 'divider' | 'latex';
+export type type13 = 'divider' | 'latex';
 
 /**
  * The referenced entity must exist, and offset plus length must not exceed the containing block's text length.
@@ -30428,6 +30517,111 @@ export type GetAdsSearchTermsError = (ErrorResponse | {
     error?: string;
 } | unknown);
 
+export type ListBidStrategiesData = {
+    query: {
+        /**
+         * Google ads SocialAccount id.
+         */
+        accountId: string;
+        /**
+         * Numeric Google Ads customer id (no dashes). Defaults to the account's connected customer.
+         */
+        customerId?: string;
+        /**
+         * Defaults to 30 days ago.
+         */
+        fromDate?: string;
+        /**
+         * Defaults to today.
+         */
+        toDate?: string;
+    };
+};
+
+export type ListBidStrategiesResponse = ({
+    customerId?: string;
+    /**
+     * Account currency code; money fields are in this currency's units.
+     */
+    currency?: string;
+    strategies?: Array<PortfolioBidStrategy>;
+});
+
+export type ListBidStrategiesError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type CreateBidStrategyData = {
+    body: {
+        /**
+         * Google ads SocialAccount id.
+         */
+        accountId: string;
+        /**
+         * Numeric Google Ads customer id (no dashes). Defaults to the account's connected customer.
+         */
+        customerId?: string;
+        name: string;
+        type: 'TARGET_CPA' | 'TARGET_ROAS' | 'MAXIMIZE_CONVERSIONS' | 'MAXIMIZE_CONVERSION_VALUE';
+        /**
+         * Required when type is TARGET_CPA, in the account's currency units.
+         */
+        targetCpa?: number;
+        /**
+         * Required when type is TARGET_ROAS; a multiplier (2.0 = 2.0x).
+         */
+        targetRoas?: number;
+    };
+};
+
+export type CreateBidStrategyResponse = ({
+    strategy?: {
+        customerId?: string;
+        /**
+         * Numeric bid strategy id; pass as portfolioBidStrategyId or in the {strategyId} path.
+         */
+        id?: string;
+        resourceName?: string;
+    };
+});
+
+export type CreateBidStrategyError = (unknown | {
+    error?: string;
+});
+
+export type UpdateBidStrategyData = {
+    body: {
+        /**
+         * Google ads SocialAccount id.
+         */
+        accountId: string;
+        /**
+         * Numeric Google Ads customer id (no dashes). Defaults to the account's connected customer.
+         */
+        customerId?: string;
+        name?: string;
+        type?: 'TARGET_CPA' | 'TARGET_ROAS' | 'MAXIMIZE_CONVERSIONS' | 'MAXIMIZE_CONVERSION_VALUE';
+        targetCpa?: number;
+        targetRoas?: number;
+    };
+    path: {
+        /**
+         * Numeric Google Ads bid strategy id.
+         */
+        strategyId: string;
+    };
+};
+
+export type UpdateBidStrategyResponse = ({
+    strategy?: {
+        customerId?: string;
+    };
+});
+
+export type UpdateBidStrategyError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
 export type ListLocalServicesLeadsData = {
     query: {
         /**
@@ -30777,17 +30971,21 @@ export type CreateAdCampaignData = {
         budgetType?: 'daily' | 'lifetime';
         status?: 'ACTIVE' | 'PAUSED';
         /**
-         * Campaign bid strategy. Meta stores `bid_strategy` alongside the budget, so this REQUIRES `budgetAmount` + `budgetType` on the same request; sending it without a campaign budget is a 400. A campaign carrying a strategy without its `bid_amount` makes every ad set created under it fail with an error that names the ad set (code 100, subcode 1815857), so the bad state is rejected up front rather than accepted. To bid at ad-set level, set the strategy there instead.
+         * Campaign bid strategy. Meta stores `bid_strategy` alongside the budget, so this REQUIRES `budgetAmount` + `budgetType` on the same request; sending it without a campaign budget is a 400. A campaign carrying a strategy without its `bid_amount` makes every ad set created under it fail with an error that names the ad set (code 100, subcode 1815857), so the bad state is rejected up front rather than accepted. To bid at ad-set level on Meta, set the strategy there instead. On Google: LOWEST_COST_WITHOUT_CAP = Maximize Conversions, COST_CAP + bidAmount = Target CPA, LOWEST_COST_WITH_MIN_ROAS + roasAverageFloor = Target ROAS, LOWEST_COST_WITH_BID_CAP + bidAmount = Maximize Clicks with a CPC ceiling; portfolioBidStrategyId attaches a portfolio strategy instead.
          */
         bidStrategy?: 'LOWEST_COST_WITHOUT_CAP' | 'LOWEST_COST_WITH_BID_CAP' | 'COST_CAP' | 'LOWEST_COST_WITH_MIN_ROAS';
         /**
-         * Whole currency units (USD: 5 = $5.00). Required for LOWEST_COST_WITH_BID_CAP and COST_CAP; ignored otherwise. Validated here but NOT stored by Meta: the campaign object has no bid_amount field, only bid_strategy lives on it. The amount takes effect once an ad set joins this campaign (existingCampaignId on POST /v1/ads/create) and supplies its own bidAmount there.
+         * Whole currency units (USD: 5 = $5.00). Required for LOWEST_COST_WITH_BID_CAP and COST_CAP; ignored otherwise. On Meta, validated here but NOT stored: the campaign object has no bid_amount field, only bid_strategy lives on it, and the amount takes effect once an ad set joins this campaign (existingCampaignId on POST /v1/ads/create) and supplies its own bidAmount there. On Google, stored directly on the campaign's bidding strategy.
          */
         bidAmount?: number;
         /**
          * Decimal ROAS multiplier (2.0 = 2.0x). Required for LOWEST_COST_WITH_MIN_ROAS.
          */
         roasAverageFloor?: number;
+        /**
+         * Google only. Attach an existing portfolio bid strategy (numeric id from GET /v1/ads/bid-strategies) to the new campaign instead of a standard one. Exclusive with bidStrategy.
+         */
+        portfolioBidStrategyId?: string;
     };
     headers?: {
         /**
@@ -30850,6 +31048,37 @@ export type UpdateAdCampaignStatusError = (unknown | {
     error?: string;
 });
 
+export type GetCampaignBiddingData = {
+    path: {
+        /**
+         * Numeric Google platform campaign id.
+         */
+        campaignId: string;
+    };
+    query: {
+        /**
+         * Zernio Google Ads SocialAccount id: resolves the customer id + refresh token.
+         */
+        accountId: string;
+        /**
+         * Numeric Google Ads customer id (no dashes). Required when the connection has multiple Google Ads accounts; optional (and inferred) when it has only one.
+         */
+        customerId?: string;
+        /**
+         * Required: campaign IDs are not globally unique. Only "google" is supported today.
+         */
+        platform: 'google';
+    };
+};
+
+export type GetCampaignBiddingResponse = (({
+    campaignId?: string;
+} & CampaignBidding));
+
+export type GetCampaignBiddingError = (unknown | {
+    error?: string;
+});
+
 export type UpdateAdCampaignData = {
     body: {
         /**
@@ -30861,7 +31090,7 @@ export type UpdateAdCampaignData = {
          */
         accountId?: string;
         /**
-         * **Meta + Google.** On Meta, the campaign default that ad sets inherit unless they override it. On Google, the campaign's own bidding strategy.
+         * **Meta + Google.** On Meta, the campaign default that ad sets inherit unless they override it. On Google, the campaign's own bidding strategy. On Google: LOWEST_COST_WITHOUT_CAP = Maximize Conversions, COST_CAP + bidAmount = Target CPA, LOWEST_COST_WITH_MIN_ROAS + roasAverageFloor = Target ROAS, LOWEST_COST_WITH_BID_CAP + bidAmount = Maximize Clicks with a CPC ceiling; portfolioBidStrategyId attaches a portfolio strategy instead.
          */
         bidStrategy?: (BidStrategy);
         /**
@@ -30872,6 +31101,10 @@ export type UpdateAdCampaignData = {
          * **Google only.** Decimal ROAS multiplier (2.0 = 2.0x), required for LOWEST_COST_WITH_MIN_ROAS.
          */
         roasAverageFloor?: number;
+        /**
+         * **Google only.** Attach an existing portfolio bid strategy (numeric id from GET /v1/ads/bid-strategies) instead of setting bidStrategy. Exclusive with bidStrategy.
+         */
+        portfolioBidStrategyId?: string;
         /**
          * **Meta only.** The CBO budget.
          */
@@ -30914,6 +31147,10 @@ export type UpdateAdCampaignResponse = ({
     bidStrategy?: BidStrategy;
     bidAmount?: number;
     roasAverageFloor?: number;
+    /**
+     * Google only. Echoed back, but NOT mirrored onto local Ad documents (no column for it yet).
+     */
+    portfolioBidStrategyId?: string;
     platformSpecificData?: {
         [key: string]: unknown;
     };
@@ -31803,8 +32040,9 @@ export type UpdateAdData = {
             type?: 'daily' | 'lifetime';
         };
         /**
-         * Meta + TikTok (demographics/interests), Google (keyword edits only),
-         * and LinkedIn (geo countries). Pinterest / X return 501.
+         * Meta + TikTok (demographics/interests), Google (keyword and device
+         * bid adjustment edits only), and LinkedIn (geo countries). Pinterest / X
+         * return 501.
          *
          */
         targeting?: {
@@ -31821,6 +32059,16 @@ export type UpdateAdData = {
             negativeKeywords?: Array<(string | {
     text: string;
     matchType?: 'exact' | 'phrase' | 'broad';
+})>;
+            /**
+             * Google only. The FULL new set of device criteria for the campaign; devices not listed are excluded. Entries are a device name alone (included, no bid adjustment) or { device, bidModifier }.
+             */
+            devices?: Array<('MOBILE' | 'DESKTOP' | 'TABLET' | 'CONNECTED_TV' | {
+    device: 'MOBILE' | 'DESKTOP' | 'TABLET' | 'CONNECTED_TV';
+    /**
+     * Google device bid modifier, 0.1 to 10 (minus 90% to plus 900%). Omit a device to exclude it.
+     */
+    bidModifier?: number;
 })>;
             ageMin?: number;
             ageMax?: number;
@@ -34907,6 +35155,8 @@ export type CreateStandaloneAdData = {
          *
          * OpenAI Ads: required on every ad group via this flat field, the only channel it supports (`platformSpecificData` is Meta/LinkedIn-only and returns 400 for OpenAI). No auto-bid option exists; send `LOWEST_COST_WITH_BID_CAP` or `COST_CAP` together with `bidAmount`, omitting it returns 400.
          *
+         * Google (not deprecated there, this shared flat field is Google's only shape): applied to the campaign this call creates. On Google: LOWEST_COST_WITHOUT_CAP = Maximize Conversions, COST_CAP + bidAmount = Target CPA, LOWEST_COST_WITH_MIN_ROAS + roasAverageFloor = Target ROAS, LOWEST_COST_WITH_BID_CAP + bidAmount = Maximize Clicks with a CPC ceiling; portfolioBidStrategyId attaches a portfolio strategy instead. Omitted, the campaign falls back to a goal-based default.
+         *
          * @deprecated
          */
         bidStrategy?: (BidStrategy);
@@ -34939,6 +35189,10 @@ export type CreateStandaloneAdData = {
          * @deprecated
          */
         roasAverageFloor?: number;
+        /**
+         * Google only. Attach an existing portfolio bid strategy (numeric id from GET /v1/ads/bid-strategies) to the new campaign instead of a standard one. Exclusive with bidStrategy.
+         */
+        portfolioBidStrategyId?: string;
         /**
          * Meta only (facebook, instagram; other platforms return 400). Value rule set
          * to attach to the new ad set, from `/v1/ads/value-rule-sets`. Attachment is

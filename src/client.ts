@@ -53,6 +53,7 @@ import {
   createAdInsightsReport,
   createAdSet,
   createApiKey,
+  createBidStrategy,
   createBlog,
   createBlogArticle,
   createBroadcast,
@@ -204,6 +205,7 @@ import {
   getCallRecording,
   getCallsUsage,
   getCampaignAnalytics,
+  getCampaignBidding,
   getCampaignTargeting,
   getCommentAutomation,
   getConnectUrl,
@@ -366,6 +368,7 @@ import {
   listAds,
   listAdsBusinessCenters,
   listApiKeys,
+  listBidStrategies,
   listBlogArticles,
   listBlogs,
   listBroadcastRecipients,
@@ -555,6 +558,7 @@ import {
   updateAdSetStatus,
   updateAdStatus,
   updateAdTrackingTags,
+  updateBidStrategy,
   updateBlog,
   updateBlogArticle,
   updateBlueskySettings,
@@ -1545,6 +1549,9 @@ export class Zernio {
    */
   adcampaigns = {
     listAds: this._bind(listAds),
+    listBidStrategies: this._bind(listBidStrategies),
+    createBidStrategy: this._bind(createBidStrategy),
+    updateBidStrategy: this._bind(updateBidStrategy),
     listAdKeywords: this._bind(listAdKeywords),
     addAdKeywords: this._bind(addAdKeywords),
     updateAdKeyword: this._bind(updateAdKeyword),
@@ -1552,6 +1559,7 @@ export class Zernio {
     listAdCampaigns: this._bind(listAdCampaigns),
     createAdCampaign: this._bind(createAdCampaign),
     updateAdCampaignStatus: this._bind(updateAdCampaignStatus),
+    getCampaignBidding: this._bind(getCampaignBidding),
     updateAdCampaign: this._bind(updateAdCampaign),
     deleteAdCampaign: this._bind(deleteAdCampaign),
     listCampaignNegativeKeywords: this._bind(listCampaignNegativeKeywords),
@@ -1777,6 +1785,12 @@ export class Zernio {
   ads = {
     /** @deprecated Use `zernio.adcampaigns.listAds` instead. */
     listAds: this._bind(listAds),
+    /** @deprecated Use `zernio.adcampaigns.listBidStrategies` instead. */
+    listBidStrategies: this._bind(listBidStrategies),
+    /** @deprecated Use `zernio.adcampaigns.createBidStrategy` instead. */
+    createBidStrategy: this._bind(createBidStrategy),
+    /** @deprecated Use `zernio.adcampaigns.updateBidStrategy` instead. */
+    updateBidStrategy: this._bind(updateBidStrategy),
     /** @deprecated Use `zernio.adcampaigns.listAdKeywords` instead. */
     listAdKeywords: this._bind(listAdKeywords),
     /** @deprecated Use `zernio.adcampaigns.addAdKeywords` instead. */
@@ -1791,6 +1805,8 @@ export class Zernio {
     createAdCampaign: this._bind(createAdCampaign),
     /** @deprecated Use `zernio.adcampaigns.updateAdCampaignStatus` instead. */
     updateAdCampaignStatus: this._bind(updateAdCampaignStatus),
+    /** @deprecated Use `zernio.adcampaigns.getCampaignBidding` instead. */
+    getCampaignBidding: this._bind(getCampaignBidding),
     /** @deprecated Use `zernio.adcampaigns.updateAdCampaign` instead. */
     updateAdCampaign: this._bind(updateAdCampaign),
     /** @deprecated Use `zernio.adcampaigns.deleteAdCampaign` instead. */
