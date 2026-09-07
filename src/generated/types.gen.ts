@@ -12895,10 +12895,72 @@ export type GetTikTokCreatorInfoResponse = ({
          */
         maxVideoDurationSec?: number;
         /**
-         * Available interaction toggles (comment, duet, stitch) and their defaults
+         * Per-interaction descriptors for the comment, duet and stitch toggles. Each key matches the tiktokSettings field of the same name on the create-post request. allow_duet and allow_stitch are null when mediaType is photo, because TikTok does not apply duet or stitch to photo posts.
          */
         interactionSettings?: {
-            [key: string]: unknown;
+            /**
+             * Descriptor for the allow_comment toggle.
+             */
+            allow_comment?: {
+                /**
+                 * Whether the creator permits this interaction. False means they disabled it in the TikTok app. This is availability, never the value the user selected.
+                 */
+                enabled?: boolean;
+                /**
+                 * Whether tiktokSettings.allow_comment must be supplied when creating a post. Always true, because TikTok forbids defaulting it.
+                 */
+                required?: boolean;
+                /**
+                 * Initial value a post composer should render. A UI seed only, never applied server-side when the field is omitted.
+                 */
+                default?: boolean;
+                /**
+                 * Human-readable toggle label.
+                 */
+                label?: string;
+            };
+            /**
+             * Descriptor for the allow_duet toggle. Null when mediaType is photo.
+             */
+            allow_duet?: {
+                /**
+                 * Whether the creator permits this interaction. False means they disabled it in the TikTok app. This is availability, never the value the user selected.
+                 */
+                enabled?: boolean;
+                /**
+                 * Whether tiktokSettings.allow_duet must be supplied when creating a post. Always true, because TikTok forbids defaulting it.
+                 */
+                required?: boolean;
+                /**
+                 * Initial value a post composer should render. A UI seed only, never applied server-side when the field is omitted.
+                 */
+                default?: boolean;
+                /**
+                 * Human-readable toggle label.
+                 */
+                label?: string;
+            } | null;
+            /**
+             * Descriptor for the allow_stitch toggle. Null when mediaType is photo.
+             */
+            allow_stitch?: {
+                /**
+                 * Whether the creator permits this interaction. False means they disabled it in the TikTok app. This is availability, never the value the user selected.
+                 */
+                enabled?: boolean;
+                /**
+                 * Whether tiktokSettings.allow_stitch must be supplied when creating a post. Always true, because TikTok forbids defaulting it.
+                 */
+                required?: boolean;
+                /**
+                 * Initial value a post composer should render. A UI seed only, never applied server-side when the field is omitted.
+                 */
+                default?: boolean;
+                /**
+                 * Human-readable toggle label.
+                 */
+                label?: string;
+            } | null;
         };
     };
     /**
