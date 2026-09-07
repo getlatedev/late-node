@@ -1895,6 +1895,14 @@ export type CampaignBidding = {
         id?: string;
         name?: string;
     } | null;
+    /**
+     * When this data was fetched from Google. Null when it was never served from cache.
+     */
+    cachedAt?: (string) | null;
+    /**
+     * True when Google's daily API quota was exhausted and this is the last successful fetch, not a live read.
+     */
+    stale?: boolean;
 };
 
 /**
@@ -30511,6 +30519,14 @@ export type GetAdsSearchTermsResponse = ({
          */
         nextPageToken?: (string) | null;
     };
+    /**
+     * When this data was fetched from Google. Null when it was never served from cache.
+     */
+    cachedAt?: (string) | null;
+    /**
+     * True when Google's daily API quota was exhausted and this is the last successful fetch, not a live read.
+     */
+    stale?: boolean;
 });
 
 export type GetAdsSearchTermsError = (ErrorResponse | {
@@ -30545,6 +30561,14 @@ export type ListBidStrategiesResponse = ({
      */
     currency?: string;
     strategies?: Array<PortfolioBidStrategy>;
+    /**
+     * When this data was fetched from Google. Null when it was never served from cache.
+     */
+    cachedAt?: (string) | null;
+    /**
+     * True when Google's daily API quota was exhausted and this is the last successful fetch, not a live read.
+     */
+    stale?: boolean;
 });
 
 export type ListBidStrategiesError = (ErrorResponse | {
@@ -31209,6 +31233,14 @@ export type ListCampaignNegativeKeywordsResponse = ({
         text?: string;
         matchType?: 'exact' | 'phrase' | 'broad';
     }>;
+    /**
+     * When this list was fetched from Google. Null when it was never served from cache.
+     */
+    cachedAt?: (string) | null;
+    /**
+     * True when Google's daily API quota was exhausted and this is the last successful fetch, not a live read.
+     */
+    stale?: boolean;
 });
 
 export type ListCampaignNegativeKeywordsError = ({
@@ -31386,6 +31418,14 @@ export type GetCampaignTargetingResponse = ({
         id?: string;
         name?: string;
     }>;
+    /**
+     * When this targeting was fetched from Google. Null when it was never served from cache.
+     */
+    cachedAt?: (string) | null;
+    /**
+     * True when Google's daily API quota was exhausted and this is the last successful fetch, not a live read.
+     */
+    stale?: boolean;
 });
 
 export type GetCampaignTargetingError = (ErrorResponse | {
@@ -31448,6 +31488,29 @@ export type UpdateCampaignTargetingResponse = ({
      * Which targeting fields were applied.
      */
     updated?: Array<('devices' | 'locations' | 'languages')>;
+    devices?: Array<{
+        device?: 'MOBILE' | 'DESKTOP' | 'TABLET' | 'CONNECTED_TV';
+        included?: boolean;
+        /**
+         * Always null on this read; see GET's description.
+         */
+        bidModifier?: (number) | null;
+    }>;
+    locations?: Array<{
+        /**
+         * Numeric id from Google's geoTargetConstants/{id}.
+         */
+        geoTargetId?: string;
+        /**
+         * true = excluded location.
+         */
+        negative?: boolean;
+    }>;
+    languages?: Array<{
+        code?: string;
+        id?: string;
+        name?: string;
+    }>;
 });
 
 export type UpdateCampaignTargetingError = (ErrorResponse | {
@@ -33683,6 +33746,14 @@ export type ListAccountCalloutsResponse = ({
          */
         status?: string;
     }>;
+    /**
+     * When this list was fetched from Google. Null when it was never served from cache.
+     */
+    cachedAt?: (string) | null;
+    /**
+     * True when Google's daily API quota was exhausted and this is the last successful fetch, not a live read.
+     */
+    stale?: boolean;
 });
 
 export type ListAccountCalloutsError = (ErrorResponse | {
@@ -33874,6 +33945,14 @@ export type ListAdAccountsResponse = ({
          */
         unusableReason?: (string) | null;
     }>;
+    /**
+     * Google only. When this list was fetched from Google. Null when it was never served from cache, or on other platforms.
+     */
+    cachedAt?: (string) | null;
+    /**
+     * Google only. True when Google's daily API quota was exhausted and this is the last successful fetch, not a live read. Absent on other platforms.
+     */
+    stale?: boolean;
 });
 
 export type ListAdAccountsError = ({
@@ -37022,6 +37101,14 @@ export type ListConversionActionsResponse = ({
      */
     customerId?: string;
     actions?: Array<ConversionAction>;
+    /**
+     * When this list was fetched from Google. Null when it was never served from cache.
+     */
+    cachedAt?: (string) | null;
+    /**
+     * True when Google's daily API quota was exhausted and this is the last successful fetch, not a live read.
+     */
+    stale?: boolean;
 });
 
 export type ListConversionActionsError = (ErrorResponse | {

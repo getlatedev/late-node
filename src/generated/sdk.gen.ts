@@ -7765,9 +7765,11 @@ export const listAds = <ThrowOnError extends boolean = false>(options?: OptionsL
  * Google Ads search terms report
  * The actual search queries that triggered your ads, with matched-keyword
  * status and spend metrics — the raw material for wasted-spend analysis and
- * negative-keyword lists. Reads Google's `search_term_view` live; defaults
- * to the last 30 days. Rows are ordered by cost, descending. Draws on the
- * shared Google Ads operations budget.
+ * negative-keyword lists. Reads Google's `search_term_view`, cached for
+ * the quota window; defaults to the last 30 days. Rows are ordered by
+ * cost, descending. Draws on the shared Google Ads operations budget.
+ * The response carries `cachedAt` and `stale`, set when a quota-exhausted
+ * call falls back to the last-good copy instead of a live read.
  */
 export const getAdsSearchTerms = <ThrowOnError extends boolean = false>(options: OptionsLegacyParser<GetAdsSearchTermsData, ThrowOnError>) => {
     return (options?.client ?? client).get<GetAdsSearchTermsResponse, GetAdsSearchTermsError, ThrowOnError>({
@@ -7778,7 +7780,7 @@ export const getAdsSearchTerms = <ThrowOnError extends boolean = false>(options:
 
 /**
  * List Google Ads portfolio bid strategies
- * Bidding strategy report: type, status, campaign count, clicks, cost, cost per conversion, impressions, average CPC and conversions over the date range (default last 30 days). Reads Google's `bidding_strategy` resource live. Draws on the shared Google Ads operations budget.
+ * Bidding strategy report: type, status, campaign count, clicks, cost, cost per conversion, impressions, average CPC and conversions over the date range (default last 30 days). Reads Google's `bidding_strategy` resource, cached for the quota window. Draws on the shared Google Ads operations budget. The response carries `cachedAt` and `stale`, set when a quota-exhausted call falls back to the last-good copy instead of a live read.
  */
 export const listBidStrategies = <ThrowOnError extends boolean = false>(options: OptionsLegacyParser<ListBidStrategiesData, ThrowOnError>) => {
     return (options?.client ?? client).get<ListBidStrategiesResponse, ListBidStrategiesError, ThrowOnError>({
@@ -7966,9 +7968,12 @@ export const updateAdCampaignStatus = <ThrowOnError extends boolean = false>(opt
 
 /**
  * Read a campaign's current bidding
- * Live read of the campaign's bidding strategy on Google, for pre-filling the bid strategy
- * block before a PUT to /v1/ads/campaigns/{campaignId}. Google Ads only; `platform` is required
- * and rejected when it is anything else, since a `campaignId` is not globally unique.
+ * Read of the campaign's bidding strategy on Google, cached for the quota window, for
+ * pre-filling the bid strategy block before a PUT to /v1/ads/campaigns/{campaignId}.
+ * Google Ads only; `platform` is required and rejected when it is anything else, since
+ * a `campaignId` is not globally unique. The response carries `cachedAt` and `stale`,
+ * set when a quota-exhausted call falls back to the last-good copy instead of a live
+ * read.
  *
  * Maps Google's bidding strategy onto the same triplet PUT accepts: `LOWEST_COST_WITHOUT_CAP`
  * (Maximize Conversions, no target), `COST_CAP` + `bidAmount` (Target CPA), `LOWEST_COST_WITH_MIN_ROAS`
@@ -8045,9 +8050,11 @@ export const deleteAdCampaign = <ThrowOnError extends boolean = false>(options: 
 /**
  * List campaign-level negative keywords
  * Returns the campaign-level negative keywords (`campaign_criterion.negative`),
- * distinct from the ad-group-level negatives under `GET /v1/ads/keywords`. Read
- * live from Google on every call (not synced to Postgres), and gated by the
- * shared Google Ads operations budget like every other on-demand Google surface.
+ * distinct from the ad-group-level negatives under `GET /v1/ads/keywords`. Cached
+ * for the quota window (not synced to Postgres), and gated by the shared Google
+ * Ads operations budget like every other on-demand Google surface. The response
+ * carries `cachedAt` and `stale`, set when a quota-exhausted call falls back to
+ * the last-good copy instead of a live read.
  *
  * The platform is always discovered from the campaign itself; a non-Google
  * campaign returns 501 rather than 404, whether or not `platform` was passed.
@@ -8135,9 +8142,10 @@ export const duplicateAdCampaign = <ThrowOnError extends boolean = false>(option
 /**
  * Read a Google campaign's device, location, and language targeting
  * Google Ads compliance requires geo, language, budget, and bidding targeting
- * set at creation to stay editable afterwards; this reads the live campaign
- * state so an integrator can build an editor around it. Google only; every
- * other platform returns 501.
+ * set at creation to stay editable afterwards; this reads the campaign state
+ * so an integrator can build an editor around it. Cached for the quota window
+ * (10 minutes fresh, up to 7 days last-good), not always a live read. Google
+ * only; every other platform returns 501.
  *
  * `devices` always lists all four device types with `included` reflecting
  * Google's negative device criteria (a device absent from any negative
@@ -8168,6 +8176,10 @@ export const getCampaignTargeting = <ThrowOnError extends boolean = false>(optio
  *
  * `languages` is an array of Google's language codes (ISO 639-1, plus variants
  * such as `zh_CN`); an unknown code returns 400.
+ *
+ * The response includes the refreshed `devices`/`locations`/`languages` state
+ * read back from Google after the edit, and invalidates the cached copy
+ * `GET` on this campaign would otherwise keep serving.
  *
  */
 export const updateCampaignTargeting = <ThrowOnError extends boolean = false>(options: OptionsLegacyParser<UpdateCampaignTargetingData, ThrowOnError>) => {
@@ -9111,7 +9123,11 @@ export const deleteValueRuleSet = <ThrowOnError extends boolean = false>(options
  * Google Ads compliance row C.75: callout assets linked at the CUSTOMER
  * level via `customer_asset` (not a campaign or ad group), so they serve
  * fleet-wide across the account. Google only; every other platform
- * returns 501. Draws on the shared Google Ads operations budget.
+ * returns 501. Cached for the quota window (10 minutes fresh, up to 7
+ * days last-good), and gated by the shared Google Ads operations budget
+ * on a cache miss. The response carries `cachedAt` and `stale`, set when
+ * a quota-exhausted call falls back to the last-good copy instead of a
+ * live read.
  */
 export const listAccountCallouts = <ThrowOnError extends boolean = false>(options: OptionsLegacyParser<ListAccountCalloutsData, ThrowOnError>) => {
     return (options?.client ?? client).get<ListAccountCalloutsResponse, ListAccountCalloutsError, ThrowOnError>({
@@ -9907,6 +9923,11 @@ export const adjustConversions = <ThrowOnError extends boolean = false>(options:
  * accessible Google Ads customers, and the call fails with `400` when more than
  * one is accessible (pass `customerId` to disambiguate).
  *
+ * The list itself is cached for the quota window (1 hour fresh, up to 7 days
+ * last-good; the cache key does not vary on `type`). The response carries
+ * `cachedAt` and `stale`, set when a quota-exhausted call falls back to the
+ * last-good copy instead of a live read.
+ *
  */
 export const listConversionActions = <ThrowOnError extends boolean = false>(options: OptionsLegacyParser<ListConversionActionsData, ThrowOnError>) => {
     return (options?.client ?? client).get<ListConversionActionsResponse, ListConversionActionsError, ThrowOnError>({
@@ -9919,8 +9940,9 @@ export const listConversionActions = <ThrowOnError extends boolean = false>(opti
  * Create a website conversion action
  * Creates a `WEBPAGE` conversion action (category `DEFAULT`) and returns it with
  * its tag snippets, read back after creation since Google never returns them on
- * the create response itself. Google-only; other platforms return `501`. Requires
- * the Ads add-on.
+ * the create response itself. Invalidates the cached list `GET` on this resource
+ * would otherwise keep serving. Google-only; other platforms return `501`.
+ * Requires the Ads add-on.
  *
  */
 export const createConversionAction = <ThrowOnError extends boolean = false>(options: OptionsLegacyParser<CreateConversionActionData, ThrowOnError>) => {
