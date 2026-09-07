@@ -364,6 +364,11 @@ describe('Endpoint Methods', () => {
       expect(client.connect.connectDiscordChannel).toBeTypeOf('function');
     });
 
+    it('should have listSlackChannels method', () => {
+      expect(client.connect.listSlackChannels).toBeDefined();
+      expect(client.connect.listSlackChannels).toBeTypeOf('function');
+    });
+
     it('should have connectSlackChannel method', () => {
       expect(client.connect.connectSlackChannel).toBeDefined();
       expect(client.connect.connectSlackChannel).toBeTypeOf('function');

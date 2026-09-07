@@ -313,6 +313,7 @@ try {
 | `connect.listInstagramPages()` | List Pages with a linked Instagram account |
 | `connect.listLinkedInOrganizations()` | List LinkedIn orgs |
 | `connect.listPinterestBoardsForSelection()` | List Pinterest boards |
+| `connect.listSlackChannels()` | List Slack channels for the channel picker |
 | `connect.listSnapchatProfiles()` | List Snapchat profiles |
 | `connect.listWhatsAppPhoneNumbers()` | List numbers for selection |
 | `connect.createPinterestBoard()` | Create Pinterest board |

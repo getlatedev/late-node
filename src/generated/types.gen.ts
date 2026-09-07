@@ -4898,7 +4898,7 @@ export type PlatformTarget = {
         [key: string]: unknown;
     };
     /**
-     * Platform-specific status: pending, publishing, published, failed
+     * Platform-specific status: pending, processing, uploading, published, failed, cancelled (removed from the platform via DELETE /v1/posts/{postId}/unpublish)
      */
     status?: string;
     /**
@@ -4966,7 +4966,10 @@ export type Post = {
     platforms?: Array<PlatformTarget>;
     scheduledFor?: string;
     timezone?: string;
-    status?: 'draft' | 'scheduled' | 'publishing' | 'published' | 'failed' | 'partial';
+    /**
+     * `cancelled` is set by DELETE /v1/posts/{postId}/unpublish once every platform entry has been removed from its platform (a post with published entries left becomes `partial`); cancelled posts can be edited and rescheduled like drafts.
+     */
+    status?: 'draft' | 'scheduled' | 'publishing' | 'published' | 'partial' | 'failed' | 'cancelled';
     /**
      * YouTube constraints: each tag max 100 chars, combined max 500 chars, duplicates removed.
      */
@@ -5000,7 +5003,10 @@ export type Post = {
     updatedAt?: string;
 };
 
-export type status9 = 'draft' | 'scheduled' | 'publishing' | 'published' | 'failed' | 'partial';
+/**
+ * `cancelled` is set by DELETE /v1/posts/{postId}/unpublish once every platform entry has been removed from its platform (a post with published entries left becomes `partial`); cancelled posts can be edited and rescheduled like drafts.
+ */
+export type status9 = 'draft' | 'scheduled' | 'publishing' | 'published' | 'partial' | 'failed' | 'cancelled';
 
 export type visibility = 'public' | 'private' | 'unlisted';
 
@@ -6769,7 +6775,7 @@ export type WebhookLog = {
      */
     webhookName?: string;
     /**
-     * Stable webhook event ID (correlates to the delivered payload)
+     * Stable webhook event ID: the payload `id`, also sent as the X-Zernio-Event-Id header. Shared by every attempt and redelivery of the same event.
      */
     eventId?: string;
     /**
@@ -11833,7 +11839,7 @@ export type ListPostsData = {
          * Which collection to read. `zernio` (default) returns posts authored through Zernio. `external` returns posts synced from the platform (existing/historical posts that were published outside Zernio). Combine with `accountId` and paginate via `page`/`limit` to walk the full synced history (we keep up to the last ~12 months per account).
          */
         source?: 'zernio' | 'external';
-        status?: 'draft' | 'scheduled' | 'published' | 'failed';
+        status?: 'draft' | 'scheduled' | 'publishing' | 'published' | 'partial' | 'failed' | 'cancelled';
     };
 };
 
@@ -11886,6 +11892,10 @@ export type CreatePostData = {
          * When true, saves the post as a draft. When none of scheduledFor, publishNow, or queuedFromProfile are provided, the post defaults to draft automatically.
          */
         isDraft?: boolean;
+        /**
+         * TikTok only. Preview whether each `tiktok` entry in `platforms` could publish right now under the TikTok Direct Post daily limits, without creating, scheduling or publishing anything: no post is persisted and no upload slot is claimed, so it can be repeated freely. The request still goes through auth, the payment gate and body validation, then returns HTTP 200 with `{ dryRun: true, canPublish, tiktok: [...] }` instead of 201. Only `tiktok` entries are evaluated; other platforms in the body are ignored, and a body with no `tiktok` entry is rejected with 400 `invalid_field_value` on `platforms`. An entry with `platformSpecificData.tiktokSettings.draft: true` (Creator Inbox upload) is not subject to the limit and always reports `canPublish: true`.
+         */
+        dryRun?: boolean;
         /**
          * IANA timezone (`Europe/Madrid`, `America/New_York`) used to interpret a `scheduledFor` (root or per-platform) that carries no `Z` or offset. Has no effect on values that already carry one. An unknown name returns 400 when `scheduledFor` is set.
          */
@@ -11942,7 +11952,31 @@ export type CreatePostData = {
     };
 };
 
-export type CreatePostResponse = (PostCreateResponse | PostPublishIncompleteResponse);
+export type CreatePostResponse = ({
+    /**
+     * Always true on this response
+     */
+    dryRun: boolean;
+    /**
+     * True only when every evaluated TikTok account can publish now
+     */
+    canPublish: boolean;
+    /**
+     * One verdict per `tiktok` entry in the request, in request order
+     */
+    tiktok: Array<{
+        accountId: string;
+        canPublish: boolean;
+        /**
+         * Whether this account already published a Direct Post today (an account that did can keep publishing). Absent for Creator Inbox drafts and when no per-user limit applies.
+         */
+        alreadyPostedToday?: boolean;
+        /**
+         * Human-readable explanation of the verdict
+         */
+        reason: string;
+    }>;
+} | PostCreateResponse | PostPublishIncompleteResponse);
 
 export type CreatePostError = ({
     error?: string;
@@ -16196,6 +16230,60 @@ export type ConnectDiscordChannelError = (ErrorResponse | {
         effective_account_limit?: number;
     };
 } | unknown);
+
+export type ListSlackChannelsData = {
+    query: {
+        /**
+         * Existing active Slack account (yours or a team member's) whose workspace token is reused.
+         */
+        accountId?: string;
+        /**
+         * Nonce from the OAuth redirect (first connect).
+         */
+        pendingDataToken?: string;
+        /**
+         * Zernio profile the channel account will belong to. Must match the profile the OAuth flow was started on when `pendingDataToken` is used.
+         */
+        profileId: string;
+        /**
+         * Start-OAuth mode only: where to send the user after the connect completes. `redirectUrl` is accepted as an alias.
+         */
+        redirect_url?: string;
+    };
+};
+
+export type ListSlackChannelsResponse = (({
+    team: {
+        /**
+         * Slack workspace (team) id
+         */
+        id?: string;
+        name?: (string) | null;
+        /**
+         * Workspace icon URL
+         */
+        icon?: (string) | null;
+    };
+    channels: Array<{
+        /**
+         * Channel id (C... or G...), the value to send as channelId on POST
+         */
+        id: string;
+        name: string;
+        isPrivate: boolean;
+        /**
+         * Whether the Zernio bot is already a member of the channel
+         */
+        isMember: boolean;
+    }>;
+} | {
+    authUrl: string;
+    state: string;
+}));
+
+export type ListSlackChannelsError = (unknown | {
+    error?: string;
+});
 
 export type ConnectSlackChannelData = {
     body: {
