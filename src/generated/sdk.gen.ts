@@ -876,6 +876,10 @@ export const listPosts = <ThrowOnError extends boolean = false>(options?: Option
  * Create and optionally publish a post. Immediate posts (`publishNow: true`) include `platformPostUrl` in the response.
  * Content is optional when media is attached, all platforms have `customContent`, every platform entry is an X Article (`platformSpecificData.article`), or every platform entry is a LinkedIn text-free reshare (`platformSpecificData.reshareUrl` with no text). See each platform's schema for media constraints.
  *
+ * ## Scheduling
+ *
+ * Pick one of `scheduledFor` (schedule), `publishNow: true` (publish synchronously) or `queuedFromProfile` (next queue slot). With none of them and `isDraft` unset, the post is saved as a draft. `platforms` is required unless the post is a draft. `isDraft: true` wins over `publishNow` and `scheduledFor` (the post is saved, never published); `publishNow: true` wins over `scheduledFor`. A `scheduledFor` already in the past is not rejected: the post is published synchronously in the same request, exactly like `publishNow`.
+ *
  * ## Idempotency
  *
  * Two layers of duplicate-protection apply, so safe-to-retry callers (network blips, n8n / Zapier retries, etc.) don't accidentally double-post.
@@ -3265,7 +3269,7 @@ export const getWebhookSettings = <ThrowOnError extends boolean = false>(options
  *
  * `name`, `url` and `events` are required. `url` must be a valid URL and `events` must contain at least one event. Whitespace is trimmed from `url` before validation.
  *
- * Webhooks are automatically disabled after 10 consecutive delivery failures.
+ * Webhooks are auto-disabled only once the endpoint has had no successful delivery for 3 days AND has either reached 20 consecutive terminal failures (each one an event that exhausted the full retry ladder) or been failing continuously for 3 days. The owner is emailed; re-enable it with `isActive: true`.
  *
  * A restricted (zrk_) API key can only subscribe to events whose resource group
  * the key holds; an event outside the key's groups is rejected with 403, so a
@@ -3293,7 +3297,7 @@ export const createWebhookSettings = <ThrowOnError extends boolean = false>(opti
  *
  * When provided, `name` must be 1-50 characters, `url` must be a valid URL, and `events` must contain at least one event. Whitespace is trimmed from `url` before validation.
  *
- * Webhooks are automatically disabled after 10 consecutive delivery failures.
+ * Webhooks are auto-disabled only once the endpoint has had no successful delivery for 3 days AND has either reached 20 consecutive terminal failures (each one an event that exhausted the full retry ladder) or been failing continuously for 3 days. The owner is emailed; re-enable it with `isActive: true`.
  *
  * A restricted (zrk_) API key can only set `events` to events whose resource
  * group the key holds; an event outside the key's groups is rejected with 403.
@@ -9999,7 +10003,8 @@ export const listTrackingTags = <ThrowOnError extends boolean = false>(options: 
  * pixel.
  *
  * NOT idempotent on either platform: each call creates a new pixel (and,
- * for OpenAI, a new Conversions API key). Do not retry blindly on
+ * for OpenAI, a new Conversions API key plus, with `defaultEventType`, a
+ * new conversion event setting). Do not retry blindly on
  * timeout. Meta (platform `metaads`) and OpenAI Ads (platform
  * `openaiads`); other platforms return 405.
  *

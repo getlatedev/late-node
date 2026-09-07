@@ -11784,6 +11784,9 @@ export type CreatePostData = {
          * Post caption/text. Optional when media is attached, all platforms have customContent, every platform entry is an X Article (platformSpecificData.article), or every platform entry is a LinkedIn text-free reshare (platformSpecificData.reshareUrl with no text). Required for other text-only posts.
          */
         content?: string;
+        /**
+         * Media attached to every platform in the request (a platform entry can override it with `customMedia`). Each entry needs a publicly reachable HTTPS `url`; `type` (image, video, gif, document) is inferred from the URL extension when omitted and a `type` that contradicts the extension is rejected with 400. Upload files with `POST /v1/media/presign` first; per-platform size, duration and format limits are listed on each platform schema.
+         */
         mediaItems?: Array<MediaItem>;
         /**
          * Target platforms and accounts for this post. Required for non-draft posts (returns 400 if empty). Drafts can omit platforms.
@@ -11802,12 +11805,21 @@ export type CreatePostData = {
             scheduledFor?: string;
             platformSpecificData?: (TwitterPlatformData | ThreadsPlatformData | FacebookPlatformData | InstagramPlatformData | LinkedInPlatformData | PinterestPlatformData | YouTubePlatformData | GoogleBusinessPlatformData | TikTokPlatformData | TelegramPlatformData | SnapchatPlatformData | RedditPlatformData | BlueskyPlatformData | DiscordPlatformData | SlackPlatformData);
         }>;
+        /**
+         * When to publish. Required unless `publishNow` is true, `queuedFromProfile` is set, or the post is a draft. An ISO 8601 value with a `Z` or offset (`2026-01-15T10:00:00Z`, `2026-01-15T11:00:00+01:00`) is taken as-is; a value without one (`2026-01-15T10:00:00` or `2026-01-15 10:00`) is read as local time in `timezone`. A value already in the past is published synchronously in the same request. Ignored when `publishNow` is true.
+         */
         scheduledFor?: string;
+        /**
+         * Publish to every platform synchronously in this request instead of scheduling; the response then carries each platform result and `platformPostUrl`, with HTTP 207 when some platforms failed. Takes precedence over `scheduledFor`; ignored when `isDraft` is true.
+         */
         publishNow?: boolean;
         /**
          * When true, saves the post as a draft. When none of scheduledFor, publishNow, or queuedFromProfile are provided, the post defaults to draft automatically.
          */
         isDraft?: boolean;
+        /**
+         * IANA timezone (`Europe/Madrid`, `America/New_York`) used to interpret a `scheduledFor` (root or per-platform) that carries no `Z` or offset. Has no effect on values that already carry one. An unknown name returns 400 when `scheduledFor` is set.
+         */
         timezone?: string;
         /**
          * Tags/keywords. YouTube constraints: each tag max 100 chars, combined max 500 chars, duplicates auto-removed.
@@ -11821,7 +11833,13 @@ export type CreatePostData = {
          * Stored for reference only. This field does NOT automatically create @mentions when publishing. For LinkedIn @mentions, use the /v1/accounts/{accountId}/linkedin-mentions endpoint to resolve profile URLs to URNs, then embed the returned mentionFormat directly in the post content field.
          */
         mentions?: Array<(string)>;
+        /**
+         * Stored on the post and echoed back on reads. Publishing does not branch on it: every entry in `platforms` is published regardless, so treat it as a label for your own tooling.
+         */
         crosspostingEnabled?: boolean;
+        /**
+         * Free-form key/value pairs of your own, stored on the post and returned on reads and in webhook payloads. Zernio also writes the bookkeeping keys `usageCounted`, `usageRefunded` and `hidden` into this object; do not set them, and they are stripped from webhook payloads.
+         */
         metadata?: {
             [key: string]: unknown;
         };
@@ -13169,7 +13187,7 @@ export type CreateInviteTokenError = (unknown | {
 export type GetConnectUrlData = {
     path: {
         /**
-         * Social media platform to connect
+         * Social media platform to connect. `snapchat` is a closed beta with no public release date: it returns 403 `PLATFORM_BETA_RESTRICTED` until the account is approved.
          */
         platform: 'facebook' | 'instagram' | 'linkedin' | 'twitter' | 'tiktok' | 'youtube' | 'threads' | 'reddit' | 'pinterest' | 'bluesky' | 'googlebusiness' | 'telegram' | 'snapchat' | 'discord' | 'slack' | 'whatsapp';
     };
@@ -36800,6 +36818,10 @@ export type CreateTrackingTagData = {
          */
         adAccountId: string;
         name: string;
+        /**
+         * OpenAI Ads only (ignored by Meta). When set, also provisions a standard conversion event setting wired to the new pixel, so `goal: conversions` ad creates on `POST /v1/ads/create` have an event to reference immediately.
+         */
+        defaultEventType?: 'order_created' | 'lead_created' | 'items_added' | 'contents_viewed' | 'checkout_started' | 'registration_completed' | 'subscription_created' | 'trial_started' | 'appointment_scheduled' | 'page_viewed' | 'app_installed' | 'app_opened';
     };
     path: {
         /**
