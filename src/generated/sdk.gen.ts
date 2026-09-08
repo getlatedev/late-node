@@ -8467,6 +8467,32 @@ export const getAd = <ThrowOnError extends boolean = false>(options: OptionsLega
  * `targeting` or `creative` returns 501 with code `unsupported_platform_operation`.
  * OpenAI Ads budget is lifetime-only (see `budget.type` below).
  *
+ * **Google keyword replacement:** These edits affect the ad's entire ad group,
+ * including sibling ads. Positive (`targeting.keywords`) and negative
+ * (`targeting.negativeKeywords`) sets are independent: omit a field to leave
+ * that set unchanged, or send `[]` to remove every keyword of that kind.
+ *
+ * Zernio compares each supplied set with Google's live criteria by
+ * case-insensitive keyword text and match type. A matching criterion is left
+ * untouched, retaining its criterion ID, enabled/paused status, keyword-level
+ * bid overrides, labels, and criterion-associated history/statistics. Zernio
+ * does not reset its quality score; Google continues to calculate scores and
+ * statistics normally. Text comparison does not trim whitespace.
+ *
+ * A bare string or an object without `matchType` means `broad`, not the
+ * existing criterion's match type. For example, resending an existing
+ * `{ "text": "plumber", "matchType": "exact" }` preserves it; sending
+ * `"plumber"` instead removes that EXACT criterion and requests a BROAD one.
+ * Changing text or match type removes criteria no longer requested and
+ * creates any missing criteria. New criteria get new IDs and do not inherit
+ * removed criteria's bid overrides, labels, or history. Historical reporting
+ * for a removed criterion is not transferred to its replacement.
+ *
+ * To add keywords without replacing a set, use
+ * [POST /v1/ads/keywords](https://docs.zernio.com/ad-campaigns/add-ad-keywords).
+ * Use `PATCH /v1/ads/keywords/{keywordId}` to pause/enable one keyword, or
+ * `DELETE /v1/ads/keywords/{keywordId}` to remove it.
+ *
  */
 export const updateAd = <ThrowOnError extends boolean = false>(options: OptionsLegacyParser<UpdateAdData, ThrowOnError>) => {
     return (options?.client ?? client).put<UpdateAdResponse, UpdateAdError, ThrowOnError>({

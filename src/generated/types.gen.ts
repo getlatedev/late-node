@@ -20530,7 +20530,7 @@ export type SendInboxMessageData = {
          */
         messageTag?: 'CONFIRMED_EVENT_UPDATE' | 'POST_PURCHASE_UPDATE' | 'ACCOUNT_UPDATE' | 'HUMAN_AGENT';
         /**
-         * Platform message ID to quote-reply to. For WhatsApp, pass the wamid; for Telegram, the Telegram message ID (delivered as message.platformMessageId on webhooks, and as `id` on each entry of the list-messages endpoint). On Slack it threads the reply (thread_ts) instead of quoting. Silently ignored on platforms without send-side reply support, including Instagram and Facebook Messenger (Meta's Send API rejects reply_to on Instagram and does not expose it on Messenger).
+         * Platform message ID to quote-reply to. For WhatsApp, pass the wamid; for Telegram, the Telegram message ID (delivered as message.platformMessageId on webhooks, and as `id` on each entry of the list-messages endpoint). On Slack it threads the reply (thread_ts) instead of quoting. Instagram and Facebook Messenger do not support send-side quote replies: the message is sent without a quote and the successful response includes a warnings entry with code ignored_field and param replyTo. Other platforms without send-side reply support ignore this field.
          */
         replyTo?: string;
         /**
@@ -20595,6 +20595,17 @@ export type SendInboxMessageData = {
 
 export type SendInboxMessageResponse = ({
     success?: boolean;
+    /**
+     * Present when a successful send ignored replyTo on Instagram or Facebook Messenger. The message was sent without a quote; do not retry it to apply the reply.
+     */
+    warnings?: Array<{
+        code: 'ignored_field';
+        param: 'replyTo';
+        /**
+         * Human-readable explanation of the ignored field.
+         */
+        message: string;
+    }>;
     data?: {
         /**
          * Platform id of the sent message (not returned for Reddit). For WhatsApp this is the raw Meta wamid, the same id delivered as message.platformMessageId on webhooks and delivery-status updates, and the value to pass as replyTo to quote-reply.
@@ -32153,14 +32164,28 @@ export type UpdateAdData = {
          */
         targeting?: {
             /**
-             * Google only. The FULL new set of positive keywords for the ad group; live keywords not listed are removed. Entries are strings (BROAD) or { text, matchType } with matchType exact | phrase | broad. Mirrored to GET /v1/ads/keywords immediately.
+             * Google only. The FULL desired set of positive keywords for the entire ad group.
+             * Omit to leave positives unchanged; [] removes all positives. Negatives are independent.
+             * Entries are strings (BROAD) or { text, matchType } with matchType exact | phrase | broad;
+             * an omitted matchType also defaults to BROAD. Matching case-insensitive text AND match type
+             * retains the existing criterion ID, status, bid overrides, labels and history without a mutation.
+             * A changed text or match type uses remove/create, without transferring the old criterion's
+             * attributes or history. See Google keyword replacement above for an EXACT-to-BROAD example.
+             * Mirrored to GET /v1/ads/keywords immediately.
+             *
              */
             keywords?: Array<(string | {
     text: string;
     matchType?: 'exact' | 'phrase' | 'broad';
 })>;
             /**
-             * Google only. Same declarative contract as keywords, for the ad group's negative keywords.
+             * Google only. The FULL desired set of negative keywords for the entire ad group,
+             * independent of positives. Omit to leave negatives unchanged; [] removes all negatives.
+             * Uses the same text/match-type identity and preservation contract as keywords above.
+             * Strings and objects without matchType default to BROAD, so resending an EXACT or PHRASE
+             * negative as a bare string requests a different criterion. Campaign negatives are separate:
+             * use /v1/ads/campaigns/{campaignId}/negative-keywords to manage those.
+             *
              */
             negativeKeywords?: Array<(string | {
     text: string;
@@ -34556,14 +34581,16 @@ export type CreateStandaloneAdData = {
          * multiple ads per ad set are allowed (unlike `dynamicCreative` which is limited to one).
          * Requires `imageUrl` or `video`, `linkUrl`, and `callToAction`. When set, the top-level
          * `body` field is used as the `object_story_spec.link_data.message` (the preview text) and
-         * `headlines` must also be present. Mutually exclusive with `dynamicCreative`,
-         * `placementAssets`, `carouselCards`, and `creatives[]`.
+         * `headlines` must also be present. On a video creative the copy lands in
+         * `video_data.message` / `video_data.title` instead of `link_data`. Mutually exclusive
+         * with `dynamicCreative`, `placementAssets`, `carouselCards`, and `creatives[]`.
          *
          */
         bodies?: Array<(string)>;
         /**
          * Meta only. Headline variations for Multiple Text Options. Must be sent alongside `bodies`.
-         * The top-level `headline` field is used as the `object_story_spec.link_data.name`.
+         * The top-level `headline` field is used as the `object_story_spec.link_data.name`
+         * (`video_data.title` on a video creative).
          *
          */
         headlines?: Array<(string)>;
@@ -35809,6 +35836,9 @@ export type CreateLeadFormData = {
         content?: Array<(string)>;
         style?: 'LIST_STYLE' | 'PARAGRAPH_STYLE';
         buttonText?: string;
+        /**
+         * Direct public JPEG or PNG image URL, up to 5 MB. Redirects, Ad Image hashes and IDs are not supported.
+         */
         coverPhoto?: string;
     };
 } | {
