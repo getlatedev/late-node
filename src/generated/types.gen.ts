@@ -1979,10 +1979,19 @@ export type CommentAutomationFollowGate = {
  */
 export type CommentAutomationTemplate = {
     type: 'generic';
+    /**
+     * Facebook only. How Messenger renders each element imageUrl: horizontal (1.91:1, the default) or square (1:1). Instagram has no such setting, so an Instagram automation carrying it is a 400.
+     */
+    imageAspectRatio?: 'horizontal' | 'square';
     elements: Array<CommentAutomationTemplateElement>;
 };
 
 export type type2 = 'generic';
+
+/**
+ * Facebook only. How Messenger renders each element imageUrl: horizontal (1.91:1, the default) or square (1:1). Instagram has no such setting, so an Instagram automation carrying it is a 400.
+ */
+export type imageAspectRatio = 'horizontal' | 'square';
 
 export type CommentAutomationTemplateElement = {
     /**
@@ -20103,7 +20112,9 @@ export type SendInboxMessageData = {
          * and provide up to 10 `elements`, each with a `title` (required) and
          * optional `subtitle`, `imageUrl`, and `buttons`. Mutually exclusive with
          * the top-level `buttons` field (sending both is a 400); put the card's
-         * buttons on its `elements` instead.
+         * buttons on its `elements` instead. On Facebook, `imageAspectRatio`
+         * (`horizontal`, the default, or `square`) sets how Messenger renders the
+         * element images; Instagram has no such setting and rejects it.
          *
          * WhatsApp: sends an approved WhatsApp template message, the only message
          * type WhatsApp accepts when the 24-hour customer-service window is closed.
@@ -20125,6 +20136,10 @@ export type SendInboxMessageData = {
              * Template type. Required for Instagram/Facebook generic templates; ignored on WhatsApp.
              */
             type?: 'generic';
+            /**
+             * Facebook only. Aspect ratio Messenger renders element images at: horizontal (1.91:1, default) or square (1:1). A 400 on Instagram.
+             */
+            imageAspectRatio?: 'horizontal' | 'square';
             elements?: Array<{
                 /**
                  * Element title (max 80 chars). Required for Instagram/Facebook generic templates.
