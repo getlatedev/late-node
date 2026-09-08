@@ -4482,8 +4482,9 @@ export const getWhatsAppTemplate = <ThrowOnError extends boolean = false>(option
  * must match exactly. Variants in `PENDING_DELETION` are not part of the family.
  *
  * Meta only allows editing templates in `APPROVED`, `REJECTED` or `PAUSED` state; an approved
- * template can be edited once per 24 hours and up to 10 times per 30 days. A successful update
- * sends the variant back to Meta for review, so the `status` returned here is normally `PENDING`.
+ * template can be edited once per 24 hours and up to 10 times per 30 days. A component update
+ * sends the variant back to Meta for review, so the `status` returned here is normally `PENDING`;
+ * a TTL-only update keeps an APPROVED variant approved.
  * The final outcome arrives on the `whatsapp.template.status_updated` webhook (which carries the
  * variant's `templateId` and `language`). A variant already in `PENDING` cannot be edited again
  * until Meta finishes reviewing it.
@@ -4531,8 +4532,9 @@ export const getWhatsAppTemplateById = <ThrowOnError extends boolean = false>(op
  * Update one variant's components and/or its message_send_ttl_seconds by its Meta id. Name, language and category cannot change.
  *
  * Meta only allows editing templates in `APPROVED`, `REJECTED` or `PAUSED` state; an approved
- * template can be edited once per 24 hours and up to 10 times per 30 days. A successful update
- * sends the variant back to Meta for review, so the `status` returned here is normally `PENDING`.
+ * template can be edited once per 24 hours and up to 10 times per 30 days. A component update
+ * sends the variant back to Meta for review, so the `status` returned here is normally `PENDING`;
+ * a TTL-only update keeps an APPROVED variant approved.
  * The final outcome arrives on the `whatsapp.template.status_updated` webhook (which carries the
  * variant's `templateId` and `language`). A variant already in `PENDING` cannot be edited again
  * until Meta finishes reviewing it.

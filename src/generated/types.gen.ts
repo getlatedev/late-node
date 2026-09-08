@@ -22486,7 +22486,7 @@ export type CreateWhatsAppTemplateData = {
             phone_number?: string;
         }>;
         /**
-         * Delivery validity window in seconds: a message not delivered within it is dropped. Range depends on category: AUTHENTICATION 30 to 900, UTILITY 30 to 43200 (12h), MARKETING 43200 to 2592000 (30 days); -1 restores the 30-day default on AUTHENTICATION and UTILITY. Meta defaults to 600 for AUTHENTICATION and 30 days otherwise. If Meta later recategorises the template, it clears the TTL (read it back to check).
+         * Delivery validity window in seconds: a message not delivered within it is dropped. Range depends on category: AUTHENTICATION 30 to 900, UTILITY 30 to 43200 (12h), MARKETING 43200 to 2592000 (30 days); -1 (create only) keeps the 30-day default on AUTHENTICATION and UTILITY. Meta defaults to 600 for AUTHENTICATION and 30 days otherwise. If Meta later recategorises the template, it clears the TTL (read it back to check).
          */
         message_send_ttl_seconds?: number;
     };
@@ -22594,7 +22594,7 @@ export type UpdateWhatsAppTemplateData = {
          */
         components?: Array<WhatsAppTemplateComponent>;
         /**
-         * Delivery validity window in seconds: a message not delivered within it is dropped. Range depends on category: AUTHENTICATION 30 to 900, UTILITY 30 to 43200 (12h), MARKETING 43200 to 2592000 (30 days); -1 restores the 30-day default on AUTHENTICATION and UTILITY. Meta defaults to 600 for AUTHENTICATION and 30 days otherwise. If Meta later recategorises the template, it clears the TTL (read it back to check).
+         * Delivery validity window in seconds: a message not delivered within it is dropped. Range depends on category: AUTHENTICATION 30 to 900, UTILITY 30 to 43200 (12h), MARKETING 43200 to 2592000 (30 days); -1 is not accepted here (Meta treats it as an empty edit); send a value in range. A TTL-only edit keeps an APPROVED template approved, no re-review. Meta defaults to 600 for AUTHENTICATION and 30 days otherwise. If Meta later recategorises the template, it clears the TTL (read it back to check).
          */
         message_send_ttl_seconds?: number;
     };
@@ -22745,7 +22745,7 @@ export type UpdateWhatsAppTemplateByIdData = {
          */
         components?: Array<WhatsAppTemplateComponent>;
         /**
-         * Delivery validity window in seconds: a message not delivered within it is dropped. Range depends on category: AUTHENTICATION 30 to 900, UTILITY 30 to 43200 (12h), MARKETING 43200 to 2592000 (30 days); -1 restores the 30-day default on AUTHENTICATION and UTILITY. Meta defaults to 600 for AUTHENTICATION and 30 days otherwise. If Meta later recategorises the template, it clears the TTL (read it back to check).
+         * Delivery validity window in seconds: a message not delivered within it is dropped. Range depends on category: AUTHENTICATION 30 to 900, UTILITY 30 to 43200 (12h), MARKETING 43200 to 2592000 (30 days); -1 is not accepted here (Meta treats it as an empty edit); send a value in range. A TTL-only edit keeps an APPROVED template approved, no re-review. Meta defaults to 600 for AUTHENTICATION and 30 days otherwise. If Meta later recategorises the template, it clears the TTL (read it back to check).
          */
         message_send_ttl_seconds?: number;
     };
@@ -28275,7 +28275,7 @@ export type ListContactsData = {
         accountId?: string;
         isSubscribed?: 'true' | 'false';
         limit?: number;
-        platform?: 'instagram' | 'facebook' | 'telegram' | 'twitter' | 'bluesky' | 'reddit' | 'whatsapp' | 'slack';
+        platform?: 'instagram' | 'facebook' | 'telegram' | 'twitter' | 'bluesky' | 'reddit' | 'whatsapp' | 'slack' | 'sms';
         /**
          * Filter by profile. Omit to list across all profiles. Matches the profile recorded on the contact itself, which is set when the contact is created and is independent of the profile its account currently belongs to. Filter by accountId to list a contact through its channel instead.
          */
@@ -28348,7 +28348,7 @@ export type CreateContactData = {
         /**
          * Channel platform. Only the enum values support contact channels; any other platform is rejected with code platform_not_supported.
          */
-        platform?: 'instagram' | 'facebook' | 'telegram' | 'twitter' | 'bluesky' | 'reddit' | 'whatsapp' | 'slack';
+        platform?: 'instagram' | 'facebook' | 'telegram' | 'twitter' | 'bluesky' | 'reddit' | 'whatsapp' | 'slack' | 'sms';
         platformIdentifier?: string;
         displayIdentifier?: string;
     };
@@ -28744,7 +28744,7 @@ export type CreateBroadcastData = {
     body: {
         profileId: string;
         accountId: string;
-        platform: 'instagram' | 'facebook' | 'telegram' | 'twitter' | 'bluesky' | 'reddit' | 'whatsapp';
+        platform: 'instagram' | 'facebook' | 'telegram' | 'twitter' | 'bluesky' | 'reddit' | 'whatsapp' | 'sms' | 'slack';
         name: string;
         description?: string;
         message?: {
@@ -29546,7 +29546,7 @@ export type CreateSequenceData = {
     body: {
         profileId: string;
         accountId: string;
-        platform: 'instagram' | 'facebook' | 'telegram' | 'twitter' | 'bluesky' | 'reddit' | 'whatsapp';
+        platform: 'instagram' | 'facebook' | 'telegram' | 'twitter' | 'bluesky' | 'reddit' | 'whatsapp' | 'slack';
         name: string;
         description?: string;
         steps?: Array<{
