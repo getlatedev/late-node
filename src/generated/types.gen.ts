@@ -36220,11 +36220,11 @@ export type SearchAdTargetingError = (unknown | {
 });
 
 export type SearchAdLibraryData = {
-    query: {
+    query?: {
         /**
-         * Zernio SocialAccount id (facebook / instagram / metaads for Meta, linkedin / linkedinads for LinkedIn). Its token is the one that searches.
+         * Zernio SocialAccount id. Required for LinkedIn (linkedin / linkedinads: its token searches). Optional for Meta, where any facebook / instagram / metaads account just selects the platform.
          */
-        accountId: string;
+        accountId?: string;
         /**
          * Meta only.
          */
@@ -36261,6 +36261,10 @@ export type SearchAdLibraryData = {
          * Meta only. Comma-separated Facebook Page ids (max 10) whose ads to list.
          */
         pageIds?: string;
+        /**
+         * Which archive to search. `meta` needs no accountId. Required unless accountId is given.
+         */
+        platform?: 'meta' | 'linkedin';
         /**
          * Meta only. Comma-separated publisher platforms: FACEBOOK, INSTAGRAM, AUDIENCE_NETWORK, MESSENGER, WHATSAPP, OCULUS, THREADS, STREAMING_SERVICES.
          */
