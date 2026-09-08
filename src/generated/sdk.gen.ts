@@ -4472,7 +4472,7 @@ export const getWhatsAppTemplate = <ThrowOnError extends boolean = false>(option
 
 /**
  * Update template
- * Update one variant's components. Name, language and category cannot change after creation.
+ * Update one variant's components and/or its message_send_ttl_seconds. Name, language and category cannot change after creation.
  *
  * Meta stores one template per **name + language**, so a name identifies a family of variants,
  * each with its own Meta id. Pass `language` to address one variant. Without it, a name with a
@@ -4528,7 +4528,7 @@ export const getWhatsAppTemplateById = <ThrowOnError extends boolean = false>(op
 
 /**
  * Update template by id
- * Update one variant's components by its Meta id. Name, language and category cannot change.
+ * Update one variant's components and/or its message_send_ttl_seconds by its Meta id. Name, language and category cannot change.
  *
  * Meta only allows editing templates in `APPROVED`, `REJECTED` or `PAUSED` state; an approved
  * template can be edited once per 24 hours and up to 10 times per 30 days. A successful update

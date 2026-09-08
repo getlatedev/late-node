@@ -22402,6 +22402,10 @@ export type GetWhatsAppTemplatesResponse = ({
         status?: 'APPROVED' | 'PENDING' | 'REJECTED';
         category?: 'AUTHENTICATION' | 'MARKETING' | 'UTILITY';
         language?: string;
+        /**
+         * Only when a custom TTL is set; absent while the category default applies.
+         */
+        message_send_ttl_seconds?: number;
         components?: Array<{
             [key: string]: unknown;
         }>;
@@ -22466,6 +22470,10 @@ export type CreateWhatsAppTemplateData = {
             };
             phone_number?: string;
         }>;
+        /**
+         * Delivery validity window in seconds: a message not delivered within it is dropped. Range depends on category: AUTHENTICATION 30 to 900, UTILITY 30 to 43200 (12h), MARKETING 43200 to 2592000 (30 days); -1 restores the 30-day default on AUTHENTICATION and UTILITY. Meta defaults to 600 for AUTHENTICATION and 30 days otherwise. If Meta later recategorises the template, it clears the TTL (read it back to check).
+         */
+        message_send_ttl_seconds?: number;
     };
 };
 
@@ -22480,6 +22488,10 @@ export type CreateWhatsAppTemplateResponse = ({
         status?: string;
         category?: string;
         language?: string;
+        /**
+         * Echoed when supplied on the request.
+         */
+        message_send_ttl_seconds?: number;
     };
 });
 
@@ -22524,6 +22536,10 @@ export type GetWhatsAppTemplateResponse = ({
             [key: string]: unknown;
         }>;
         /**
+         * Only when a custom TTL is set; absent while the category default applies.
+         */
+        message_send_ttl_seconds?: number;
+        /**
          * Only when status is REJECTED.
          */
         rejected_reason?: string;
@@ -22559,9 +22575,13 @@ export type UpdateWhatsAppTemplateData = {
          */
         language?: string;
         /**
-         * Updated template components
+         * Updated template components. Optional when only message_send_ttl_seconds changes; at least one of the two is required.
          */
-        components: Array<WhatsAppTemplateComponent>;
+        components?: Array<WhatsAppTemplateComponent>;
+        /**
+         * Delivery validity window in seconds: a message not delivered within it is dropped. Range depends on category: AUTHENTICATION 30 to 900, UTILITY 30 to 43200 (12h), MARKETING 43200 to 2592000 (30 days); -1 restores the 30-day default on AUTHENTICATION and UTILITY. Meta defaults to 600 for AUTHENTICATION and 30 days otherwise. If Meta later recategorises the template, it clears the TTL (read it back to check).
+         */
+        message_send_ttl_seconds?: number;
     };
     path: {
         /**
@@ -22679,6 +22699,10 @@ export type GetWhatsAppTemplateByIdResponse = ({
             [key: string]: unknown;
         }>;
         /**
+         * Only when a custom TTL is set; absent while the category default applies.
+         */
+        message_send_ttl_seconds?: number;
+        /**
          * Only when status is REJECTED.
          */
         rejected_reason?: string;
@@ -22702,9 +22726,13 @@ export type UpdateWhatsAppTemplateByIdData = {
          */
         accountId: string;
         /**
-         * Updated template components
+         * Updated template components. Optional when only message_send_ttl_seconds changes; at least one of the two is required.
          */
-        components: Array<WhatsAppTemplateComponent>;
+        components?: Array<WhatsAppTemplateComponent>;
+        /**
+         * Delivery validity window in seconds: a message not delivered within it is dropped. Range depends on category: AUTHENTICATION 30 to 900, UTILITY 30 to 43200 (12h), MARKETING 43200 to 2592000 (30 days); -1 restores the 30-day default on AUTHENTICATION and UTILITY. Meta defaults to 600 for AUTHENTICATION and 30 days otherwise. If Meta later recategorises the template, it clears the TTL (read it back to check).
+         */
+        message_send_ttl_seconds?: number;
     };
     path: {
         /**
