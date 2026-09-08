@@ -31460,6 +31460,22 @@ export type GetCampaignTargetingResponse = ({
          * true = excluded location.
          */
         negative?: boolean;
+        /**
+         * Google's geo_target_constant.name, e.g. "United States"; null when the id could not be resolved.
+         */
+        name?: (string) | null;
+        /**
+         * Google's geo_target_constant.canonical_name, e.g. "California, United States"; null when the id could not be resolved.
+         */
+        canonicalName?: (string) | null;
+        /**
+         * Google's geo_target_constant.target_type, e.g. "Country", "Region", "City"; null when the id could not be resolved.
+         */
+        type?: (string) | null;
+        /**
+         * Google's geo_target_constant.country_code, an ISO 3166-1 alpha-2 code; null when the id could not be resolved.
+         */
+        countryCode?: (string) | null;
     }>;
     languages?: Array<{
         /**
@@ -31559,6 +31575,22 @@ export type UpdateCampaignTargetingResponse = ({
          * true = excluded location.
          */
         negative?: boolean;
+        /**
+         * Google's geo_target_constant.name; see GET's description.
+         */
+        name?: (string) | null;
+        /**
+         * Google's geo_target_constant.canonical_name; see GET's description.
+         */
+        canonicalName?: (string) | null;
+        /**
+         * Google's geo_target_constant.target_type; see GET's description.
+         */
+        type?: (string) | null;
+        /**
+         * Google's geo_target_constant.country_code; see GET's description.
+         */
+        countryCode?: (string) | null;
     }>;
     languages?: Array<{
         code?: string;
@@ -35837,7 +35869,7 @@ export type CreateLeadFormData = {
         style?: 'LIST_STYLE' | 'PARAGRAPH_STYLE';
         buttonText?: string;
         /**
-         * Direct public JPEG or PNG image URL, up to 5 MB. Redirects, Ad Image hashes and IDs are not supported.
+         * Direct public JPEG or PNG image URL, up to 5 MB. Uploaded as an unpublished Page photo and attached to the form. Redirects, Ad Image hashes and IDs are not supported.
          */
         coverPhoto?: string;
     };
