@@ -9516,7 +9516,9 @@ export const getDsaRecommendations = <ThrowOnError extends boolean = false>(opti
  * **Messaging boosts (Meta).** Use `goal: engagement` with
  * `callToAction: WHATSAPP_MESSAGE`, `MESSAGE_PAGE`, or `INSTAGRAM_MESSAGE`.
  * The CTA implies WHATSAPP, MESSENGER, or INSTAGRAM_DIRECT respectively;
- * `destinationType` alone also selects the matching CTA. Omit `linkUrl`.
+ * `destinationType` alone does not select a messaging CTA. Omit `linkUrl`
+ * only for messaging CTAs. Plain link CTAs keep their goal and link behavior
+ * when combined with an independent `destinationType`.
  * The campaign uses OUTCOME_ENGAGEMENT and the ad set uses CONVERSATIONS
  * with the promoted Page. Optional `whatsappPhoneNumber` selects a number
  * already paired with that Page. Conflicting CTA/destination, instant form,

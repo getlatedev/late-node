@@ -338,6 +338,10 @@ export type Ad = {
          * Destination URL
          */
         linkUrl?: string;
+        /**
+         * Explicit E.164 WhatsApp number supplied when creating a Meta boost or messaging ad. Absent when omitted by the caller or on older records.
+         */
+        whatsappPhoneNumber?: string;
         pinterestImageUrl?: string;
         pinterestTitle?: string;
         pinterestDescription?: string;
@@ -2835,7 +2839,7 @@ export type CtwaAdRequestBody = {
      */
     objectStoryId?: string;
     /**
-     * WhatsApp only. Optional E.164 number already paired with the Facebook Page. Omit to let Meta select the paired number. Sent to the creative CTA and, when creating a new ad set, its promoted_object. Attach requests do not change the existing ad set.
+     * WhatsApp only. Optional E.164 number already paired with the Facebook Page. Omit to let Meta select the paired number. Sent to the creative CTA and, when creating a new ad set, its promoted_object. Attach requests do not change the existing ad set. Stored as creative.whatsappPhoneNumber on every created ad.
      */
     whatsappPhoneNumber?: string;
     /**
@@ -35309,11 +35313,11 @@ export type BoostPostData = {
          */
         instagramAccountId?: string;
         /**
-         * Meta only. Ad-set destination_type: where the click LANDS, as opposed to instagramAccountId which is who the ad runs as. Messaging destinations imply their matching CTA and require goal engagement. Lead ads use ON_AD; combining an instant form with a messaging destination is rejected.
+         * Meta only. Ad-set destination_type: where the click LANDS, as opposed to instagramAccountId which is who the ad runs as. Independent of plain link CTAs and their goal. A messaging callToAction selects its destination automatically; an explicit destinationType must then match. Lead ads use ON_AD.
          */
         destinationType?: 'INSTAGRAM_PROFILE' | 'WEBSITE' | 'ON_AD' | 'MESSENGER' | 'WHATSAPP' | 'INSTAGRAM_DIRECT';
         /**
-         * Meta WhatsApp only. E.164 number already paired with the Page. Omit to use the default pairing. Requires WHATSAPP destinationType or WHATSAPP_MESSAGE callToAction.
+         * Meta WhatsApp only. E.164 number already paired with the Page. Omit to use the default pairing. Requires WHATSAPP_MESSAGE callToAction. Stored as creative.whatsappPhoneNumber on the ad.
          */
         whatsappPhoneNumber?: string;
         /**
@@ -35571,7 +35575,7 @@ export type BoostPostData = {
          */
         leadGenFormId?: string;
         /**
-         * Meta, TikTok, and LinkedIn. Publish state of the created entities. Omitted or ACTIVE publishes live (default); PAUSED creates them paused so you can review before they spend. On LinkedIn the whole campaign group, campaign, and creative hierarchy stays PAUSED (intendedStatus PAUSED on each).
+         * Meta, TikTok, and LinkedIn. Publish state of the created entities. Omitted or ACTIVE publishes live (default); PAUSED creates them paused so you can review before they spend. On Meta a new campaign stays paused until explicitly activated; an attached ad is itself paused. On LinkedIn the whole campaign group, campaign, and creative hierarchy stays PAUSED (intendedStatus PAUSED on each).
          */
         status?: 'ACTIVE' | 'PAUSED';
         /**
