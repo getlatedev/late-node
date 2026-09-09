@@ -359,6 +359,11 @@ describe('Endpoint Methods', () => {
       expect(client.connect.connectWhatsAppEmbeddedSignup).toBeTypeOf('function');
     });
 
+    it('should have getWhatsAppSdkConfig method', () => {
+      expect(client.connect.getWhatsAppSdkConfig).toBeDefined();
+      expect(client.connect.getWhatsAppSdkConfig).toBeTypeOf('function');
+    });
+
     it('should have connectDiscordChannel method', () => {
       expect(client.connect.connectDiscordChannel).toBeDefined();
       expect(client.connect.connectDiscordChannel).toBeTypeOf('function');

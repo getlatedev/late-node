@@ -224,8 +224,8 @@ try {
 | `analytics.getFacebookPageInsights()` | Get Facebook Page insights |
 | `analytics.getFacebookPostEarnings()` | Get Facebook post monetization earnings |
 | `analytics.getFacebookPostReactions()` | Get Facebook post reactions |
-| `analytics.getGoogleBusinessPerformance()` | Get GBP performance metrics |
-| `analytics.getGoogleBusinessSearchKeywords()` | Get GBP search keywords |
+| `analytics.getGoogleBusinessPerformance()` | Get Google Business Profile performance metrics |
+| `analytics.getGoogleBusinessSearchKeywords()` | Get Google Business Profile search keywords |
 | `analytics.getInstagramAccountInsights()` | Get Instagram insights |
 | `analytics.getInstagramDemographics()` | Get Instagram demographics |
 | `analytics.getInstagramFollowerHistory()` | Get Instagram follower history |
@@ -298,7 +298,7 @@ try {
 | `usage.getSmsUsage()` | SMS usage (volumes) |
 | `usage.getUsage()` | Usage snapshot (default) or billed-spend metering (with params) |
 | `usage.getUsageStats()` | Get plan and usage snapshot (plan, limits, payment status) |
-| `usage.getXApiPricing()` | Get X/Twitter API pricing table |
+| `usage.getXApiPricing()` | Get X API pricing table |
 
 ### Logs
 | Method | Description |
@@ -309,7 +309,7 @@ try {
 | Method | Description |
 |--------|-------------|
 | `connect.listFacebookPages()` | List Facebook pages |
-| `connect.listGoogleBusinessLocations()` | List GBP locations |
+| `connect.listGoogleBusinessLocations()` | List Google Business Profile locations |
 | `connect.listInstagramPages()` | List Pages with a linked Instagram account |
 | `connect.listLinkedInOrganizations()` | List LinkedIn orgs |
 | `connect.listPinterestBoardsForSelection()` | List Pinterest boards |
@@ -319,7 +319,7 @@ try {
 | `connect.createPinterestBoard()` | Create Pinterest board |
 | `connect.getConnectUrl()` | Get OAuth connect URL |
 | `connect.getFacebookPages()` | List Facebook pages |
-| `connect.getGmbLocations()` | List GBP locations |
+| `connect.getGmbLocations()` | List Google Business Profile locations |
 | `connect.getLinkedInOrganizations()` | List LinkedIn orgs |
 | `connect.getPendingOAuthData()` | Get pending OAuth data |
 | `connect.getPinterestBoards()` | List Pinterest boards |
@@ -328,15 +328,16 @@ try {
 | `connect.getShopifyConnectUrl()` | Get Shopify OAuth connect URL |
 | `connect.getSubredditRules()` | Get subreddit rules |
 | `connect.getTelegramConnectStatus()` | Generate Telegram code |
+| `connect.getWhatsAppSdkConfig()` | Get Embedded Signup SDK config |
 | `connect.getYoutubeCaptions()` | Get a YouTube video transcript |
 | `connect.getYoutubePlaylists()` | List YouTube playlists |
 | `connect.updateFacebookPage()` | Update Facebook page |
-| `connect.updateGmbLocation()` | Update GBP location |
+| `connect.updateGmbLocation()` | Update Google Business Profile location |
 | `connect.updateLinkedInOrganization()` | Switch LinkedIn account type |
 | `connect.updatePinterestBoards()` | Set default Pinterest board |
 | `connect.updateRedditSubreddits()` | Set default subreddit |
 | `connect.updateYoutubeDefaultPlaylist()` | Set default YouTube playlist |
-| `connect.assignGoogleBusinessLocation()` | Assign GBP location to another profile |
+| `connect.assignGoogleBusinessLocation()` | Assign Google Business Profile location to another profile |
 | `connect.completeTelegramConnect()` | Check Telegram status |
 | `connect.completeWhatsAppPhoneSelection()` | Complete number selection |
 | `connect.configureTikTokAdsBrandIdentity()` | Set TikTok brand identity |
@@ -351,7 +352,7 @@ try {
 | `connect.handleOAuthCallback()` | Complete OAuth callback |
 | `connect.initiateTelegramConnect()` | Connect Telegram directly |
 | `connect.selectFacebookPage()` | Select Facebook page |
-| `connect.selectGoogleBusinessLocation()` | Select GBP location |
+| `connect.selectGoogleBusinessLocation()` | Select Google Business Profile location |
 | `connect.selectInstagramAccount()` | Select the Page whose Instagram account to connect |
 | `connect.selectLinkedInOrganization()` | Select LinkedIn org |
 | `connect.selectPinterestBoard()` | Select Pinterest board |
@@ -531,6 +532,65 @@ try {
 | `broadcasts.cancelBroadcast()` | Cancel broadcast |
 | `broadcasts.scheduleBroadcast()` | Schedule broadcast for later |
 | `broadcasts.sendBroadcast()` | Send broadcast now |
+
+### Business Agent
+| Method | Description |
+|--------|-------------|
+| `businessAgent.listBusinessAgentAllowlist()` | List allowlisted consumers |
+| `businessAgent.listBusinessAgentConnectors()` | List connectors |
+| `businessAgent.listBusinessAgentConnectorTools()` | List connector tools |
+| `businessAgent.listBusinessAgentFaqs()` | List FAQs |
+| `businessAgent.listBusinessAgentFiles()` | List knowledge files |
+| `businessAgent.listBusinessAgentSettings()` | List agent settings |
+| `businessAgent.listBusinessAgentSkills()` | List skills |
+| `businessAgent.listBusinessAgentUiSkills()` | List UI skills |
+| `businessAgent.listBusinessAgentWebsites()` | List crawled websites |
+| `businessAgent.createBusinessAgentConnector()` | Create a connector |
+| `businessAgent.createBusinessAgentConnectorTool()` | Create a connector tool |
+| `businessAgent.createBusinessAgentFaq()` | Create a FAQ |
+| `businessAgent.createBusinessAgentSkill()` | Create a skill |
+| `businessAgent.createBusinessAgentUiSkill()` | Create a UI skill |
+| `businessAgent.getBusinessAgentBudget()` | Get usage budgets |
+| `businessAgent.getBusinessAgentBusinessInformation()` | Get business information |
+| `businessAgent.getBusinessAgentConnector()` | Get a connector |
+| `businessAgent.getBusinessAgentConnectorLogs()` | Get connector failure logs |
+| `businessAgent.getBusinessAgentConnectorTool()` | Get a connector tool |
+| `businessAgent.getBusinessAgentEvent()` | Get a business event status |
+| `businessAgent.getBusinessAgentFaq()` | Get a FAQ |
+| `businessAgent.getBusinessAgentFile()` | Get a knowledge file |
+| `businessAgent.getBusinessAgentSkill()` | Get a skill |
+| `businessAgent.getBusinessAgentStatus()` | Get agent setup status |
+| `businessAgent.getBusinessAgentUiSkill()` | Get a UI skill |
+| `businessAgent.getBusinessAgentWebsite()` | Get a crawled website |
+| `businessAgent.updateBusinessAgentConnector()` | Update a connector |
+| `businessAgent.updateBusinessAgentConnectorTool()` | Update a connector tool |
+| `businessAgent.updateBusinessAgentFaq()` | Update a FAQ |
+| `businessAgent.updateBusinessAgentSettings()` | Update agent settings |
+| `businessAgent.updateBusinessAgentSkill()` | Update a skill |
+| `businessAgent.updateBusinessAgentUiSkill()` | Update a UI skill |
+| `businessAgent.updateBusinessAgentWebsite()` | Update a crawled website |
+| `businessAgent.deleteBusinessAgentConnector()` | Delete a connector |
+| `businessAgent.deleteBusinessAgentConnectorTool()` | Delete a connector tool |
+| `businessAgent.deleteBusinessAgentFaq()` | Delete a FAQ |
+| `businessAgent.deleteBusinessAgentFile()` | Delete a knowledge file |
+| `businessAgent.deleteBusinessAgentSkill()` | Delete a skill |
+| `businessAgent.deleteBusinessAgentUiSkill()` | Delete a UI skill |
+| `businessAgent.deleteBusinessAgentWebsite()` | Remove a crawled website |
+| `businessAgent.addBusinessAgentAllowlistEntry()` | Allowlist a consumer |
+| `businessAgent.addBusinessAgentWebsite()` | Add a website to crawl |
+| `businessAgent.onboardBusinessAgent()` | Create the agent |
+| `businessAgent.readBusinessAgentEvals()` | Read evaluation data |
+| `businessAgent.refreshBusinessAgentConnectorTools()` | Refresh MCP connector tools |
+| `businessAgent.removeBusinessAgentAllowlistEntry()` | Remove an allowlisted consumer |
+| `businessAgent.replaceBusinessAgentBudget()` | Replace usage budgets |
+| `businessAgent.replaceBusinessAgentBusinessInformation()` | Replace business information |
+| `businessAgent.resetBusinessAgentBusinessInformation()` | Reset business information |
+| `businessAgent.runBusinessAgentConnectorTool()` | Run a connector tool once |
+| `businessAgent.sendBusinessAgentEvent()` | Send a business event |
+| `businessAgent.sendBusinessAgentTestMessage()` | Send a test message |
+| `businessAgent.setBusinessAgentConnectorCredentials()` | Set connector credentials |
+| `businessAgent.startBusinessAgentEvalRun()` | Start an evaluation run |
+| `businessAgent.uploadBusinessAgentFile()` | Upload a knowledge file |
 
 ### Calls
 | Method | Description |
@@ -741,6 +801,7 @@ try {
 | `messages.searchInboxConversations()` | Search conversations |
 | `messages.sendInboxMessage()` | Send message |
 | `messages.sendTypingIndicator()` | Send typing indicator |
+| `messages.setConversationThreadControl()` | Hand a conversation to or from Meta Business Agent |
 | `messages.uploadMediaDirect()` | Upload media file |
 
 ### Messaging Ads
@@ -943,10 +1004,12 @@ try {
 | `whatsapp.registerWhatsAppNumber()` | Register a connected WhatsApp number on the Cloud API |
 | `whatsapp.rejectWhatsAppGroupJoinRequests()` | Reject join requests |
 | `whatsapp.removeWhatsAppGroupParticipants()` | Remove participants |
+| `whatsapp.requestWhatsAppVerificationCode()` | Request a Meta re-verification code for a BYO WhatsApp number |
 | `whatsapp.sendWhatsAppConversion()` | Send WhatsApp conversion event |
 | `whatsapp.setWhatsappBusinessUsername()` | Set business username |
 | `whatsapp.unblockWhatsAppUsers()` | Unblock users |
 | `whatsapp.uploadWhatsAppProfilePhoto()` | Upload profile picture |
+| `whatsapp.verifyWhatsAppNumber()` | Verify the Meta re-verification code for a BYO WhatsApp number |
 
 ### WhatsApp Calling
 | Method | Description |
