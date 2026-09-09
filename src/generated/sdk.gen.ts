@@ -97,13 +97,17 @@ export const getAnalytics = <ThrowOnError extends boolean = false>(options?: Opt
  * 1,600 connected accounts: about 1,599 per-account analytics calls an hour became
  * about 205 delta calls an hour, a 7.8x reduction.
  *
- * **Bootstrap once, then stay in sync.** Load your baseline from
- * `GET /v1/analytics`, which is the historical endpoint. This one is a rolling
- * 7-day change log and cannot replay history. Then call this endpoint with NO
- * `cursor`: it answers with an empty `data` array plus the feed's current position
- * in `nextCursor`. Send that `nextCursor` back on the next call and you receive
- * everything written since. `nextCursor` is present on every response, empty pages
- * included, so you always have something to advance with.
+ * **Bootstrap once, then stay in sync.** Take the cursor FIRST: call this endpoint
+ * with NO `cursor` and it answers with an empty `data` array plus the feed's current
+ * position in `nextCursor`. Then load your baseline from `GET /v1/analytics`, the
+ * historical endpoint, because this one is a rolling 7-day change log and cannot
+ * replay history. Then resume from the cursor you took before the baseline. Taking
+ * the cursor afterwards instead drops every change that lands while the baseline is
+ * loading: it is in neither the row you already read nor the feed you resume behind
+ * it. The overlap this order creates is safe, because metrics are absolute values
+ * rather than increments, so draining it leaves every post on its newest value.
+ * `nextCursor` is present on every response, empty pages included, so you always
+ * have something to advance with.
  *
  * **Ordering.** Entries come back oldest first, in the order the feed received
  * them. That order is NOT `syncedAt`: `syncedAt` is stamped when an account's sync
@@ -133,9 +137,9 @@ export const getAnalytics = <ThrowOnError extends boolean = false>(options?: Opt
  *
  * **Retention is 7 days.** Changes older than that leave the feed. A cursor older
  * than 6 days is rejected with a `400` (a day of margin, because expiry is lazy).
- * Recover by re-bootstrapping from `GET /v1/analytics` and taking a fresh cursor
- * from a call to this endpoint with no `cursor`. A consumer that polls at least
- * daily never reaches this.
+ * Recover the same way you bootstrapped: take a fresh cursor from a call to this
+ * endpoint with no `cursor`, then re-load from `GET /v1/analytics`, then resume
+ * from that cursor. A consumer that polls at least daily never reaches this.
  *
  * Pairs with the `analytics.synced` webhook, so changes can be read on notification
  * instead of on a timer. That event carries no cursor of its own: keep using the
