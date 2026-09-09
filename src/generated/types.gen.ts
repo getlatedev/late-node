@@ -272,6 +272,11 @@ export type Ad = {
          */
         videoUrl?: (string) | null;
         /**
+         * Meta offer read from the live creative on creation or GET /v1/ads/{adId}. Null when metadata is not returned or cannot be read. Requested values are never echoed as applied.
+         */
+        promotion?: MetaPromotion;
+        promotionStatus?: MetaPromotionStatus;
+        /**
          * Meta ad creative id backing this ad. Reusable via existingCreativeId on POST /v1/ads/create.
          */
         creativeId?: (string) | null;
@@ -2815,6 +2820,10 @@ export type actionSource = 'web' | 'app' | 'offline' | 'crm' | 'phone_call' | 's
  */
 export type CtwaAdRequestBody = {
     /**
+     * Meta enhancement settings for single or attached ads, and defaults for creatives[]. An item replaces the entire map, including with an empty object.
+     */
+    creativeFeatures?: MetaCreativeFeatures;
+    /**
      * Facebook or Instagram SocialAccount ID.
      */
     accountId: string;
@@ -2922,6 +2931,10 @@ export type CtwaAdRequestBody = {
          * Messaging and CTWA only. Raw Facebook pageId_postId reference, used as object_story_id even with an Instagram account. Mutually exclusive with existingPostId and fresh creative fields.
          */
         objectStoryId?: string;
+        /**
+         * Replaces the top-level creativeFeatures map for this item. Omit to inherit; an empty object clears inherited enrollment choices.
+         */
+        creativeFeatures?: MetaCreativeFeatures;
         headline?: string;
         /**
          * Primary text shown above the image / video.
@@ -5390,6 +5403,49 @@ export type MetaAdsPlatformData = {
     lifetimeMinSpendTarget?: number;
 };
 
+/**
+ * Meta Advantage+ creative enhancements. Map snake_case feature names to OPT_IN or OPT_OUT; Meta validates supported keys and unspecified features default to OPT_OUT. auto_promotion_tag is an enhancement; use the separate promotion field for an explicit offer. The deprecated standard_enhancements bundle is rejected by Meta.
+ */
+export type MetaCreativeFeatures = {
+    [key: string]: ('OPT_IN' | 'OPT_OUT');
+};
+
+/**
+ * Meta explicit Promotion offer. Maps to creative_sourcing_spec.promotion_metadata_spec with promotion_source ADVERTISER_INPUT. Dates become Unix seconds. Send null to omit an explicit offer on a new creative or remove it when rebuilding. Creation success alone does not confirm application: inspect promotionStatus in the response.
+ */
+export type MetaPromotion = {
+    /**
+     * Promotion type accepted by Meta. PERCENTAGE_OFF values cannot exceed 100.
+     */
+    type: 'AMOUNT_OFF' | 'FREE_RETURN' | 'FREE_SHIPPING' | 'PERCENTAGE_OFF' | 'PROMO_CODE';
+    /**
+     * Nonnegative promotion value passed to Meta unchanged. AMOUNT_OFF units are not confirmed, including major versus minor currency units. For PERCENTAGE_OFF this is the percentage discount, at most 100.
+     */
+    value: number;
+    /**
+     * Optional promotion code.
+     */
+    code?: string;
+    /**
+     * Optional ISO 8601 start timestamp with a timezone offset or Z.
+     */
+    startDate?: string;
+    /**
+     * Optional ISO 8601 end timestamp with a timezone offset or Z. Must be after startDate when both are set.
+     */
+    endDate?: string;
+} | null;
+
+/**
+ * Promotion type accepted by Meta. PERCENTAGE_OFF values cannot exceed 100.
+ */
+export type type8 = 'AMOUNT_OFF' | 'FREE_RETURN' | 'FREE_SHIPPING' | 'PERCENTAGE_OFF' | 'PROMO_CODE';
+
+/**
+ * Meta creative readback result. applied means Meta returned promotion metadata; not_returned means the read succeeded without promotion metadata; unavailable means the read failed. Only applied confirms the returned offer. Missing metadata is not proof that Ads Manager displays the requested Promotion.
+ */
+export type MetaPromotionStatus = 'applied' | 'not_returned' | 'unavailable';
+
 export type Money = {
     /**
      * ISO 4217 currency code (e.g. USD, EUR)
@@ -5641,7 +5697,7 @@ export type PortfolioBidStrategy = {
     targetRoas?: (number) | null;
 };
 
-export type type8 = 'TARGET_CPA' | 'TARGET_ROAS' | 'MAXIMIZE_CONVERSIONS' | 'MAXIMIZE_CONVERSION_VALUE';
+export type type9 = 'TARGET_CPA' | 'TARGET_ROAS' | 'MAXIMIZE_CONVERSIONS' | 'MAXIMIZE_CONVERSION_VALUE';
 
 export type Post = {
     _id?: string;
@@ -6937,7 +6993,7 @@ export type UploadedFile = {
     mimeType?: string;
 };
 
-export type type9 = 'image' | 'video' | 'document';
+export type type10 = 'image' | 'video' | 'document';
 
 export type UploadTokenResponse = {
     token?: string;
@@ -10036,7 +10092,7 @@ export type WhatsAppTemplateButton = {
     navigate_screen?: string;
 };
 
-export type type10 = 'quick_reply' | 'url' | 'phone_number' | 'otp' | 'copy_code' | 'flow' | 'mpm' | 'catalog';
+export type type11 = 'quick_reply' | 'url' | 'phone_number' | 'otp' | 'copy_code' | 'flow' | 'mpm' | 'catalog';
 
 /**
  * Required when type is otp
@@ -10198,7 +10254,7 @@ export type WorkflowNode = {
  * integrations (webhook, ai, handoff, start_call).
  *
  */
-export type type11 = 'trigger' | 'send_message' | 'wait_for_reply' | 'condition' | 'set_variable' | 'delay' | 'webhook' | 'ai' | 'handoff' | 'start_call' | 'a_b_split' | 'set_field' | 'enroll_sequence' | 'add_tag' | 'remove_tag' | 'end';
+export type type12 = 'trigger' | 'send_message' | 'wait_for_reply' | 'condition' | 'set_variable' | 'delay' | 'webhook' | 'ai' | 'handoff' | 'start_call' | 'a_b_split' | 'set_field' | 'enroll_sequence' | 'add_tag' | 'remove_tag' | 'end';
 
 /**
  * A single X API operation with its per-call price and the Zernio platform methods that trigger it.
@@ -10334,7 +10390,7 @@ export type XArticleBlock = {
     entity_ranges?: Array<XArticleEntityRange>;
 };
 
-export type type12 = 'unstyled' | 'header-one' | 'header-two' | 'header-three' | 'unordered-list-item' | 'ordered-list-item' | 'blockquote' | 'atomic';
+export type type13 = 'unstyled' | 'header-one' | 'header-two' | 'header-three' | 'unordered-list-item' | 'ordered-list-item' | 'blockquote' | 'atomic';
 
 /**
  * X's snake_case content-state shape. Standard DraftJS camelCase fields such as entityMap, inlineStyleRanges, and entityRanges are rejected.
@@ -10413,7 +10469,7 @@ export type XArticleEntity = {
 
 export type mutability = 'immutable' | 'mutable' | 'segmented';
 
-export type type13 = 'divider' | 'latex';
+export type type14 = 'divider' | 'latex';
 
 /**
  * The referenced entity must exist, and offset plus length must not exceed the containing block's text length.
@@ -33022,13 +33078,19 @@ export type GetAdData = {
          */
         adId: string;
     };
+    query?: {
+        /**
+         * Meta only. Read current promotion metadata from Meta and include promotionStatus. Omit for stored creative settings with no promotion-specific Graph call.
+         */
+        refreshPromotion?: boolean;
+    };
 };
 
 export type GetAdResponse = ({
     ad?: Ad;
 });
 
-export type GetAdError = ({
+export type GetAdError = (ErrorResponse | {
     error?: string;
 });
 
@@ -33119,6 +33181,10 @@ export type UpdateAdData = {
          * GET /v1/ads/creatives and ignores every other field. Meta creatives are
          * immutable, so any change creates a new creative and repoints the ad; the old
          * creative is retained on the ad account for historical reporting.
+         * `promotion` and `creativeFeatures` are Meta-only. Omitted settings are
+         * preserved from the live creative, including full rebuilds. Send
+         * `promotion: null` to remove the explicit offer from the replacement.
+         * A supplied creativeFeatures map overrides individual existing keys.
          * - **TikTok**: patch-style. Pass any subset; `headline` is ignored (TikTok creatives
          * have no headline slot). `body` becomes the in-feed `ad_text`; `linkUrl` becomes
          * `landing_page_url`; `videoUrl` triggers a fresh upload. `description`, `videoId`
@@ -33131,6 +33197,8 @@ export type UpdateAdData = {
          *
          */
         creative?: {
+            promotion?: MetaPromotion;
+            creativeFeatures?: MetaCreativeFeatures;
             /**
              * Meta and LinkedIn (TikTok has no headline slot)
              */
@@ -34429,12 +34497,11 @@ export type CreateAdCreativeData = {
          * Appended to every outbound URL (e.g. utm_source=fb).
          */
         urlTags?: string;
+        promotion?: MetaPromotion;
         /**
-         * Advantage+ creative enhancements: partial map of Meta creative feature keys (snake_case) to enroll status, forwarded as degrees_of_freedom_spec.creative_features_spec. Unspecified features default to OPT_OUT.
+         * Meta only. Applied to each new creative, including standalone and attach shapes. With creatives[], these are defaults; an item replaces the whole feature map, including an empty map. auto_promotion_tag is an enhancement; an explicit offer uses promotion.
          */
-        creativeFeatures?: {
-            [key: string]: ('OPT_IN' | 'OPT_OUT');
-        };
+        creativeFeatures?: MetaCreativeFeatures;
         /**
          * Meta only. Multi-advertiser ads: whether Meta may show this ad alongside other advertisers' in one unit. Meta auto-enrols since Aug 2024, so send OPT_OUT to leave. It is a top-level creative field, NOT a `creativeFeatures` key, and Meta rejects it there.
          */
@@ -34448,6 +34515,8 @@ export type CreateAdCreativeResponse = ({
      * Platform creative id, reusable via existingCreativeId.
      */
     creativeId?: string;
+    promotion?: MetaPromotion;
+    promotionStatus?: MetaPromotionStatus;
 });
 
 export type CreateAdCreativeError = (unknown | {
@@ -35273,6 +35342,7 @@ export type GetDsaRecommendationsError = (unknown | {
 
 export type BoostPostData = {
     body: {
+        creativeFeatures?: MetaCreativeFeatures;
         /**
          * Zernio post ID (provide this or platformPostId)
          */
@@ -35683,12 +35753,11 @@ export type CreateStandaloneAdData = {
          * Meta only. The RESERVED prediction id the R&F ad set runs on (reserving mints a new id, so pass that one). Requires buyingType RESERVED.
          */
         rfPredictionId?: string;
+        promotion?: MetaPromotion;
         /**
-         * Meta only. Advantage+ creative enhancements: a partial map of Meta creative feature keys (snake_case, e.g. enhance_cta, image_brightness_and_contrast, text_optimizations) to enroll status, forwarded as degrees_of_freedom_spec.creative_features_spec. Meta validates the keys; unspecified features default to OPT_OUT. The legacy standard_enhancements bundle is deprecated by Meta and rejected.
+         * Meta only. Applied to each new creative, including standalone and attach shapes. With creatives[], these are defaults; an item replaces the whole feature map, including an empty map. auto_promotion_tag is an enhancement; an explicit offer uses promotion.
          */
-        creativeFeatures?: {
-            [key: string]: ('OPT_IN' | 'OPT_OUT');
-        };
+        creativeFeatures?: MetaCreativeFeatures;
         /**
          * Meta only. Multi-advertiser ads: whether Meta may show this ad alongside other advertisers' in one unit. Meta auto-enrols since Aug 2024, so send OPT_OUT to leave. It is a top-level creative field, NOT a `creativeFeatures` key, and Meta rejects it there.
          */
@@ -35824,6 +35893,14 @@ export type CreateStandaloneAdData = {
          */
         creatives?: Array<{
             /**
+             * Overrides the top-level offer for this item. Omit to inherit; null disables the inherited offer.
+             */
+            promotion?: MetaPromotion;
+            /**
+             * Replaces the entire top-level creativeFeatures map for this item. Omit to inherit; an empty map clears these defaults.
+             */
+            creativeFeatures?: MetaCreativeFeatures;
+            /**
              * Exact name for this ad. Falls back to `<name> #N` (N = 1-based position).
              */
             name?: string;
@@ -35854,7 +35931,8 @@ export type CreateStandaloneAdData = {
          * are inherited from the ad set on Meta, and passing `bidStrategy`
          * in attach mode returns 400. To change an existing ad set's
          * bid, use `PUT /v1/ads/ad-sets/{adSetId}`. Mutually exclusive
-         * with `creatives[]`.
+         * with `creatives[]`. `dynamicCreative` returns 400 in attach mode: create
+         * a new dynamic ad set by omitting `adSetId` instead.
          *
          * The attached ad takes the full single-creative surface:
          * `headline`/`body`/`description`/`callToAction` plus either
@@ -36169,7 +36247,10 @@ export type CreateStandaloneAdData = {
          * (`imageUrl`, `headline`, `body`, `linkUrl`, `callToAction`) are ignored. Mutually
          * exclusive with the `creatives[]` multi-creative shape. Exactly ONE of `imageUrls` /
          * `videoUrls` is required (Meta allows one ad format per asset feed; sending both →
-         * 400). Meta limits: ≤10 images or ≤10 videos, ≤5 bodies / titles / descriptions.
+         * 400). Limits remain 10 images or videos and 5 bodies, titles or descriptions.
+         * The ad set is created with `is_dynamic_creative: true`. Combining this field
+         * with `adSetId` returns 400: omit `adSetId` to create a new dynamic ad set.
+         * Multiple headlines go in `titles`; multiple primary texts go in `bodies`.
          *
          */
         dynamicCreative?: {
@@ -36747,11 +36828,11 @@ export type CreateStandaloneAdData = {
              */
             customConversionId?: string;
             /**
-             * Catalog ID for catalog/Advantage+ Shopping campaigns.
+             * Optional catalog ID. If supplied with productSetId, the set must belong to this catalog. A catalog ID cannot replace productSetId.
              */
             productCatalogId?: string;
             /**
-             * Product Set ID inside the catalog.
+             * Meta product SET ID from GET /v1/ads/catalogs/{catalogId}/product-sets. Zernio checks that the token can read the set and its product_catalog before creation. A catalog ID or inaccessible set returns a precise 400 naming promotedObject.productSetId. A mismatch with productCatalogId names promotedObject.productCatalogId.
              */
             productSetId?: string;
             /**

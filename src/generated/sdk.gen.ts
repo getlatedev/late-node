@@ -8367,7 +8367,9 @@ export const duplicateAdSet = <ThrowOnError extends boolean = false>(options: Op
  * Duplicates a single ad via Meta's native `POST /{ad-id}/copies`. The copy is created
  * paused. `adSetId` retargets the copy into another ad set; omitted = the source's own ad
  * set. Accepts the Zernio ad id or the platform ad id. Sync discovery is triggered
- * automatically (`syncAfter: false` to skip).
+ * automatically (`syncAfter: false` to skip). Creative settings returned by Meta,
+ * including explicit promotion metadata and creativeFeatures, are preserved when the
+ * native copy requires a creative rebuild. Metadata Meta does not return cannot be recovered.
  */
 export const duplicateAd = <ThrowOnError extends boolean = false>(options: OptionsLegacyParser<DuplicateAdData, ThrowOnError>) => {
     return (options?.client ?? client).post<DuplicateAdResponse, DuplicateAdError, ThrowOnError>({
@@ -8555,6 +8557,11 @@ export const getAdsTimeline = <ThrowOnError extends boolean = false>(options: Op
  * - the creative's `effective_instagram_media_id` (Instagram side)
  *
  * Any of the four resolve to the same ad. Caller doesn't need a translation step.
+ * By default, creative.promotion and creative.creativeFeatures contain stored requested
+ * settings, which do not confirm platform application. With `refreshPromotion=true`,
+ * Meta promotion metadata is read live and exposed as `ad.creative.promotion`
+ * with `promotionStatus`. Only `applied` confirms an offer; `not_returned` means the
+ * creative read succeeded without promotion metadata, and `unavailable` means it failed.
  *
  */
 export const getAd = <ThrowOnError extends boolean = false>(options: OptionsLegacyParser<GetAdData, ThrowOnError>) => {
@@ -9102,7 +9109,11 @@ export const listAdCreatives = <ThrowOnError extends boolean = false>(options: O
  * `existingCreativeId`. Provide exactly one of `imageUrl` (uploaded server-side),
  * `imageHash` (from POST /v1/ads/images or the library list), or `carouselCards` (2-10
  * hand-built cards). The Page (and linked Instagram account, when present) is resolved
- * from `accountId` as the story actor.
+ * from `accountId` as the story actor. `promotion` configures an explicit offer separately
+ * from Advantage+ `creativeFeatures`. Only when `promotion` is supplied does the response
+ * read the creative back from Meta;
+ * `promotionStatus: not_returned` means Meta accepted creation but omitted promotion
+ * metadata, so the requested offer is not confirmed as applied.
  */
 export const createAdCreative = <ThrowOnError extends boolean = false>(options: OptionsLegacyParser<CreateAdCreativeData, ThrowOnError>) => {
     return (options?.client ?? client).post<CreateAdCreativeResponse, CreateAdCreativeError, ThrowOnError>({
@@ -9555,6 +9566,16 @@ export const boostPost = <ThrowOnError extends boolean = false>(options: Options
  * - Meta-only multi-creative shape via the creatives array: one ad set with N ads sharing budget and targeting.
  * - Attach shape via adSetId: adds one new ad to an existing ad set, inheriting its budget, targeting, and schedule (Meta, Google Ads, TikTok, and LinkedIn). On LinkedIn adSetId is the existing Campaign id, and the budget, schedule, targeting and bidding fields must be omitted.
  *
+ * Meta accepts `promotion` and `creativeFeatures` on the single and attach shapes and
+ * as defaults for `creatives[]`. An item replaces the whole feature map; its `promotion`
+ * replaces the default offer, and `promotion: null` disables that default for the item.
+ * Reusing `existingCreativeId` uses the existing creative settings instead of new settings.
+ * Requested settings are persisted for lists, exports, and default ad-detail reads.
+ * Only ads supplied a `promotion` receive live readback; multi-create batches those reads
+ * in groups of up to 50 IDs without per-ad fallback. Inspect `ad.creative.promotionStatus` (or
+ * `ads[].creative.promotionStatus`). `not_returned` means Meta omitted the metadata;
+ * successful creation does not by itself prove the offer was applied or will display.
+ *
  * Per-platform required fields, budget minimums, and video-ad rules are documented on each property below.
  *
  * LinkedIn creates a Single Image or Single Video Ad backed by a Direct Sponsored Content "dark post" authored by a Company Page (see `organizationId`). Supported goals are engagement, traffic, awareness, and video_views (video ads use the `video` field; video_views requires a video), and traffic ads require `linkUrl`.
@@ -9942,7 +9963,7 @@ export const listAdCatalogs = <ThrowOnError extends boolean = false>(options: Op
 
 /**
  * List a catalog's product sets
- * Lists a Meta product catalog's product sets, the unit a catalog ad promotes. Pass the chosen set as `promotedObject.productSetId` on POST /v1/ads/create with `goal: catalog_sales`.
+ * Lists a Meta product catalog's product sets, the unit a catalog ad promotes. Pass the chosen set id, not the parent catalog id, as `promotedObject.productSetId` on POST /v1/ads/create with `goal: catalog_sales`. Creation verifies set visibility and returns 400 for a catalog id or an inaccessible set.
  */
 export const listAdCatalogProductSets = <ThrowOnError extends boolean = false>(options: OptionsLegacyParser<ListAdCatalogProductSetsData, ThrowOnError>) => {
     return (options?.client ?? client).get<ListAdCatalogProductSetsResponse, ListAdCatalogProductSetsError, ThrowOnError>({
