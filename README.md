@@ -382,7 +382,9 @@ try {
 ### Ad Accounts
 | Method | Description |
 |--------|-------------|
-| `adAccounts.listAccountCallouts()` | List account-level callout extensions |
+| `adAccounts.listAccountCallouts()` | List account callouts |
+| `adAccounts.listAccountSitelinks()` | List account sitelinks |
+| `adAccounts.listAccountStructuredSnippets()` | List account snippets |
 | `adAccounts.listAdAccounts()` | List ad accounts |
 | `adAccounts.listAdLabels()` | Ad labels |
 | `adAccounts.listAdNegativeKeywordLists()` | List negative keyword lists |
@@ -406,15 +408,22 @@ try {
 | `adAccounts.getDsaRecommendations()` | List DSA beneficiary/payor suggestions |
 | `adAccounts.getIosFourteenCampaignLimits()` | Get iOS 14 campaign limits |
 | `adAccounts.getValueRuleSet()` | Read a value rule set |
+| `adAccounts.updateAccountCallouts()` | Update account callouts |
+| `adAccounts.updateAccountSitelinks()` | Update account sitelinks |
+| `adAccounts.updateAccountStructuredSnippets()` | Update account snippets |
 | `adAccounts.updateAdAccount()` | Update ad account settings |
 | `adAccounts.updateAdNegativeKeywordList()` | Rename a negative keyword list |
 | `adAccounts.updateValueRuleSet()` | Replace a value rule set |
 | `adAccounts.deleteAdComment()` | Delete an ad comment |
 | `adAccounts.deleteAdNegativeKeywordList()` | Delete a negative keyword list |
 | `adAccounts.deleteValueRuleSet()` | Delete a value rule set |
-| `adAccounts.addAccountCallouts()` | Add account-level callout extensions |
+| `adAccounts.addAccountCallouts()` | Add account callouts |
+| `adAccounts.addAccountSitelinks()` | Add account sitelinks |
+| `adAccounts.addAccountStructuredSnippets()` | Add account snippets |
 | `adAccounts.hideAdComment()` | Hide or unhide an ad comment |
-| `adAccounts.removeAccountCallout()` | Remove an account-level callout extension |
+| `adAccounts.removeAccountCallout()` | Remove account callout |
+| `adAccounts.removeAccountSitelink()` | Remove account sitelink |
+| `adAccounts.removeAccountStructuredSnippet()` | Remove account snippet |
 | `adAccounts.replaceAdNegativeKeywordListKeywords()` | Replace negative list keywords |
 | `adAccounts.replyToAdComment()` | Reply to an ad comment |
 
@@ -433,10 +442,12 @@ try {
 | Method | Description |
 |--------|-------------|
 | `adCampaigns.listAdCampaigns()` | List campaigns |
+| `adCampaigns.listAdGroupAssets()` | List ad-group assets |
 | `adCampaigns.listAdKeywords()` | List Search keywords |
 | `adCampaigns.listAds()` | List ads |
 | `adCampaigns.listAdSets()` | List ad sets |
 | `adCampaigns.listBidStrategies()` | List Google Ads portfolio bid strategies |
+| `adCampaigns.listCampaignAssets()` | List campaign assets |
 | `adCampaigns.listCampaignNegativeKeywordLists()` | List campaign negative lists |
 | `adCampaigns.listCampaignNegativeKeywords()` | List campaign-level negative keywords |
 | `adCampaigns.bulkUpdateAdCampaignStatus()` | Pause or resume many campaigns |
@@ -453,22 +464,27 @@ try {
 | `adCampaigns.updateAd()` | Update ad |
 | `adCampaigns.updateAdCampaign()` | Update a campaign |
 | `adCampaigns.updateAdCampaignStatus()` | Pause or resume a campaign |
+| `adCampaigns.updateAdGroupAssets()` | Update ad-group assets |
 | `adCampaigns.updateAdKeyword()` | Pause or enable a Search keyword |
 | `adCampaigns.updateAdSet()` | Update an ad set |
 | `adCampaigns.updateAdSetStatus()` | Pause or resume a single ad set |
 | `adCampaigns.updateAdStatus()` | Pause or resume a single ad |
 | `adCampaigns.updateBidStrategy()` | Update a Google Ads portfolio bid strategy |
+| `adCampaigns.updateCampaignAssets()` | Update campaign assets |
 | `adCampaigns.updateCampaignTargeting()` | Edit a Google campaign's device, location, or language targeting |
 | `adCampaigns.deleteAd()` | Cancel an ad |
 | `adCampaigns.deleteAdCampaign()` | Delete a campaign |
 | `adCampaigns.deleteAdSet()` | Delete an ad set |
 | `adCampaigns.addAdKeywords()` | Add Search keywords to an ad group |
-| `adCampaigns.attachCampaignAssets()` | Attach extension assets to a Google Search campaign |
+| `adCampaigns.attachAdGroupAssets()` | Attach ad-group assets |
+| `adCampaigns.attachCampaignAssets()` | Attach campaign assets |
 | `adCampaigns.boostPost()` | Boost post as ad |
 | `adCampaigns.duplicateAd()` | Duplicate an ad |
 | `adCampaigns.duplicateAdCampaign()` | Duplicate a campaign |
 | `adCampaigns.duplicateAdSet()` | Duplicate an ad set |
+| `adCampaigns.removeAdGroupAssets()` | Remove ad-group assets |
 | `adCampaigns.removeAdKeyword()` | Remove a Search keyword |
+| `adCampaigns.removeCampaignAssets()` | Remove campaign assets |
 | `adCampaigns.replaceCampaignNegativeKeywordLists()` | Replace campaign negative lists |
 | `adCampaigns.replaceCampaignNegativeKeywords()` | Replace campaign-level negative keywords |
 

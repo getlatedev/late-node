@@ -256,6 +256,18 @@ export type Ad = {
      */
     creative?: {
         /**
+         * Google RSA only. Replaces the complete headline list. No padding or truncation on update.
+         */
+        headlines?: Array<GoogleRsaHeadline>;
+        /**
+         * Google RSA only. Replaces the complete description list. No padding or truncation on update.
+         */
+        descriptions?: Array<GoogleRsaDescription>;
+        /**
+         * Google RSA only. Replaces final URLs. Omitted lists stay unchanged.
+         */
+        finalUrls?: Array<(string)>;
+        /**
          * Primary thumbnail/image URL
          */
         thumbnailUrl?: (string) | null;
@@ -4281,6 +4293,30 @@ export type GeoRestriction = {
 };
 
 /**
+ * Supply fields for exactly one asset type per update. finalUrls may accompany sitelinkAsset. Shared asset edits affect every attachment using the asset.
+ */
+export type GoogleAssetUpdate = {
+    /**
+     * Asset resource name returned by a list operation. Must belong to the selected customer.
+     */
+    assetResourceName: string;
+    sitelinkAsset?: {
+        linkText?: string;
+        description1?: string;
+        description2?: string;
+        /**
+         * Alias for finalUrls with one URL. Do not supply both.
+         */
+        linkUrl?: string;
+    };
+    finalUrls?: Array<(string)>;
+    calloutAsset?: {
+        calloutText: string;
+    };
+    structuredSnippetAsset?: GoogleStructuredSnippet;
+};
+
+/**
  * Text and single image only (no videos). Supports STANDARD, EVENT, OFFER, and ALERT post types. Posts appear on Google Business Profile, Google Search, and Maps. Use locationId for multi-location posting. Schedule dates accept both ISO 8601 strings (e.g. '2026-04-15T09:00:00Z') and Google's native {year, month, day} objects.
  */
 export type GoogleBusinessPlatformData = {
@@ -4436,6 +4472,46 @@ export type GoogleBusinessReview = {
  * Google's string rating
  */
 export type starRating = 'ONE' | 'TWO' | 'THREE' | 'FOUR' | 'FIVE';
+
+export type GoogleRsaDescription = {
+    text: string;
+    /**
+     * Optional fixed description position. Omit to leave the asset unpinned.
+     */
+    pinnedField?: 'DESCRIPTION_1' | 'DESCRIPTION_2';
+};
+
+/**
+ * Optional fixed description position. Omit to leave the asset unpinned.
+ */
+export type pinnedField = 'DESCRIPTION_1' | 'DESCRIPTION_2';
+
+export type GoogleRsaHeadline = {
+    text: string;
+    /**
+     * Optional fixed headline position. Omit to leave the asset unpinned.
+     */
+    pinnedField?: 'HEADLINE_1' | 'HEADLINE_2' | 'HEADLINE_3';
+};
+
+/**
+ * Optional fixed headline position. Omit to leave the asset unpinned.
+ */
+export type pinnedField2 = 'HEADLINE_1' | 'HEADLINE_2' | 'HEADLINE_3';
+
+export type GoogleSitelink = {
+    text: string;
+    linkUrl: string;
+    description1?: string;
+    description2?: string;
+};
+
+export type GoogleStructuredSnippet = {
+    header: 'Amenities' | 'Brands' | 'Courses' | 'Degree programs' | 'Destinations' | 'Featured hotels' | 'Insurance coverage' | 'Models' | 'Neighborhoods' | 'Service catalog' | 'Shows' | 'Styles' | 'Types';
+    values: Array<(string)>;
+};
+
+export type header = 'Amenities' | 'Brands' | 'Courses' | 'Degree programs' | 'Destinations' | 'Featured hotels' | 'Insurance coverage' | 'Models' | 'Neighborhoods' | 'Service catalog' | 'Shows' | 'Styles' | 'Types';
 
 /**
  * Attachment snapshot inside an edit-history entry.
@@ -33272,6 +33348,14 @@ export type GetAdData = {
 
 export type GetAdResponse = ({
     ad?: Ad;
+    /**
+     * Google RSA details cache timestamp.
+     */
+    cachedAt?: (string) | null;
+    /**
+     * Whether Google RSA details use the last successful cached response.
+     */
+    stale?: boolean;
 });
 
 export type GetAdError = (ErrorResponse | {
@@ -33280,6 +33364,18 @@ export type GetAdError = (ErrorResponse | {
 
 export type UpdateAdData = {
     body: {
+        /**
+         * Google RSA only. Replaces the complete headline list. No padding or truncation on update.
+         */
+        headlines?: Array<GoogleRsaHeadline>;
+        /**
+         * Google RSA only. Replaces the complete description list. No padding or truncation on update.
+         */
+        descriptions?: Array<GoogleRsaDescription>;
+        /**
+         * Google RSA only. Replaces final URLs. Omitted lists stay unchanged.
+         */
+        finalUrls?: Array<(string)>;
         status?: 'active' | 'paused';
         budget?: {
             /**
@@ -33469,34 +33565,71 @@ export type UpdateAdStatusError = (unknown | {
     error?: string;
 });
 
+export type ListCampaignAssetsData = {
+    path: {
+        /**
+         * Numeric Google platform id.
+         */
+        campaignId: string;
+    };
+    query: {
+        accountId: string;
+        customerId?: string;
+    };
+};
+
+export type ListCampaignAssetsResponse = ({
+    campaignId?: string;
+    sitelinks?: Array<{
+        assetResourceName?: string;
+        campaignAssetResourceName?: string;
+        text?: string;
+        linkUrl?: string;
+        description1?: string;
+        description2?: string;
+    }>;
+    callouts?: Array<{
+        assetResourceName?: string;
+        campaignAssetResourceName?: string;
+        calloutText?: string;
+    }>;
+    structuredSnippets?: Array<{
+        assetResourceName?: string;
+        campaignAssetResourceName?: string;
+        header?: string;
+        values?: Array<(string)>;
+    }>;
+    /**
+     * Time of the cached Google read. Null when no cache was used.
+     */
+    cachedAt?: (string) | null;
+    /**
+     * True when exhausted quota required returning the last successful read.
+     */
+    stale?: boolean;
+});
+
+export type ListCampaignAssetsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
 export type AttachCampaignAssetsData = {
     body: {
         /**
-         * Zernio Google Ads SocialAccount id. Resolves the customer id + refresh token.
+         * Zernio Google Ads connection id.
          */
         accountId: string;
         /**
-         * Numeric Google Ads customer id. Required when the connection has multiple Google Ads accounts; optional (and inferred) when it has only one.
+         * Google customer id without dashes. Required when the connection has multiple customers.
          */
         customerId?: string;
-        /**
-         * See POST /v1/ads/create sitelinks, same shape.
-         */
-        sitelinks?: Array<{
-            text: string;
-            linkUrl: string;
-            description1?: string;
-            description2?: string;
-        }>;
+        sitelinks?: Array<GoogleSitelink>;
         callouts?: Array<(string)>;
-        structuredSnippets?: Array<{
-            header: 'Amenities' | 'Brands' | 'Courses' | 'Degree programs' | 'Destinations' | 'Featured hotels' | 'Insurance coverage' | 'Models' | 'Neighborhoods' | 'Service catalog' | 'Shows' | 'Styles' | 'Types';
-            values: Array<(string)>;
-        }>;
+        structuredSnippets?: Array<GoogleStructuredSnippet>;
     };
     path: {
         /**
-         * Numeric Google platform campaign id.
+         * Numeric Google platform id.
          */
         campaignId: string;
     };
@@ -33509,9 +33642,204 @@ export type AttachCampaignAssetsResponse = ({
     structuredSnippetAssetResourceNames?: Array<(string)>;
 });
 
-export type AttachCampaignAssetsError = (unknown | {
+export type AttachCampaignAssetsError = (ErrorResponse | {
     error?: string;
+} | unknown);
+
+export type UpdateCampaignAssetsData = {
+    body: {
+        /**
+         * Zernio Google Ads connection id.
+         */
+        accountId: string;
+        /**
+         * Google customer id without dashes. Required when the connection has multiple customers.
+         */
+        customerId?: string;
+        updates: Array<GoogleAssetUpdate>;
+    };
+    path: {
+        /**
+         * Numeric Google platform id.
+         */
+        campaignId: string;
+    };
+};
+
+export type UpdateCampaignAssetsResponse = ({
+    updated?: number;
 });
+
+export type UpdateCampaignAssetsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type RemoveCampaignAssetsData = {
+    body: {
+        /**
+         * Zernio Google Ads connection id.
+         */
+        accountId: string;
+        /**
+         * Google customer id without dashes. Required when the connection has multiple customers.
+         */
+        customerId?: string;
+        assetResourceNames: Array<(string)>;
+        campaignAssetResourceNames: Array<(string)>;
+    };
+    path: {
+        /**
+         * Numeric Google platform id.
+         */
+        campaignId: string;
+    };
+};
+
+export type RemoveCampaignAssetsResponse = ({
+    removed?: boolean;
+});
+
+export type RemoveCampaignAssetsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type ListAdGroupAssetsData = {
+    path: {
+        /**
+         * Numeric Google platform id.
+         */
+        adSetId: string;
+    };
+    query: {
+        accountId: string;
+        customerId?: string;
+    };
+};
+
+export type ListAdGroupAssetsResponse = ({
+    adGroupId?: string;
+    sitelinks?: Array<{
+        assetResourceName?: string;
+        adGroupAssetResourceName?: string;
+        text?: string;
+        linkUrl?: string;
+        description1?: string;
+        description2?: string;
+    }>;
+    callouts?: Array<{
+        assetResourceName?: string;
+        adGroupAssetResourceName?: string;
+        calloutText?: string;
+    }>;
+    structuredSnippets?: Array<{
+        assetResourceName?: string;
+        adGroupAssetResourceName?: string;
+        header?: string;
+        values?: Array<(string)>;
+    }>;
+    /**
+     * Time of the cached Google read. Null when no cache was used.
+     */
+    cachedAt?: (string) | null;
+    /**
+     * True when exhausted quota required returning the last successful read.
+     */
+    stale?: boolean;
+});
+
+export type ListAdGroupAssetsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type AttachAdGroupAssetsData = {
+    body: {
+        /**
+         * Zernio Google Ads connection id.
+         */
+        accountId: string;
+        /**
+         * Google customer id without dashes. Required when the connection has multiple customers.
+         */
+        customerId?: string;
+        sitelinks?: Array<GoogleSitelink>;
+        callouts?: Array<(string)>;
+        structuredSnippets?: Array<GoogleStructuredSnippet>;
+    };
+    path: {
+        /**
+         * Numeric Google platform id.
+         */
+        adSetId: string;
+    };
+};
+
+export type AttachAdGroupAssetsResponse = ({
+    adGroupId?: string;
+    sitelinkAssetResourceNames?: Array<(string)>;
+    calloutAssetResourceNames?: Array<(string)>;
+    structuredSnippetAssetResourceNames?: Array<(string)>;
+});
+
+export type AttachAdGroupAssetsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type UpdateAdGroupAssetsData = {
+    body: {
+        /**
+         * Zernio Google Ads connection id.
+         */
+        accountId: string;
+        /**
+         * Google customer id without dashes. Required when the connection has multiple customers.
+         */
+        customerId?: string;
+        updates: Array<GoogleAssetUpdate>;
+    };
+    path: {
+        /**
+         * Numeric Google platform id.
+         */
+        adSetId: string;
+    };
+};
+
+export type UpdateAdGroupAssetsResponse = ({
+    updated?: number;
+});
+
+export type UpdateAdGroupAssetsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type RemoveAdGroupAssetsData = {
+    body: {
+        /**
+         * Zernio Google Ads connection id.
+         */
+        accountId: string;
+        /**
+         * Google customer id without dashes. Required when the connection has multiple customers.
+         */
+        customerId?: string;
+        assetResourceNames: Array<(string)>;
+        adGroupAssetResourceNames: Array<(string)>;
+    };
+    path: {
+        /**
+         * Numeric Google platform id.
+         */
+        adSetId: string;
+    };
+};
+
+export type RemoveAdGroupAssetsResponse = ({
+    removed?: boolean;
+});
+
+export type RemoveAdGroupAssetsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
 
 export type GetCampaignAnalyticsData = {
     path: {
@@ -35485,13 +35813,7 @@ export type ReplaceCampaignNegativeKeywordListsError = (ErrorResponse | {
 
 export type ListAccountCalloutsData = {
     query: {
-        /**
-         * Google ads SocialAccount id.
-         */
         accountId: string;
-        /**
-         * Numeric Google Ads customer id (no dashes). Defaults to the account's connected customer.
-         */
         customerId?: string;
     };
 };
@@ -35500,18 +35822,15 @@ export type ListAccountCalloutsResponse = ({
     customerId?: string;
     callouts?: Array<{
         assetId?: string;
-        text?: string;
-        /**
-         * customer_asset.status, e.g. ENABLED, REMOVED, PAUSED.
-         */
         status?: string;
+        text?: string;
     }>;
     /**
-     * When this list was fetched from Google. Null when it was never served from cache.
+     * Time of the cached Google read. Null when no cache was used.
      */
     cachedAt?: (string) | null;
     /**
-     * True when Google's daily API quota was exhausted and this is the last successful fetch, not a live read.
+     * True when exhausted quota required returning the last successful read.
      */
     stale?: boolean;
 });
@@ -35523,16 +35842,13 @@ export type ListAccountCalloutsError = (ErrorResponse | {
 export type AddAccountCalloutsData = {
     body: {
         /**
-         * Zernio SocialAccount id owning the Google Ads connection.
+         * Zernio Google Ads connection id.
          */
         accountId: string;
         /**
-         * Numeric Google Ads customer id. Only required when the connection has more than one.
+         * Google customer id without dashes. Required when the connection has multiple customers.
          */
         customerId?: string;
-        /**
-         * Callout text, 1-25 characters each; up to 20 per request (Google's CalloutAsset limits).
-         */
         callouts: Array<(string)>;
     };
 };
@@ -35549,19 +35865,47 @@ export type AddAccountCalloutsError = (ErrorResponse | {
     error?: string;
 } | unknown);
 
-export type RemoveAccountCalloutData = {
+export type UpdateAccountCalloutsData = {
     body: {
         /**
-         * Zernio SocialAccount id owning the Google Ads connection.
+         * Zernio Google Ads connection id.
          */
         accountId: string;
         /**
-         * Numeric Google Ads customer id. Only required when the connection has more than one.
+         * Google customer id without dashes. Required when the connection has multiple customers.
          */
         customerId?: string;
+        updates: Array<{
+            /**
+             * Asset resource name returned by a list operation. Must belong to the selected customer.
+             */
+            assetResourceName: string;
+            calloutAsset?: {
+                calloutText: string;
+            };
+        }>;
+    };
+};
+
+export type UpdateAccountCalloutsResponse = ({
+    updated?: number;
+    customerId?: string;
+});
+
+export type UpdateAccountCalloutsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type RemoveAccountCalloutData = {
+    body: {
         /**
-         * Numeric asset id from GET /v1/ads/accounts/callouts.
+         * Zernio Google Ads connection id.
          */
+        accountId: string;
+        /**
+         * Google customer id without dashes. Required when the connection has multiple customers.
+         */
+        customerId?: string;
         assetId: string;
     };
 };
@@ -35572,6 +35916,239 @@ export type RemoveAccountCalloutResponse = ({
 });
 
 export type RemoveAccountCalloutError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type ListAccountSitelinksData = {
+    query: {
+        accountId: string;
+        customerId?: string;
+    };
+};
+
+export type ListAccountSitelinksResponse = ({
+    customerId?: string;
+    sitelinks?: Array<{
+        assetId?: string;
+        status?: string;
+        assetResourceName?: string;
+        customerAssetResourceName?: string;
+        text?: string;
+        linkUrl?: string;
+        description1?: string;
+        description2?: string;
+    }>;
+    /**
+     * Time of the cached Google read. Null when no cache was used.
+     */
+    cachedAt?: (string) | null;
+    /**
+     * True when exhausted quota required returning the last successful read.
+     */
+    stale?: boolean;
+});
+
+export type ListAccountSitelinksError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type AddAccountSitelinksData = {
+    body: {
+        /**
+         * Zernio Google Ads connection id.
+         */
+        accountId: string;
+        /**
+         * Google customer id without dashes. Required when the connection has multiple customers.
+         */
+        customerId?: string;
+        sitelinks: Array<GoogleSitelink>;
+    };
+};
+
+export type AddAccountSitelinksResponse = ({
+    customerId?: string;
+    sitelinks?: Array<{
+        assetId?: string;
+        text?: string;
+        linkUrl?: string;
+        description1?: string;
+        description2?: string;
+    }>;
+});
+
+export type AddAccountSitelinksError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type UpdateAccountSitelinksData = {
+    body: {
+        /**
+         * Zernio Google Ads connection id.
+         */
+        accountId: string;
+        /**
+         * Google customer id without dashes. Required when the connection has multiple customers.
+         */
+        customerId?: string;
+        updates: Array<{
+            /**
+             * Asset resource name returned by a list operation. Must belong to the selected customer.
+             */
+            assetResourceName: string;
+            sitelinkAsset?: {
+                linkText?: string;
+                description1?: string;
+                description2?: string;
+                /**
+                 * Alias for finalUrls with one URL. Do not supply both.
+                 */
+                linkUrl?: string;
+            };
+            finalUrls?: Array<(string)>;
+        }>;
+    };
+};
+
+export type UpdateAccountSitelinksResponse = ({
+    updated?: number;
+    customerId?: string;
+});
+
+export type UpdateAccountSitelinksError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type RemoveAccountSitelinkData = {
+    body: {
+        /**
+         * Zernio Google Ads connection id.
+         */
+        accountId: string;
+        /**
+         * Google customer id without dashes. Required when the connection has multiple customers.
+         */
+        customerId?: string;
+        assetId: string;
+    };
+};
+
+export type RemoveAccountSitelinkResponse = ({
+    removed?: boolean;
+    customerId?: string;
+});
+
+export type RemoveAccountSitelinkError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type ListAccountStructuredSnippetsData = {
+    query: {
+        accountId: string;
+        customerId?: string;
+    };
+};
+
+export type ListAccountStructuredSnippetsResponse = ({
+    customerId?: string;
+    structuredSnippets?: Array<{
+        assetId?: string;
+        status?: string;
+        assetResourceName?: string;
+        customerAssetResourceName?: string;
+        header?: string;
+        values?: Array<(string)>;
+    }>;
+    /**
+     * Time of the cached Google read. Null when no cache was used.
+     */
+    cachedAt?: (string) | null;
+    /**
+     * True when exhausted quota required returning the last successful read.
+     */
+    stale?: boolean;
+});
+
+export type ListAccountStructuredSnippetsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type AddAccountStructuredSnippetsData = {
+    body: {
+        /**
+         * Zernio Google Ads connection id.
+         */
+        accountId: string;
+        /**
+         * Google customer id without dashes. Required when the connection has multiple customers.
+         */
+        customerId?: string;
+        structuredSnippets: Array<GoogleStructuredSnippet>;
+    };
+};
+
+export type AddAccountStructuredSnippetsResponse = ({
+    customerId?: string;
+    structuredSnippets?: Array<{
+        assetId?: string;
+        header?: 'Amenities' | 'Brands' | 'Courses' | 'Degree programs' | 'Destinations' | 'Featured hotels' | 'Insurance coverage' | 'Models' | 'Neighborhoods' | 'Service catalog' | 'Shows' | 'Styles' | 'Types';
+        values?: Array<(string)>;
+    }>;
+});
+
+export type AddAccountStructuredSnippetsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type UpdateAccountStructuredSnippetsData = {
+    body: {
+        /**
+         * Zernio Google Ads connection id.
+         */
+        accountId: string;
+        /**
+         * Google customer id without dashes. Required when the connection has multiple customers.
+         */
+        customerId?: string;
+        updates: Array<{
+            /**
+             * Asset resource name returned by a list operation. Must belong to the selected customer.
+             */
+            assetResourceName: string;
+            structuredSnippetAsset?: GoogleStructuredSnippet;
+        }>;
+    };
+};
+
+export type UpdateAccountStructuredSnippetsResponse = ({
+    updated?: number;
+    customerId?: string;
+});
+
+export type UpdateAccountStructuredSnippetsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type RemoveAccountStructuredSnippetData = {
+    body: {
+        /**
+         * Zernio Google Ads connection id.
+         */
+        accountId: string;
+        /**
+         * Google customer id without dashes. Required when the connection has multiple customers.
+         */
+        customerId?: string;
+        assetId: string;
+    };
+};
+
+export type RemoveAccountStructuredSnippetResponse = ({
+    removed?: boolean;
+    customerId?: string;
+});
+
+export type RemoveAccountStructuredSnippetError = (ErrorResponse | {
     error?: string;
 } | unknown);
 
@@ -36931,13 +37508,13 @@ export type CreateStandaloneAdData = {
          */
         campaignNegativeKeywords?: Array<KeywordEntry>;
         /**
-         * Google Search RSA only. Extra headlines.
+         * Google Search RSA only. Extra text assets as strings or objects with text and optional pinnedField. Existing string input remains supported. The effective create lists, including primary text and deduplication, must contain 3-15 headlines and 2-4 descriptions; excess entries return 400.
          */
-        additionalHeadlines?: Array<(string)>;
+        additionalHeadlines?: Array<(string | GoogleRsaHeadline)>;
         /**
-         * Google Search RSA only. Extra descriptions.
+         * Google Search RSA only. Extra text assets as strings or objects with text and optional pinnedField. Existing string input remains supported. The effective create lists, including primary text and deduplication, must contain 3-15 headlines and 2-4 descriptions; excess entries return 400.
          */
-        additionalDescriptions?: Array<(string)>;
+        additionalDescriptions?: Array<(string | GoogleRsaDescription)>;
         /**
          * Google Search only. Sitelink assets to create and attach at the campaign level.
          * Each entry becomes an Asset (with sitelink_asset + Asset.final_urls) plus a

@@ -4,6 +4,8 @@ import {
   activateSequence,
   activateWorkflow,
   addAccountCallouts,
+  addAccountSitelinks,
+  addAccountStructuredSnippets,
   addAdKeywords,
   addBroadcastRecipients,
   addBusinessAgentAllowlistEntry,
@@ -19,6 +21,7 @@ import {
   approveWhatsAppGroupJoinRequests,
   archiveLeadForm,
   assignGoogleBusinessLocation,
+  attachAdGroupAssets,
   attachCampaignAssets,
   attachNumberToSipTrunk,
   batchGetGoogleBusinessReviews,
@@ -385,6 +388,8 @@ import {
   likePost,
   listAccountCallouts,
   listAccountGroups,
+  listAccountSitelinks,
+  listAccountStructuredSnippets,
   listAccounts,
   listAdAccounts,
   listAdAudiences,
@@ -392,6 +397,7 @@ import {
   listAdCatalogProductSets,
   listAdCatalogs,
   listAdCreatives,
+  listAdGroupAssets,
   listAdImages,
   listAdKeywords,
   listAdLabels,
@@ -419,6 +425,7 @@ import {
   listBusinessAgentUiSkills,
   listBusinessAgentWebsites,
   listCalls,
+  listCampaignAssets,
   listCampaignNegativeKeywordLists,
   listCampaignNegativeKeywords,
   listCommentAutomationLogs,
@@ -515,9 +522,13 @@ import {
   remediatePhoneNumber,
   remediateWhatsAppNumber,
   removeAccountCallout,
+  removeAccountSitelink,
+  removeAccountStructuredSnippet,
+  removeAdGroupAssets,
   removeAdKeyword,
   removeBookmark,
   removeBusinessAgentAllowlistEntry,
+  removeCampaignAssets,
   removeConversionAssociations,
   removeDiscordMemberRole,
   removeMessageReaction,
@@ -609,13 +620,17 @@ import {
   unpinDiscordMessage,
   unpublishPost,
   updateAccount,
+  updateAccountCallouts,
   updateAccountGroup,
+  updateAccountSitelinks,
+  updateAccountStructuredSnippets,
   updateAd,
   updateAdAccount,
   updateAdAudience,
   updateAdCampaign,
   updateAdCampaignStatus,
   updateAdCreative,
+  updateAdGroupAssets,
   updateAdKeyword,
   updateAdNegativeKeywordList,
   updateAdSet,
@@ -634,6 +649,7 @@ import {
   updateBusinessAgentSkill,
   updateBusinessAgentUiSkill,
   updateBusinessAgentWebsite,
+  updateCampaignAssets,
   updateCampaignTargeting,
   updateCommentAutomation,
   updateContact,
@@ -1659,7 +1675,14 @@ export class Zernio {
     updateAd: this._bind(updateAd),
     deleteAd: this._bind(deleteAd),
     updateAdStatus: this._bind(updateAdStatus),
+    listCampaignAssets: this._bind(listCampaignAssets),
     attachCampaignAssets: this._bind(attachCampaignAssets),
+    updateCampaignAssets: this._bind(updateCampaignAssets),
+    removeCampaignAssets: this._bind(removeCampaignAssets),
+    listAdGroupAssets: this._bind(listAdGroupAssets),
+    attachAdGroupAssets: this._bind(attachAdGroupAssets),
+    updateAdGroupAssets: this._bind(updateAdGroupAssets),
+    removeAdGroupAssets: this._bind(removeAdGroupAssets),
     listCampaignNegativeKeywordLists: this._bind(listCampaignNegativeKeywordLists),
     replaceCampaignNegativeKeywordLists: this._bind(replaceCampaignNegativeKeywordLists),
     boostPost: this._bind(boostPost),
@@ -1750,7 +1773,16 @@ export class Zernio {
     replaceAdNegativeKeywordListKeywords: this._bind(replaceAdNegativeKeywordListKeywords),
     listAccountCallouts: this._bind(listAccountCallouts),
     addAccountCallouts: this._bind(addAccountCallouts),
+    updateAccountCallouts: this._bind(updateAccountCallouts),
     removeAccountCallout: this._bind(removeAccountCallout),
+    listAccountSitelinks: this._bind(listAccountSitelinks),
+    addAccountSitelinks: this._bind(addAccountSitelinks),
+    updateAccountSitelinks: this._bind(updateAccountSitelinks),
+    removeAccountSitelink: this._bind(removeAccountSitelink),
+    listAccountStructuredSnippets: this._bind(listAccountStructuredSnippets),
+    addAccountStructuredSnippets: this._bind(addAccountStructuredSnippets),
+    updateAccountStructuredSnippets: this._bind(updateAccountStructuredSnippets),
+    removeAccountStructuredSnippet: this._bind(removeAccountStructuredSnippet),
     getAdAccountFinance: this._bind(getAdAccountFinance),
     listAdAccounts: this._bind(listAdAccounts),
     updateAdAccount: this._bind(updateAdAccount),
@@ -2003,8 +2035,22 @@ export class Zernio {
     deleteAd: this._bind(deleteAd),
     /** @deprecated Use `zernio.adcampaigns.updateAdStatus` instead. */
     updateAdStatus: this._bind(updateAdStatus),
+    /** @deprecated Use `zernio.adcampaigns.listCampaignAssets` instead. */
+    listCampaignAssets: this._bind(listCampaignAssets),
     /** @deprecated Use `zernio.adcampaigns.attachCampaignAssets` instead. */
     attachCampaignAssets: this._bind(attachCampaignAssets),
+    /** @deprecated Use `zernio.adcampaigns.updateCampaignAssets` instead. */
+    updateCampaignAssets: this._bind(updateCampaignAssets),
+    /** @deprecated Use `zernio.adcampaigns.removeCampaignAssets` instead. */
+    removeCampaignAssets: this._bind(removeCampaignAssets),
+    /** @deprecated Use `zernio.adcampaigns.listAdGroupAssets` instead. */
+    listAdGroupAssets: this._bind(listAdGroupAssets),
+    /** @deprecated Use `zernio.adcampaigns.attachAdGroupAssets` instead. */
+    attachAdGroupAssets: this._bind(attachAdGroupAssets),
+    /** @deprecated Use `zernio.adcampaigns.updateAdGroupAssets` instead. */
+    updateAdGroupAssets: this._bind(updateAdGroupAssets),
+    /** @deprecated Use `zernio.adcampaigns.removeAdGroupAssets` instead. */
+    removeAdGroupAssets: this._bind(removeAdGroupAssets),
     /** @deprecated Use `zernio.adcampaigns.listCampaignNegativeKeywordLists` instead. */
     listCampaignNegativeKeywordLists: this._bind(listCampaignNegativeKeywordLists),
     /** @deprecated Use `zernio.adcampaigns.replaceCampaignNegativeKeywordLists` instead. */
@@ -2067,8 +2113,26 @@ export class Zernio {
     listAccountCallouts: this._bind(listAccountCallouts),
     /** @deprecated Use `zernio.adaccounts.addAccountCallouts` instead. */
     addAccountCallouts: this._bind(addAccountCallouts),
+    /** @deprecated Use `zernio.adaccounts.updateAccountCallouts` instead. */
+    updateAccountCallouts: this._bind(updateAccountCallouts),
     /** @deprecated Use `zernio.adaccounts.removeAccountCallout` instead. */
     removeAccountCallout: this._bind(removeAccountCallout),
+    /** @deprecated Use `zernio.adaccounts.listAccountSitelinks` instead. */
+    listAccountSitelinks: this._bind(listAccountSitelinks),
+    /** @deprecated Use `zernio.adaccounts.addAccountSitelinks` instead. */
+    addAccountSitelinks: this._bind(addAccountSitelinks),
+    /** @deprecated Use `zernio.adaccounts.updateAccountSitelinks` instead. */
+    updateAccountSitelinks: this._bind(updateAccountSitelinks),
+    /** @deprecated Use `zernio.adaccounts.removeAccountSitelink` instead. */
+    removeAccountSitelink: this._bind(removeAccountSitelink),
+    /** @deprecated Use `zernio.adaccounts.listAccountStructuredSnippets` instead. */
+    listAccountStructuredSnippets: this._bind(listAccountStructuredSnippets),
+    /** @deprecated Use `zernio.adaccounts.addAccountStructuredSnippets` instead. */
+    addAccountStructuredSnippets: this._bind(addAccountStructuredSnippets),
+    /** @deprecated Use `zernio.adaccounts.updateAccountStructuredSnippets` instead. */
+    updateAccountStructuredSnippets: this._bind(updateAccountStructuredSnippets),
+    /** @deprecated Use `zernio.adaccounts.removeAccountStructuredSnippet` instead. */
+    removeAccountStructuredSnippet: this._bind(removeAccountStructuredSnippet),
     /** @deprecated Use `zernio.adaccounts.getAdAccountFinance` instead. */
     getAdAccountFinance: this._bind(getAdAccountFinance),
     /** @deprecated Use `zernio.adaccounts.listAdAccounts` instead. */
