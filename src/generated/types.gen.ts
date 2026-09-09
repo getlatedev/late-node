@@ -911,6 +911,124 @@ export type AdNegativeKeywordListKeyword = {
 export type matchType2 = 'broad' | 'phrase' | 'exact';
 
 /**
+ * What the ad optimises against. Behaviour depends on the platform.
+ *
+ * **Meta**: forwarded to the ad set's `promoted_object` (snake-cased).
+ * For `goal: app_promotion`, it is also sent on the campaign only when
+ * `isSkadnetworkAttribution: true`. Plain Android app installs keep the
+ * existing campaign payload, with the promoted object only on the ad set.
+ * POST /v1/ads/campaigns forwards this object only for that explicit SKAN flag.
+ * Required for goals whose ad-set optimization_goal points at a specific
+ * event/page/app (without it Meta rejects the ad-set create with
+ * `error_subcode: 1815430` "Please select a promoted object for your ad set"):
+ * - `goal: conversions` / `lead_conversion` (OFFSITE_CONVERSIONS): requires `pixelId` + `customEventType`, or `customConversionId` when optimising against a Custom Conversion (the conversion carries its own event definition). For a pixel CUSTOM event (one you named yourself in CAPI/Events Manager), send `customEventType: OTHER` + `customEventStr` with the event name.
+ * - `goal: app_promotion` (APP_INSTALLS): requires `applicationId` + `objectStoreUrl`
+ * - `goal: lead_generation` (LEAD_GENERATION): `pageId` is auto-filled from the connected Page when omitted
+ *
+ * Other Meta goals (engagement, traffic, awareness, video_views) ignore this field.
+ *
+ * **TikTok**: used by `goal: conversions` and the Smart+ goals (`smartPlus: true`).
+ * - `pixelId` maps to the ad group's `pixel_id`. Required: a TikTok website-conversion
+ * ad group without a pixel is rejected with `40002: Please select a pixel`.
+ * - `customEventType` maps to the ad group's `optimization_event` (the pixel event to
+ * optimise for). Optional on the regular conversions flow, required on Smart+.
+ * See the `customEventType` field below for the valid TikTok codes.
+ * - `applicationId` (Smart+ `goal: app_promotion` only) maps to the ad group's `app_id`:
+ * the App ID of an app registered on the TikTok Ads account (Assets → Events →
+ * App Events). Install optimization needs the app's MMP tracking configured.
+ *
+ * The remaining `promotedObject.*` fields are Meta-only. Platforms other than
+ * Meta and TikTok ignore `promotedObject` entirely.
+ *
+ */
+export type AdPromotedObject = {
+    /**
+     * Pixel ID. **Meta:** Facebook Pixel ID, required for `goal: conversions`.
+     * Requires `customEventType` alongside it; Meta rejects any promoted_object
+     * carrying `pixel_id` without `custom_event_type` (error_subcode 1885014),
+     * even when `customConversionId` is also present.
+     * **TikTok:** TikTok Pixel ID, required for `goal: conversions`.
+     * To discover the pixels an ad account can use, call
+     * `GET /v1/accounts/{accountId}/tracking-tags?adAccountId=act_...` (each entry
+     * carries `kind` and `ownerAdAccountId`), or
+     * `GET /v1/accounts/{accountId}/conversion-destinations`. Note this is a
+     * different resource from `GET /v1/ads/{adId}/tracking-tags`, which reads an
+     * ad's click-URL params (`url_tags`), not pixels.
+     *
+     */
+    pixelId?: string;
+    /**
+     * The event the campaign/ad group optimises against.
+     *
+     * **Meta:** standard event like `PURCHASE`, `LEAD`, `COMPLETE_REGISTRATION`,
+     * `ADD_TO_CART`. Uppercased internally so callers can pass any case. Required
+     * for `goal: conversions`.
+     *
+     * **TikTok:** an `optimization_event` code (UPPER_SNAKE, not Meta's vocabulary
+     * and not PascalCase), OR the exact event name shown in TikTok Events Manager
+     * (auto-resolved to its code). Must be one of the event types your TikTok
+     * Pixel tracks; custom events are not optimizable. Current taxonomy:
+     * `SHOPPING` (Purchase), `ON_WEB_CART` (Add to Cart), `INITIATE_ORDER`
+     * (Initiate Checkout), `FORM` (Lead), `ON_WEB_REGISTER` (Complete
+     * Registration), `ON_WEB_DETAIL` (View Content). `ON_WEB_ORDER` is
+     * deprecated. On rejection the error lists the event types your pixel
+     * actually tracks. Optional for `goal: conversions`.
+     *
+     */
+    customEventType?: string;
+    /**
+     * Meta only. Pixel custom-event name to optimise against (Meta's
+     * `custom_event_str`), exactly as it appears in Events Manager and in your
+     * CAPI payloads (case-sensitive, not uppercased). Requires
+     * `customEventType: OTHER`, and `OTHER` requires this field (400 either way).
+     * The same as picking a custom event in Ads Manager's conversion-event
+     * dropdown. For rule-based Custom Conversions use `customConversionId`
+     * instead.
+     *
+     */
+    customEventStr?: string;
+    /**
+     * Facebook Page ID. Used by `goal: lead_generation`. Auto-filled from the
+     * connected Page when omitted.
+     *
+     */
+    pageId?: string;
+    /**
+     * App ID. Required for `goal: app_promotion`.
+     */
+    applicationId?: string;
+    /**
+     * App Store / Play Store listing URL. Required for `goal: app_promotion`.
+     */
+    objectStoreUrl?: string;
+    /**
+     * Custom Conversion ID, when optimising against one instead of a standard
+     * event. Accepted alone by this API, without `pixelId` or `customEventType`.
+     * If `pixelId` is also sent, `customEventType` is still required on the
+     * promoted_object (Meta rejects `pixel_id` without `custom_event_type`,
+     * error_subcode 1885014).
+     *
+     */
+    customConversionId?: string;
+    /**
+     * Optional catalog ID. If supplied with productSetId, the set must belong to this catalog. A catalog ID cannot replace productSetId.
+     */
+    productCatalogId?: string;
+    /**
+     * Meta product SET ID from GET /v1/ads/catalogs/{catalogId}/product-sets. Zernio checks that the token can read the set and its product_catalog before creation. A catalog ID or inaccessible set returns a precise 400 naming promotedObject.productSetId. A mismatch with productCatalogId names promotedObject.productCatalogId.
+     */
+    productSetId?: string;
+    /**
+     * Meta only. Offline event set (dataset) to optimise toward. Post-merger these are datasets: the id is the dataset id (for pixel-backed datasets, the pixel id).
+     */
+    offlineConversionDataSetId?: string;
+    /**
+     * Meta only. WhatsApp number on messaging-destination ad sets.
+     */
+    whatsappPhoneNumber?: string;
+};
+
+/**
  * Platform-side review state, independent of the delivery `status` and the `configuredStatus` on/off toggle. `in_review` means the platform is still reviewing. Absent when the platform reports no review signal (e.g. a paused ad whose review state is masked behind the pause).
  */
 export type AdReviewStatus = 'in_review' | 'approved' | 'rejected' | 'with_issues';
@@ -985,6 +1103,23 @@ export type AdsTimelineResponse = {
          * Derived purchaseValue / spend.
          */
         roas?: number;
+    }>;
+};
+
+/**
+ * Meta only. Attaches pixel measurement to the ad regardless of the optimization goal (the "Website events" tracking row in Ads Manager). `pixelId` becomes the ad's `tracking_specs` (offsite_conversion + fb_pixel); `urlTags` is stored on the new creative as `url_tags` and retained on the ad for compatibility. Applied on the legacy single-creative shape, every ad of the multi-creative shape, and the attach shape. NOTE: tracking lives on the AD object and is not inherited from the ad set, so pass it on EVERY attach call that should carry the pixel.
+ */
+export type AdTracking = {
+    /**
+     * Meta Pixel ID to attach for offsite-conversion measurement.
+     */
+    pixelId?: string;
+    /**
+     * Click-URL params stored on the creative as `url_tags` and returned by GET /v1/ads/{adId}/tracking-tags. App-promotion linkUrl stays byte-identical to promotedObject.objectStoreUrl. Meta dynamic macros ({{ad.id}}, {{campaign.id}}, {{placement}}, ...) are sent through unescaped so Meta expands them; every other character is percent-encoded.
+     */
+    urlTags?: Array<{
+        key: string;
+        value: string;
     }>;
 };
 
@@ -2823,6 +2958,7 @@ export type CtwaAdRequestBody = {
      * Meta enhancement settings for single or attached ads, and defaults for creatives[]. An item replaces the entire map, including with an empty object.
      */
     creativeFeatures?: MetaCreativeFeatures;
+    tracking?: AdTracking;
     /**
      * Facebook or Instagram SocialAccount ID.
      */
@@ -5410,6 +5546,21 @@ export type MetaCreativeFeatures = {
     [key: string]: ('OPT_IN' | 'OPT_OUT');
 };
 
+export type MetaInstagramIdentityRef = {
+    /**
+     * Instagram identity ID.
+     */
+    igUserId: string;
+    /**
+     * Instagram username; empty when Meta does not expose it.
+     */
+    username: string;
+    /**
+     * Profile picture URL when available.
+     */
+    profilePictureUrl?: string;
+};
+
 /**
  * Meta explicit Promotion offer. Maps to creative_sourcing_spec.promotion_metadata_spec with promotion_source ADVERTISER_INPUT. Dates become Unix seconds. Send null to omit an explicit offer on a new creative or remove it when rebuilding. Creation success alone does not confirm application: inspect promotionStatus in the response.
  */
@@ -6429,6 +6580,14 @@ export type platform8 = 'tiktok' | 'instagram' | 'facebook' | 'youtube' | 'linke
  *
  */
 export type TargetingSpec = {
+    /**
+     * Meta only. Operating systems and version ranges, such as iOS_ver_14.0_and_above or Android. Emitted as user_os. May also be supplied inside targeting.
+     */
+    userOs?: Array<(string)>;
+    /**
+     * Meta only. Device models such as iPhone. Emitted as user_device. May also be supplied inside targeting.
+     */
+    userDevice?: Array<(string)>;
     /**
      * ISO 3166-1 alpha-2 country codes (e.g. ['US']).
      */
@@ -31950,6 +32109,19 @@ export type CreateAdCampaignData = {
          * Mapped to the ODAX objective (same mapping as POST /v1/ads/create).
          */
         goal: 'engagement' | 'traffic' | 'awareness' | 'video_views' | 'lead_generation' | 'lead_conversion' | 'job_applicants' | 'conversions' | 'app_promotion' | 'catalog_sales' | 'page_likes';
+        /**
+         * Meta app promotion only. Immutable campaign flag. Set true for iOS 14+ SKAdNetwork campaigns and supply promotedObject.applicationId plus promotedObject.objectStoreUrl. The campaign receives promotedObject only when this flag is true. Cannot be changed on an existing campaign.
+         */
+        isSkadnetworkAttribution?: boolean;
+        promotedObject?: AdPromotedObject;
+        /**
+         * Meta only. SKAdNetwork app promotion requires AUCTION.
+         */
+        buyingType?: 'AUCTION' | 'RESERVED';
+        /**
+         * Meta only. Runs campaign validation without creating or persisting a campaign; Idempotency-Key storage is bypassed. Returns HTTP 200 with validateOnly true and status VALIDATED.
+         */
+        validateOnly?: boolean;
         specialAdCategories?: Array<('HOUSING' | 'EMPLOYMENT' | 'CREDIT' | 'ISSUES_ELECTIONS_POLITICS' | 'FINANCIAL_PRODUCTS_SERVICES' | 'ONLINE_GAMBLING_AND_GAMING')>;
         /**
          * Campaign-level (CBO) budget in WHOLE currency units (USD: 50 = $50.00), NOT cents. Meta's own Marketing API takes this same number in minor units, so it is an easy and expensive mix-up. Requires budgetType.
@@ -31983,6 +32155,18 @@ export type CreateAdCampaignData = {
 };
 
 export type CreateAdCampaignResponse = ({
+    /**
+     * Always true.
+     */
+    validateOnly?: boolean;
+    adAccountId?: string;
+    /**
+     * Empty because no campaign was created.
+     */
+    campaignId?: "";
+    objective?: string;
+    status?: "VALIDATED";
+} | {
     adAccountId?: string;
     /**
      * Platform id of the new campaign
@@ -33955,7 +34139,7 @@ export type UpdateAdTrackingTagsError = ({
 export type GetAdCommentsData = {
     path: {
         /**
-         * Internal Zernio ad ID (ObjectId).
+         * Internal Zernio ad ID or indexed platform ad/post ID.
          */
         adId: string;
     };
@@ -33969,6 +34153,14 @@ export type GetAdCommentsData = {
          * Which side of the ad to return comments for. Omit to default to the Instagram side when present, else Facebook. Returns ad_not_commentable if the ad has no such placement.
          */
         placement?: 'facebook' | 'instagram';
+        /**
+         * TikTok-only start date. Defaults to 30 days before until. Maximum window is 30 days.
+         */
+        since?: string;
+        /**
+         * TikTok-only end date. Defaults to today in UTC.
+         */
+        until?: string;
     };
 };
 
@@ -33983,25 +34175,37 @@ export type GetAdCommentsResponse = ({
     };
     meta: {
         /**
-         * Which side these comments are on (same as `placement`).
+         * Platform of the comments.
          */
-        platform: 'facebook' | 'instagram';
+        platform: 'facebook' | 'instagram' | 'tiktok';
         /**
          * The placement these comments are for, useful when you didn't pass ?placement= and want to know which one you got.
          */
-        placement: 'facebook' | 'instagram';
+        placement?: 'facebook' | 'instagram';
         /**
          * Internal Zernio ad ID.
          */
         adId: string;
         /**
-         * Meta ad ID.
+         * Platform ad ID.
          */
-        platformAdId: string;
+        platformAdId?: string;
         /**
          * Underlying post ID the comments belong to. effective_object_story_id for the Facebook side, effective_instagram_media_id for the Instagram side.
          */
-        effectiveStoryId: string;
+        effectiveStoryId?: string;
+        /**
+         * TikTok-only video item ID. Null when the ad and comments do not expose it.
+         */
+        tiktokItemId?: (string) | null;
+        /**
+         * TikTok-only resolved start date.
+         */
+        since?: string;
+        /**
+         * TikTok-only resolved end date.
+         */
+        until?: string;
         /**
          * Facebook-only. The connected Facebook Page SocialAccount these comments were read through. Pass it as `accountId` (with `effectiveStoryId` as the postId) to /v1/inbox/comments to reply/hide/delete. Null when no connected Page was used (then moderation isn't possible).
          */
@@ -34029,6 +34233,127 @@ export type GetAdCommentsResponse = ({
 export type GetAdCommentsError = (unknown | {
     error?: string;
 });
+
+export type ReplyToAdCommentData = {
+    body: {
+        /**
+         * Non-empty reply text.
+         */
+        text: string;
+    };
+    path: {
+        /**
+         * Internal Zernio ad ID or indexed platform ad ID.
+         */
+        adId: string;
+        /**
+         * TikTok comment ID from the ad comment listing.
+         */
+        commentId: string;
+    };
+    query?: {
+        /**
+         * Start date of the comment lookup window. Defaults to 30 days before until.
+         */
+        since?: string;
+        /**
+         * End date of the comment lookup window. Defaults to today in UTC.
+         */
+        until?: string;
+    };
+};
+
+export type ReplyToAdCommentResponse = ({
+    status: 'success';
+    /**
+     * ID of the created reply or moderated comment.
+     */
+    commentId: string;
+});
+
+export type ReplyToAdCommentError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type HideAdCommentData = {
+    body: {
+        /**
+         * True to hide the comment; false to restore it.
+         */
+        hidden: boolean;
+    };
+    path: {
+        /**
+         * Internal Zernio ad ID or indexed platform ad ID.
+         */
+        adId: string;
+        /**
+         * TikTok comment ID from the ad comment listing.
+         */
+        commentId: string;
+    };
+    query?: {
+        /**
+         * Start date of the comment lookup window. Defaults to 30 days before until.
+         */
+        since?: string;
+        /**
+         * End date of the comment lookup window. Defaults to today in UTC.
+         */
+        until?: string;
+    };
+};
+
+export type HideAdCommentResponse = ({
+    status: 'success';
+    /**
+     * ID of the created reply or moderated comment.
+     */
+    commentId: string;
+    /**
+     * The requested visibility state.
+     */
+    hidden?: boolean;
+});
+
+export type HideAdCommentError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type DeleteAdCommentData = {
+    path: {
+        /**
+         * Internal Zernio ad ID or indexed platform ad ID.
+         */
+        adId: string;
+        /**
+         * TikTok comment ID from the ad comment listing.
+         */
+        commentId: string;
+    };
+    query?: {
+        /**
+         * Start date of the comment lookup window. Defaults to 30 days before until.
+         */
+        since?: string;
+        /**
+         * End date of the comment lookup window. Defaults to today in UTC.
+         */
+        until?: string;
+    };
+};
+
+export type DeleteAdCommentResponse = ({
+    status: 'success';
+    /**
+     * ID of the created reply or moderated comment.
+     */
+    commentId: string;
+});
+
+export type DeleteAdCommentError = (ErrorResponse | {
+    error?: string;
+} | unknown);
 
 export type ListAdsBusinessCentersData = {
     query: {
@@ -34245,6 +34570,140 @@ export type ListAdStudiesResponse = ({
 export type ListAdStudiesError = (unknown | {
     error?: string;
 });
+
+export type ListAdsInstagramAccountsData = {
+    query: {
+        /**
+         * Zernio Meta Ads or Facebook SocialAccount ID.
+         */
+        accountId: string;
+        /**
+         * Meta ad account ID including the act_ prefix.
+         */
+        adAccountId: string;
+    };
+};
+
+export type ListAdsInstagramAccountsResponse = ({
+    accounts: Array<(MetaInstagramIdentityRef & {
+    /**
+     * Whether this is a Page-backed Instagram identity.
+     */
+    isPageBacked: boolean;
+    /**
+     * Discovery source; Page linkage also uses page_backed.
+     */
+    source: 'ad_account' | 'page_backed' | 'business';
+})>;
+    pages: Array<{
+        /**
+         * Facebook Page ID.
+         */
+        pageId: string;
+        /**
+         * Facebook Page name.
+         */
+        name: string;
+        instagramBusinessAccount?: MetaInstagramIdentityRef;
+        connectedInstagramAccount?: MetaInstagramIdentityRef;
+    }>;
+    resolved: {
+        /**
+         * Page selected by the shared ad-creation resolver.
+         */
+        pageId: (string) | null;
+        /**
+         * Instagram identity selected by the shared ad-creation resolver.
+         */
+        igUserId: (string) | null;
+        /**
+         * Discovery source of the resolved identity; null when absent from discovery.
+         */
+        source: ('ad_account' | 'page_backed' | 'business') | null;
+    };
+});
+
+export type ListAdsInstagramAccountsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type ListAdvertisableApplicationsData = {
+    query: {
+        /**
+         * Zernio Meta Ads or Facebook SocialAccount ID.
+         */
+        accountId: string;
+        /**
+         * Meta ad account ID including the act_ prefix.
+         */
+        adAccountId: string;
+    };
+};
+
+export type ListAdvertisableApplicationsResponse = ({
+    applications: Array<{
+        /**
+         * Meta application ID.
+         */
+        id: string;
+        /**
+         * Application name.
+         */
+        name: string;
+        /**
+         * Platform identifiers reported by Meta.
+         */
+        supportedPlatforms: Array<(string)>;
+        /**
+         * Platform-keyed store URLs returned unchanged by Meta.
+         */
+        storeUrls: {
+            [key: string]: (string);
+        };
+    }>;
+});
+
+export type ListAdvertisableApplicationsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type GetIosFourteenCampaignLimitsData = {
+    query: {
+        /**
+         * Zernio Meta Ads or Facebook SocialAccount ID.
+         */
+        accountId: string;
+        /**
+         * Meta ad account ID including the act_ prefix.
+         */
+        adAccountId: string;
+        /**
+         * Meta application ID from advertisable-applications.
+         */
+        applicationId: string;
+    };
+};
+
+export type GetIosFourteenCampaignLimitsResponse = ({
+    limits: {
+        /**
+         * Campaign group limit reported by Meta.
+         */
+        campaignGroupLimit?: (number) | null;
+        /**
+         * Campaign limit reported by Meta.
+         */
+        campaignLimit?: (number) | null;
+        /**
+         * Campaign group limit details returned by Meta.
+         */
+        campaignGroupLimitsDetails?: Array<unknown>;
+    } | null;
+});
+
+export type GetIosFourteenCampaignLimitsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
 
 export type ListMetaBusinessesData = {
     query: {
@@ -35696,22 +36155,7 @@ export type CreateStandaloneAdData = {
          * Meta only. Exact ad name (the single-creative ad object's name). Overrides the default, which is `name`. (For per-ad names on the multi-creative shape, set `name` on each `creatives[]` entry instead.)
          */
         adName?: string;
-        /**
-         * Meta only. Attaches pixel measurement to the ad regardless of the optimization goal (the "Website events" tracking row in Ads Manager). `pixelId` becomes the ad's `tracking_specs` (offsite_conversion + fb_pixel); `urlTags` becomes the ad's `url_tags` (click-tracking query params). Applied on the legacy single-creative shape, every ad of the multi-creative shape, and the attach shape. NOTE: tracking lives on the AD object and is not inherited from the ad set, so pass it on EVERY attach call that should carry the pixel.
-         */
-        tracking?: {
-            /**
-             * Meta Pixel ID to attach for offsite-conversion measurement.
-             */
-            pixelId?: string;
-            /**
-             * Click-URL params appended to the ad's destination as `url_tags` (e.g. utm_source). Meta dynamic macros ({{ad.id}}, {{campaign.id}}, {{placement}}, ...) are sent through unescaped so Meta expands them; every other character is percent-encoded.
-             */
-            urlTags?: Array<{
-                key: string;
-                value: string;
-            }>;
-        };
+        tracking?: AdTracking;
         /**
          * Required on legacy and multi-creative shapes; the attach shape inherits it from the ad set. Available goals vary by platform.
          *
@@ -35763,7 +36207,7 @@ export type CreateStandaloneAdData = {
          */
         multiAdvertiser?: 'OPT_IN' | 'OPT_OUT';
         /**
-         * Meta only, single standalone shape only (no creatives[], adSetId, or RESERVED). Dry-run: each node runs Meta's execution_options validate_only and NOTHING is created or persisted. Children need real parents, so a fresh tree validates the campaign + creative (the ad set needs its campaign to exist, so pass existingCampaignId to validate it too; the ad itself is never validatable pre-create). A Meta validation failure returns the 400 verbatim; success returns 200 with per-node results instead of an ad.
+         * Meta only. Validates the complete inline campaign, ad set, creative and ad with execution_options validate_only. Nothing is uploaded or created, and validation bypasses Idempotency-Key storage. Supports a single image, existing video.id or existingCreativeId; media pools, new video uploads, creatives[], adSetId and RESERVED buying return 400. Existing campaign or creative nodes are marked skipped. Success returns 200 with per-node results; Meta rejection returns an error.
          */
         validateOnly?: boolean;
         /**
@@ -36732,118 +37176,22 @@ export type CreateStandaloneAdData = {
          */
         smartPlus?: boolean;
         /**
-         * What the ad optimises against. Behaviour depends on the platform.
-         *
-         * **Meta**: forwarded to the ad set's `promoted_object` (snake-cased).
-         * Required for goals whose ad-set optimization_goal points at a specific
-         * event/page/app (without it Meta rejects the ad-set create with
-         * `error_subcode: 1815430` "Please select a promoted object for your ad set"):
-         * - `goal: conversions` / `lead_conversion` (OFFSITE_CONVERSIONS): requires `pixelId` + `customEventType`, or `customConversionId` when optimising against a Custom Conversion (the conversion carries its own event definition). For a pixel CUSTOM event (one you named yourself in CAPI/Events Manager), send `customEventType: OTHER` + `customEventStr` with the event name.
-         * - `goal: app_promotion` (APP_INSTALLS): requires `applicationId` + `objectStoreUrl`
-         * - `goal: lead_generation` (LEAD_GENERATION): `pageId` is auto-filled from the connected Page when omitted
-         *
-         * Other Meta goals (engagement, traffic, awareness, video_views) ignore this field.
-         *
-         * **TikTok**: used by `goal: conversions` and the Smart+ goals (`smartPlus: true`).
-         * - `pixelId` maps to the ad group's `pixel_id`. Required: a TikTok website-conversion
-         * ad group without a pixel is rejected with `40002: Please select a pixel`.
-         * - `customEventType` maps to the ad group's `optimization_event` (the pixel event to
-         * optimise for). Optional on the regular conversions flow, required on Smart+.
-         * See the `customEventType` field below for the valid TikTok codes.
-         * - `applicationId` (Smart+ `goal: app_promotion` only) maps to the ad group's `app_id`:
-         * the App ID of an app registered on the TikTok Ads account (Assets → Events →
-         * App Events). Install optimization needs the app's MMP tracking configured.
-         *
-         * The remaining `promotedObject.*` fields are Meta-only. Platforms other than
-         * Meta and TikTok ignore `promotedObject` entirely.
-         *
+         * Meta only. Operating systems and version ranges, such as iOS_ver_14.0_and_above or Android. Emitted as user_os. May also be supplied inside targeting.
          */
-        promotedObject?: {
-            /**
-             * Pixel ID. **Meta:** Facebook Pixel ID, required for `goal: conversions`.
-             * Requires `customEventType` alongside it; Meta rejects any promoted_object
-             * carrying `pixel_id` without `custom_event_type` (error_subcode 1885014),
-             * even when `customConversionId` is also present.
-             * **TikTok:** TikTok Pixel ID, required for `goal: conversions`.
-             * To discover the pixels an ad account can use, call
-             * `GET /v1/accounts/{accountId}/tracking-tags?adAccountId=act_...` (each entry
-             * carries `kind` and `ownerAdAccountId`), or
-             * `GET /v1/accounts/{accountId}/conversion-destinations`. Note this is a
-             * different resource from `GET /v1/ads/{adId}/tracking-tags`, which reads an
-             * ad's click-URL params (`url_tags`), not pixels.
-             *
-             */
-            pixelId?: string;
-            /**
-             * The event the campaign/ad group optimises against.
-             *
-             * **Meta:** standard event like `PURCHASE`, `LEAD`, `COMPLETE_REGISTRATION`,
-             * `ADD_TO_CART`. Uppercased internally so callers can pass any case. Required
-             * for `goal: conversions`.
-             *
-             * **TikTok:** an `optimization_event` code (UPPER_SNAKE, not Meta's vocabulary
-             * and not PascalCase), OR the exact event name shown in TikTok Events Manager
-             * (auto-resolved to its code). Must be one of the event types your TikTok
-             * Pixel tracks; custom events are not optimizable. Current taxonomy:
-             * `SHOPPING` (Purchase), `ON_WEB_CART` (Add to Cart), `INITIATE_ORDER`
-             * (Initiate Checkout), `FORM` (Lead), `ON_WEB_REGISTER` (Complete
-             * Registration), `ON_WEB_DETAIL` (View Content). `ON_WEB_ORDER` is
-             * deprecated. On rejection the error lists the event types your pixel
-             * actually tracks. Optional for `goal: conversions`.
-             *
-             */
-            customEventType?: string;
-            /**
-             * Meta only. Pixel custom-event name to optimise against (Meta's
-             * `custom_event_str`), exactly as it appears in Events Manager and in your
-             * CAPI payloads (case-sensitive, not uppercased). Requires
-             * `customEventType: OTHER`, and `OTHER` requires this field (400 either way).
-             * The same as picking a custom event in Ads Manager's conversion-event
-             * dropdown. For rule-based Custom Conversions use `customConversionId`
-             * instead.
-             *
-             */
-            customEventStr?: string;
-            /**
-             * Facebook Page ID. Used by `goal: lead_generation`. Auto-filled from the
-             * connected Page when omitted.
-             *
-             */
-            pageId?: string;
-            /**
-             * App ID. Required for `goal: app_promotion`.
-             */
-            applicationId?: string;
-            /**
-             * App Store / Play Store listing URL. Required for `goal: app_promotion`.
-             */
-            objectStoreUrl?: string;
-            /**
-             * Custom Conversion ID, when optimising against one instead of a standard
-             * event. Accepted alone by this API, without `pixelId` or `customEventType`.
-             * If `pixelId` is also sent, `customEventType` is still required on the
-             * promoted_object (Meta rejects `pixel_id` without `custom_event_type`,
-             * error_subcode 1885014).
-             *
-             */
-            customConversionId?: string;
-            /**
-             * Optional catalog ID. If supplied with productSetId, the set must belong to this catalog. A catalog ID cannot replace productSetId.
-             */
-            productCatalogId?: string;
-            /**
-             * Meta product SET ID from GET /v1/ads/catalogs/{catalogId}/product-sets. Zernio checks that the token can read the set and its product_catalog before creation. A catalog ID or inaccessible set returns a precise 400 naming promotedObject.productSetId. A mismatch with productCatalogId names promotedObject.productCatalogId.
-             */
-            productSetId?: string;
-            /**
-             * Meta only. Offline event set (dataset) to optimise toward. Post-merger these are datasets: the id is the dataset id (for pixel-backed datasets, the pixel id).
-             */
-            offlineConversionDataSetId?: string;
-            /**
-             * Meta only. WhatsApp number on messaging-destination ad sets.
-             */
-            whatsappPhoneNumber?: string;
-        };
+        userOs?: Array<(string)>;
+        /**
+         * Meta only. Device models such as iPhone. Emitted as user_device. May also be supplied inside targeting.
+         */
+        userDevice?: Array<(string)>;
+        /**
+         * Meta app promotion only. Immutable campaign flag. Set true for iOS 14+ SKAdNetwork campaigns and supply promotedObject.applicationId plus promotedObject.objectStoreUrl. The campaign receives promotedObject only when this flag is true. Cannot be changed on an existing campaign.
+         */
+        isSkadnetworkAttribution?: boolean;
+        /**
+         * Meta ad-set attribution. Required as SKADNETWORK for iOS 14+ app promotion or a SKAdNetwork campaign. Requires AUCTION buying. Standalone Meta ad-set creation is not supported; use this field on /v1/ads/create.
+         */
+        campaignAttribution?: 'AEM' | 'SKADNETWORK';
+        promotedObject?: AdPromotedObject;
     };
     headers?: {
         /**

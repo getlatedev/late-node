@@ -387,7 +387,9 @@ try {
 | `adAccounts.listAdLabels()` | Ad labels |
 | `adAccounts.listAdNegativeKeywordLists()` | List negative keyword lists |
 | `adAccounts.listAdsBusinessCenters()` | List TikTok Business Centers |
+| `adAccounts.listAdsInstagramAccounts()` | List Instagram ad identities |
 | `adAccounts.listAdStudies()` | A/B tests and lift studies |
+| `adAccounts.listAdvertisableApplications()` | List advertisable apps |
 | `adAccounts.listCustomConversions()` | List custom conversions |
 | `adAccounts.listHighDemandPeriods()` | High demand periods / budget schedules |
 | `adAccounts.listMetaBusinesses()` | Businesses list |
@@ -402,15 +404,19 @@ try {
 | `adAccounts.getAdsActivityLog()` | Ad account change / audit log |
 | `adAccounts.getDsaDefaults()` | Get ad account DSA defaults |
 | `adAccounts.getDsaRecommendations()` | List DSA beneficiary/payor suggestions |
+| `adAccounts.getIosFourteenCampaignLimits()` | Get iOS 14 campaign limits |
 | `adAccounts.getValueRuleSet()` | Read a value rule set |
 | `adAccounts.updateAdAccount()` | Update ad account settings |
 | `adAccounts.updateAdNegativeKeywordList()` | Rename a negative keyword list |
 | `adAccounts.updateValueRuleSet()` | Replace a value rule set |
+| `adAccounts.deleteAdComment()` | Delete an ad comment |
 | `adAccounts.deleteAdNegativeKeywordList()` | Delete a negative keyword list |
 | `adAccounts.deleteValueRuleSet()` | Delete a value rule set |
 | `adAccounts.addAccountCallouts()` | Add account-level callout extensions |
+| `adAccounts.hideAdComment()` | Hide or unhide an ad comment |
 | `adAccounts.removeAccountCallout()` | Remove an account-level callout extension |
 | `adAccounts.replaceAdNegativeKeywordListKeywords()` | Replace negative list keywords |
+| `adAccounts.replyToAdComment()` | Reply to an ad comment |
 
 ### Ad Audiences
 | Method | Description |

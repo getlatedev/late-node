@@ -117,6 +117,7 @@ import {
   deleteAd,
   deleteAdAudience,
   deleteAdCampaign,
+  deleteAdComment,
   deleteAdCreative,
   deleteAdNegativeKeywordList,
   deleteAdSet,
@@ -284,6 +285,7 @@ import {
   getInstagramIceBreakers,
   getInstagramPublishingLimit,
   getInstagramStoryInsights,
+  getIosFourteenCampaignLimits,
   getLeadForm,
   getLinkedInAggregateAnalytics,
   getLinkedInBidPricing,
@@ -375,6 +377,7 @@ import {
   getYoutubeCaptions,
   getYoutubePlaylists,
   handleOAuthCallback,
+  hideAdComment,
   hideInboxComment,
   initiateTelegramConnect,
   initiateWhatsAppCall,
@@ -398,6 +401,8 @@ import {
   listAdVideos,
   listAds,
   listAdsBusinessCenters,
+  listAdsInstagramAccounts,
+  listAdvertisableApplications,
   listApiKeys,
   listBidStrategies,
   listBlogArticles,
@@ -524,6 +529,7 @@ import {
   replaceBusinessAgentBusinessInformation,
   replaceCampaignNegativeKeywordLists,
   replaceCampaignNegativeKeywords,
+  replyToAdComment,
   replyToGoogleBusinessReview,
   replyToInboxPost,
   replyToInboxReview,
@@ -1718,9 +1724,15 @@ export class Zernio {
    */
   adaccounts = {
     getAdComments: this._bind(getAdComments),
+    replyToAdComment: this._bind(replyToAdComment),
+    hideAdComment: this._bind(hideAdComment),
+    deleteAdComment: this._bind(deleteAdComment),
     listAdsBusinessCenters: this._bind(listAdsBusinessCenters),
     getAdsActivityLog: this._bind(getAdsActivityLog),
     listAdStudies: this._bind(listAdStudies),
+    listAdsInstagramAccounts: this._bind(listAdsInstagramAccounts),
+    listAdvertisableApplications: this._bind(listAdvertisableApplications),
+    getIosFourteenCampaignLimits: this._bind(getIosFourteenCampaignLimits),
     listMetaBusinesses: this._bind(listMetaBusinesses),
     listAdLabels: this._bind(listAdLabels),
     listHighDemandPeriods: this._bind(listHighDemandPeriods),
@@ -2003,12 +2015,24 @@ export class Zernio {
     createStandaloneAd: this._bind(createStandaloneAd),
     /** @deprecated Use `zernio.adaccounts.getAdComments` instead. */
     getAdComments: this._bind(getAdComments),
+    /** @deprecated Use `zernio.adaccounts.replyToAdComment` instead. */
+    replyToAdComment: this._bind(replyToAdComment),
+    /** @deprecated Use `zernio.adaccounts.hideAdComment` instead. */
+    hideAdComment: this._bind(hideAdComment),
+    /** @deprecated Use `zernio.adaccounts.deleteAdComment` instead. */
+    deleteAdComment: this._bind(deleteAdComment),
     /** @deprecated Use `zernio.adaccounts.listAdsBusinessCenters` instead. */
     listAdsBusinessCenters: this._bind(listAdsBusinessCenters),
     /** @deprecated Use `zernio.adaccounts.getAdsActivityLog` instead. */
     getAdsActivityLog: this._bind(getAdsActivityLog),
     /** @deprecated Use `zernio.adaccounts.listAdStudies` instead. */
     listAdStudies: this._bind(listAdStudies),
+    /** @deprecated Use `zernio.adaccounts.listAdsInstagramAccounts` instead. */
+    listAdsInstagramAccounts: this._bind(listAdsInstagramAccounts),
+    /** @deprecated Use `zernio.adaccounts.listAdvertisableApplications` instead. */
+    listAdvertisableApplications: this._bind(listAdvertisableApplications),
+    /** @deprecated Use `zernio.adaccounts.getIosFourteenCampaignLimits` instead. */
+    getIosFourteenCampaignLimits: this._bind(getIosFourteenCampaignLimits),
     /** @deprecated Use `zernio.adaccounts.listMetaBusinesses` instead. */
     listMetaBusinesses: this._bind(listMetaBusinesses),
     /** @deprecated Use `zernio.adaccounts.listAdLabels` instead. */
