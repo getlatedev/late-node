@@ -385,26 +385,32 @@ try {
 | `adAccounts.listAccountCallouts()` | List account-level callout extensions |
 | `adAccounts.listAdAccounts()` | List ad accounts |
 | `adAccounts.listAdLabels()` | Ad labels |
+| `adAccounts.listAdNegativeKeywordLists()` | List negative keyword lists |
 | `adAccounts.listAdsBusinessCenters()` | List TikTok Business Centers |
 | `adAccounts.listAdStudies()` | A/B tests and lift studies |
 | `adAccounts.listCustomConversions()` | List custom conversions |
 | `adAccounts.listHighDemandPeriods()` | High demand periods / budget schedules |
 | `adAccounts.listMetaBusinesses()` | Businesses list |
 | `adAccounts.listValueRuleSets()` | List value rule sets |
+| `adAccounts.createAdNegativeKeywordList()` | Create a negative keyword list |
 | `adAccounts.createCustomConversion()` | Create or reuse a custom conversion |
 | `adAccounts.createHighDemandPeriod()` | Schedule a budget increase |
 | `adAccounts.createValueRuleSet()` | Create a value rule set |
 | `adAccounts.getAdAccountFinance()` | Ad account finances |
 | `adAccounts.getAdComments()` | List comments on an ad |
+| `adAccounts.getAdNegativeKeywordList()` | Get a negative keyword list |
 | `adAccounts.getAdsActivityLog()` | Ad account change / audit log |
 | `adAccounts.getDsaDefaults()` | Get ad account DSA defaults |
 | `adAccounts.getDsaRecommendations()` | List DSA beneficiary/payor suggestions |
 | `adAccounts.getValueRuleSet()` | Read a value rule set |
 | `adAccounts.updateAdAccount()` | Update ad account settings |
+| `adAccounts.updateAdNegativeKeywordList()` | Rename a negative keyword list |
 | `adAccounts.updateValueRuleSet()` | Replace a value rule set |
+| `adAccounts.deleteAdNegativeKeywordList()` | Delete a negative keyword list |
 | `adAccounts.deleteValueRuleSet()` | Delete a value rule set |
 | `adAccounts.addAccountCallouts()` | Add account-level callout extensions |
 | `adAccounts.removeAccountCallout()` | Remove an account-level callout extension |
+| `adAccounts.replaceAdNegativeKeywordListKeywords()` | Replace negative list keywords |
 
 ### Ad Audiences
 | Method | Description |
@@ -425,6 +431,7 @@ try {
 | `adCampaigns.listAds()` | List ads |
 | `adCampaigns.listAdSets()` | List ad sets |
 | `adCampaigns.listBidStrategies()` | List Google Ads portfolio bid strategies |
+| `adCampaigns.listCampaignNegativeKeywordLists()` | List campaign negative lists |
 | `adCampaigns.listCampaignNegativeKeywords()` | List campaign-level negative keywords |
 | `adCampaigns.bulkUpdateAdCampaignStatus()` | Pause or resume many campaigns |
 | `adCampaigns.createAdCampaign()` | Create a standalone campaign |
@@ -456,6 +463,7 @@ try {
 | `adCampaigns.duplicateAdCampaign()` | Duplicate a campaign |
 | `adCampaigns.duplicateAdSet()` | Duplicate an ad set |
 | `adCampaigns.removeAdKeyword()` | Remove a Search keyword |
+| `adCampaigns.replaceCampaignNegativeKeywordLists()` | Replace campaign negative lists |
 | `adCampaigns.replaceCampaignNegativeKeywords()` | Replace campaign-level negative keywords |
 
 ### Ad Creatives
@@ -808,8 +816,8 @@ try {
 | Method | Description |
 |--------|-------------|
 | `messagingAds.createCallAd()` | Create Click-to-Call ad |
-| `messagingAds.createCtwaAd()` | Create Click-to-WhatsApp ad (deprecated) |
-| `messagingAds.createMessagingAd()` | Create click-to-message ad (WhatsApp / Messenger / Instagram Direct) |
+| `messagingAds.createCtwaAd()` | Create CTWA ad (deprecated) |
+| `messagingAds.createMessagingAd()` | Create messaging ad |
 
 ### Phone Numbers
 | Method | Description |

@@ -53,6 +53,7 @@ import {
   createAdCampaign,
   createAdCreative,
   createAdInsightsReport,
+  createAdNegativeKeywordList,
   createAdSet,
   createApiKey,
   createBidStrategy,
@@ -117,6 +118,7 @@ import {
   deleteAdAudience,
   deleteAdCampaign,
   deleteAdCreative,
+  deleteAdNegativeKeywordList,
   deleteAdSet,
   deleteAdVideo,
   deleteApiKey,
@@ -199,6 +201,7 @@ import {
   getAdCreative,
   getAdInsightsReport,
   getAdMedia,
+  getAdNegativeKeywordList,
   getAdPreviews,
   getAdSetDetails,
   getAdTrackingTags,
@@ -389,6 +392,7 @@ import {
   listAdImages,
   listAdKeywords,
   listAdLabels,
+  listAdNegativeKeywordLists,
   listAdSets,
   listAdStudies,
   listAdVideos,
@@ -410,6 +414,7 @@ import {
   listBusinessAgentUiSkills,
   listBusinessAgentWebsites,
   listCalls,
+  listCampaignNegativeKeywordLists,
   listCampaignNegativeKeywords,
   listCommentAutomationLogs,
   listCommentAutomations,
@@ -514,8 +519,10 @@ import {
   removeTrackingTagSharedAccount,
   removeWhatsAppGroupParticipants,
   replaceAdAudienceCompanies,
+  replaceAdNegativeKeywordListKeywords,
   replaceBusinessAgentBudget,
   replaceBusinessAgentBusinessInformation,
+  replaceCampaignNegativeKeywordLists,
   replaceCampaignNegativeKeywords,
   replyToGoogleBusinessReview,
   replyToInboxPost,
@@ -604,6 +611,7 @@ import {
   updateAdCampaignStatus,
   updateAdCreative,
   updateAdKeyword,
+  updateAdNegativeKeywordList,
   updateAdSet,
   updateAdSetStatus,
   updateAdStatus,
@@ -1646,6 +1654,8 @@ export class Zernio {
     deleteAd: this._bind(deleteAd),
     updateAdStatus: this._bind(updateAdStatus),
     attachCampaignAssets: this._bind(attachCampaignAssets),
+    listCampaignNegativeKeywordLists: this._bind(listCampaignNegativeKeywordLists),
+    replaceCampaignNegativeKeywordLists: this._bind(replaceCampaignNegativeKeywordLists),
     boostPost: this._bind(boostPost),
     createStandaloneAd: this._bind(createStandaloneAd),
   };
@@ -1720,6 +1730,12 @@ export class Zernio {
     getValueRuleSet: this._bind(getValueRuleSet),
     updateValueRuleSet: this._bind(updateValueRuleSet),
     deleteValueRuleSet: this._bind(deleteValueRuleSet),
+    listAdNegativeKeywordLists: this._bind(listAdNegativeKeywordLists),
+    createAdNegativeKeywordList: this._bind(createAdNegativeKeywordList),
+    getAdNegativeKeywordList: this._bind(getAdNegativeKeywordList),
+    updateAdNegativeKeywordList: this._bind(updateAdNegativeKeywordList),
+    deleteAdNegativeKeywordList: this._bind(deleteAdNegativeKeywordList),
+    replaceAdNegativeKeywordListKeywords: this._bind(replaceAdNegativeKeywordListKeywords),
     listAccountCallouts: this._bind(listAccountCallouts),
     addAccountCallouts: this._bind(addAccountCallouts),
     removeAccountCallout: this._bind(removeAccountCallout),
@@ -1977,6 +1993,10 @@ export class Zernio {
     updateAdStatus: this._bind(updateAdStatus),
     /** @deprecated Use `zernio.adcampaigns.attachCampaignAssets` instead. */
     attachCampaignAssets: this._bind(attachCampaignAssets),
+    /** @deprecated Use `zernio.adcampaigns.listCampaignNegativeKeywordLists` instead. */
+    listCampaignNegativeKeywordLists: this._bind(listCampaignNegativeKeywordLists),
+    /** @deprecated Use `zernio.adcampaigns.replaceCampaignNegativeKeywordLists` instead. */
+    replaceCampaignNegativeKeywordLists: this._bind(replaceCampaignNegativeKeywordLists),
     /** @deprecated Use `zernio.adcampaigns.boostPost` instead. */
     boostPost: this._bind(boostPost),
     /** @deprecated Use `zernio.adcampaigns.createStandaloneAd` instead. */
@@ -2007,6 +2027,18 @@ export class Zernio {
     updateValueRuleSet: this._bind(updateValueRuleSet),
     /** @deprecated Use `zernio.adaccounts.deleteValueRuleSet` instead. */
     deleteValueRuleSet: this._bind(deleteValueRuleSet),
+    /** @deprecated Use `zernio.adaccounts.listAdNegativeKeywordLists` instead. */
+    listAdNegativeKeywordLists: this._bind(listAdNegativeKeywordLists),
+    /** @deprecated Use `zernio.adaccounts.createAdNegativeKeywordList` instead. */
+    createAdNegativeKeywordList: this._bind(createAdNegativeKeywordList),
+    /** @deprecated Use `zernio.adaccounts.getAdNegativeKeywordList` instead. */
+    getAdNegativeKeywordList: this._bind(getAdNegativeKeywordList),
+    /** @deprecated Use `zernio.adaccounts.updateAdNegativeKeywordList` instead. */
+    updateAdNegativeKeywordList: this._bind(updateAdNegativeKeywordList),
+    /** @deprecated Use `zernio.adaccounts.deleteAdNegativeKeywordList` instead. */
+    deleteAdNegativeKeywordList: this._bind(deleteAdNegativeKeywordList),
+    /** @deprecated Use `zernio.adaccounts.replaceAdNegativeKeywordListKeywords` instead. */
+    replaceAdNegativeKeywordListKeywords: this._bind(replaceAdNegativeKeywordListKeywords),
     /** @deprecated Use `zernio.adaccounts.listAccountCallouts` instead. */
     listAccountCallouts: this._bind(listAccountCallouts),
     /** @deprecated Use `zernio.adaccounts.addAccountCallouts` instead. */

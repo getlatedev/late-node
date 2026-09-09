@@ -439,19 +439,13 @@ export type AdCampaign = {
     }> | null;
     adCount?: number;
     /**
-     * Effective budget (back-compat). Use `budgetLevel` to disambiguate CBO vs ABO.
+     * Effective budget. Google metadata arrives after the next successful sync.
      */
-    budget?: {
-        amount?: number;
-        type?: 'daily' | 'lifetime';
-    } | null;
+    budget?: (AdCampaignBudget | null);
     /**
-     * Campaign-level budget (CBO). Null for ABO campaigns.
+     * Campaign-level budget. Null for ad-set budgets.
      */
-    campaignBudget?: {
-        amount?: number;
-        type?: 'daily' | 'lifetime';
-    } | null;
+    campaignBudget?: (AdCampaignBudget | null);
     /**
      * Canonical CBO/ABO indicator. See AdTreeCampaign.budgetLevel.
      */
@@ -512,6 +506,25 @@ export type AdCampaign = {
  * Canonical CBO/ABO indicator. See AdTreeCampaign.budgetLevel.
  */
 export type budgetLevel = 'campaign' | 'adset';
+
+export type AdCampaignBudget = AdBudget & {
+    /**
+     * Google only. Exact decimal micros; DAILY uses amount_micros and CUSTOM_PERIOD uses total_amount_micros.
+     */
+    amountMicros?: string;
+    /**
+     * Google only. True for a shared budget; null when unavailable. Shared writes require allowSharedBudgetUpdate=true; unknown sharing status cannot be overridden.
+     */
+    explicitlyShared?: (boolean) | null;
+    /**
+     * Google only. campaign_budget.resource_name, or null when unavailable.
+     */
+    resourceName?: (string) | null;
+    /**
+     * Google only. campaign_budget.delivery_method, typically STANDARD, or null when unavailable.
+     */
+    deliveryMethod?: (string) | null;
+};
 
 /**
  * One day of metrics. Same fields as `AdMetrics` plus the `date` they
@@ -850,6 +863,43 @@ export type AdMetrics = {
      */
     lastSyncedAt?: string;
 };
+
+export type AdNegativeKeywordList = {
+    /**
+     * Google shared set id.
+     */
+    id?: string;
+    /**
+     * Google shared set resource name.
+     */
+    resourceName?: string;
+    /**
+     * List name.
+     */
+    name?: string;
+    /**
+     * Number of keywords in the list.
+     */
+    memberCount?: number;
+    /**
+     * Number of resources referencing the list.
+     */
+    referenceCount?: number;
+};
+
+export type AdNegativeKeywordListKeyword = {
+    /**
+     * Google shared criterion id.
+     */
+    criterionId?: string;
+    /**
+     * Keyword text.
+     */
+    text?: string;
+    matchType?: 'broad' | 'phrase' | 'exact';
+};
+
+export type matchType2 = 'broad' | 'phrase' | 'exact';
 
 /**
  * Platform-side review state, independent of the delivery `status` and the `configuredStatus` on/off toggle. `in_review` means the platform is still reviewing. Absent when the platform reports no review signal (e.g. a paused ad whose review state is masked behind the pause).
@@ -2220,12 +2270,44 @@ export type CampaignAnalyticsResponse = {
          */
         status?: (string) | null;
         /**
+         * Google only. Latest synced campaign budget, or null before sync.
+         */
+        budget?: (AdCampaignBudget | null);
+        /**
          * ISO 4217 code of the ad account (e.g. USD, THB). All money values in `summary` and `daily` are in this currency.
          */
         currency?: (string) | null;
     };
     analytics?: {
-        summary?: AdMetrics;
+        summary?: (AdMetrics & {
+    /**
+     * Google only. Date-range ratio, not a percentage. Null when unavailable; Google's threshold sentinel values are preserved.
+     */
+    searchImpressionShare?: (number) | null;
+    /**
+     * Google only. Date-range ratio, not a percentage. Null when unavailable; Google's threshold sentinel values are preserved.
+     */
+    searchBudgetLostImpressionShare?: (number) | null;
+    /**
+     * Google only. Date-range ratio, not a percentage. Null when unavailable; Google's threshold sentinel values are preserved.
+     */
+    searchRankLostImpressionShare?: (number) | null;
+    /**
+     * Google only. Date-range ratio, not a percentage. Null when unavailable; Google's threshold sentinel values are preserved.
+     */
+    searchTopImpressionShare?: (number) | null;
+    /**
+     * Google only. Date-range ratio, not a percentage. Null when unavailable; Google's threshold sentinel values are preserved.
+     */
+    searchAbsoluteTopImpressionShare?: (number) | null;
+});
+        /**
+         * Google only. Cache status of the single date-range impression-share query.
+         */
+        impressionShareCache?: {
+            cachedAt?: (string) | null;
+            stale?: boolean;
+        };
         daily?: Array<(AdMetrics & {
     date?: string;
 })>;
@@ -2713,11 +2795,15 @@ export type actionSource = 'web' | 'app' | 'offline' | 'crm' | 'phone_call' | 's
  * In addition to the `required` list, the request must use
  * EXACTLY ONE of the two shapes:
  *
- * - Single-creative: `headline`, `body`, and one of
- * `imageUrl` / `video` (mutually exclusive).
+ * - Single-creative: `headline`, `body`, and one of `imageUrl` / `video`,
+ * OR `existingPostId` / `objectStoryId` to reuse an organic post.
  * - Multi-creative: a non-empty `creatives[]` array. Top-level
- * `headline` / `body` / `imageUrl` / `video` must NOT be set
- * on this shape.
+ * creative fields must NOT be set on this shape.
+ *
+ * Existing post references work on messaging and CTWA only (not call ads).
+ * They cannot be combined with each other or with headline, body, imageUrl,
+ * video, or welcomeMessage. No media is uploaded and the organic post is
+ * retained. Fresh creatives still require headline, body, and image or video.
  *
  * The route enforces this at the Zod boundary; OpenAPI's
  * `required` cannot express the OR cleanly.
@@ -2741,6 +2827,18 @@ export type CtwaAdRequestBody = {
      */
     name: string;
     /**
+     * Messaging and CTWA only. Platform post or reel ID, resolved like boost platformPostId. Facebook IDs become object_story_id; Instagram IDs become source_instagram_media_id using the connected Instagram identity. Mutually exclusive with objectStoryId and fresh creative fields.
+     */
+    existingPostId?: string;
+    /**
+     * Messaging and CTWA only. Raw Facebook pageId_postId reference, used as object_story_id even with an Instagram account. Mutually exclusive with existingPostId and fresh creative fields.
+     */
+    objectStoryId?: string;
+    /**
+     * WhatsApp only. Optional E.164 number already paired with the Facebook Page. Omit to let Meta select the paired number. Sent to the creative CTA and, when creating a new ad set, its promoted_object. Attach requests do not change the existing ad set.
+     */
+    whatsappPhoneNumber?: string;
+    /**
      * Single-creative shape only. Mutually exclusive with
      * `creatives[]`.
      *
@@ -2755,14 +2853,14 @@ export type CtwaAdRequestBody = {
     /**
      * Image asset for single-creative shape. Mutually exclusive
      * with `video` and with `creatives[]`. Required on the
-     * single-creative shape if `video` is not supplied.
+     * single-creative shape if neither `video` nor an existing post reference is supplied.
      *
      */
     imageUrl?: string;
     /**
      * Video creative for single-creative shape. Mutually
      * exclusive with `imageUrl` and with `creatives[]`. Required
-     * on the single-creative shape if `imageUrl` is not supplied.
+     * on the single-creative shape if neither `imageUrl` nor an existing post reference is supplied.
      *
      */
     video?: {
@@ -2807,25 +2905,33 @@ export type CtwaAdRequestBody = {
      * `body` / `imageUrl` / `video`): setting both is a 400,
      * unlike `POST /v1/ads/create` where the top-level fields
      * are silently ignored in multi-creative mode. Each entry
-     * must supply its own headline, body, and exactly one of
-     * `imageUrl` / `video`.
+     * supplies headline, body, and image/video, or an existingPostId or
+     * objectStoryId reference. Fresh and existing creatives can be mixed.
      *
      */
     creatives?: Array<{
-        headline: string;
+        /**
+         * Messaging and CTWA only. Platform post or reel ID, resolved like boost platformPostId. Facebook IDs become object_story_id; Instagram IDs become source_instagram_media_id using the connected Instagram identity. Mutually exclusive with objectStoryId and fresh creative fields.
+         */
+        existingPostId?: string;
+        /**
+         * Messaging and CTWA only. Raw Facebook pageId_postId reference, used as object_story_id even with an Instagram account. Mutually exclusive with existingPostId and fresh creative fields.
+         */
+        objectStoryId?: string;
+        headline?: string;
         /**
          * Primary text shown above the image / video.
          */
-        body: string;
+        body?: string;
         /**
          * Image asset. Mutually exclusive with this entry's
-         * `video`. Required if `video` is not supplied.
+         * `video`. Required if neither `video` nor an existing post reference is supplied.
          *
          */
         imageUrl?: string;
         /**
          * Video creative. Mutually exclusive with this entry's
-         * `imageUrl`. Required if `imageUrl` is not supplied.
+         * `imageUrl`. Required if neither `imageUrl` nor an existing post reference is supplied.
          *
          */
         video?: {
@@ -4744,8 +4850,6 @@ export type KeywordEntry = string | {
     matchType?: 'exact' | 'phrase' | 'broad';
 };
 
-export type matchType2 = 'exact' | 'phrase' | 'broad';
-
 /**
  * LinkedIn-specific options for POST /v1/ads/boost and POST /v1/ads/create: campaign bidding and delivery controls, plus the LinkedIn-only creative formats on /v1/ads/create. Unknown keys are rejected.
  *
@@ -5218,6 +5322,9 @@ export type MediaContentType = 'image/jpeg' | 'image/jpg' | 'image/png' | 'image
  */
 export type MediaItem = {
     type?: 'image' | 'video' | 'gif' | 'document';
+    /**
+     * A media item with a null, missing or empty url is dropped from non-draft posts (drafts keep it as a pending-upload placeholder).
+     */
     url?: string;
     /**
      * Optional title for the media item. Used as the document title for LinkedIn PDF/carousel posts. If omitted, falls back to the post title, then the filename.
@@ -31926,7 +32033,11 @@ export type UpdateAdCampaignData = {
          */
         portfolioBidStrategyId?: string;
         /**
-         * **Meta only.** The CBO budget.
+         * Google only. Explicitly allow changing a shared campaign budget, affecting every campaign that uses it. Does not bypass an unknown sharing state.
+         */
+        allowSharedBudgetUpdate?: boolean;
+        /**
+         * Meta CBO or Google daily campaign budget, in whole currency units.
          */
         budget?: {
             /**
@@ -31962,7 +32073,7 @@ export type UpdateAdCampaignResponse = ({
      * Local Ad documents mirrored. 0 on the empty-campaign path.
      */
     updated?: number;
-    budget?: AdBudget;
+    budget?: AdCampaignBudget;
     budgetLevel?: 'campaign';
     bidStrategy?: BidStrategy;
     bidAmount?: number;
@@ -34568,6 +34679,278 @@ export type DeleteValueRuleSetError = (unknown | {
     error?: string;
 });
 
+export type ListAdNegativeKeywordListsData = {
+    query: {
+        accountId: string;
+        customerId?: string;
+        platform?: 'facebook' | 'instagram' | 'tiktok' | 'linkedin' | 'pinterest' | 'google' | 'twitter' | 'openai';
+    };
+};
+
+export type ListAdNegativeKeywordListsResponse = ({
+    lists?: Array<AdNegativeKeywordList>;
+    /**
+     * Resolved Google Ads customer id.
+     */
+    customerId?: string;
+    /**
+     * Last successful fetch time, or null without cache storage.
+     */
+    cachedAt?: (string) | null;
+    /**
+     * True when quota exhaustion caused the last successful cached result to be served.
+     */
+    stale?: boolean;
+});
+
+export type ListAdNegativeKeywordListsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type CreateAdNegativeKeywordListData = {
+    body: {
+        /**
+         * Zernio SocialAccount id.
+         */
+        accountId: string;
+        /**
+         * Connected Google Ads customer id, without dashes. Required when the connection has multiple customers.
+         */
+        customerId?: string;
+        /**
+         * Optional courtesy field. The resolved account or campaign determines support; other platforms return 501.
+         */
+        platform?: 'facebook' | 'instagram' | 'tiktok' | 'linkedin' | 'pinterest' | 'google' | 'twitter' | 'openai';
+        /**
+         * Nonempty list name, trimmed before use.
+         */
+        name: string;
+        /**
+         * Full desired keyword set. Bare strings use broad match. Send [] to clear the list.
+         */
+        keywords?: Array<KeywordEntry>;
+    };
+};
+
+export type CreateAdNegativeKeywordListResponse = ({
+    /**
+     * New shared set id.
+     */
+    id?: string;
+    /**
+     * New shared set resource name.
+     */
+    resourceName?: string;
+    /**
+     * Number of initial keyword criteria created.
+     */
+    created?: number;
+    /**
+     * Resolved Google Ads customer id.
+     */
+    customerId?: string;
+});
+
+export type CreateAdNegativeKeywordListError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type GetAdNegativeKeywordListData = {
+    path: {
+        listId: string;
+    };
+    query: {
+        accountId: string;
+        customerId?: string;
+        platform?: 'facebook' | 'instagram' | 'tiktok' | 'linkedin' | 'pinterest' | 'google' | 'twitter' | 'openai';
+    };
+};
+
+export type GetAdNegativeKeywordListResponse = ({
+    list?: (AdNegativeKeywordList & {
+    keywords?: Array<AdNegativeKeywordListKeyword>;
+});
+    /**
+     * Resolved Google Ads customer id.
+     */
+    customerId?: string;
+    /**
+     * Last successful fetch time, or null without cache storage.
+     */
+    cachedAt?: (string) | null;
+    /**
+     * True when quota exhaustion caused the last successful cached result to be served.
+     */
+    stale?: boolean;
+});
+
+export type GetAdNegativeKeywordListError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type UpdateAdNegativeKeywordListData = {
+    body: {
+        /**
+         * Zernio SocialAccount id.
+         */
+        accountId: string;
+        /**
+         * Connected Google Ads customer id, without dashes. Required when the connection has multiple customers.
+         */
+        customerId?: string;
+        /**
+         * Optional courtesy field. The resolved account or campaign determines support; other platforms return 501.
+         */
+        platform?: 'facebook' | 'instagram' | 'tiktok' | 'linkedin' | 'pinterest' | 'google' | 'twitter' | 'openai';
+        /**
+         * Nonempty list name, trimmed before use.
+         */
+        name: string;
+    };
+    path: {
+        listId: string;
+    };
+};
+
+export type UpdateAdNegativeKeywordListResponse = ({
+    updated?: boolean;
+    /**
+     * Resolved Google Ads customer id.
+     */
+    customerId?: string;
+});
+
+export type UpdateAdNegativeKeywordListError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type DeleteAdNegativeKeywordListData = {
+    path: {
+        listId: string;
+    };
+    query: {
+        accountId: string;
+        customerId?: string;
+        platform?: 'facebook' | 'instagram' | 'tiktok' | 'linkedin' | 'pinterest' | 'google' | 'twitter' | 'openai';
+    };
+};
+
+export type DeleteAdNegativeKeywordListResponse = ({
+    removed?: boolean;
+    /**
+     * Resolved Google Ads customer id.
+     */
+    customerId?: string;
+});
+
+export type DeleteAdNegativeKeywordListError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type ReplaceAdNegativeKeywordListKeywordsData = {
+    body: {
+        /**
+         * Zernio SocialAccount id.
+         */
+        accountId: string;
+        /**
+         * Connected Google Ads customer id, without dashes. Required when the connection has multiple customers.
+         */
+        customerId?: string;
+        /**
+         * Optional courtesy field. The resolved account or campaign determines support; other platforms return 501.
+         */
+        platform?: 'facebook' | 'instagram' | 'tiktok' | 'linkedin' | 'pinterest' | 'google' | 'twitter' | 'openai';
+        /**
+         * Full desired keyword set. Bare strings use broad match. Send [] to clear the list.
+         */
+        keywords: Array<KeywordEntry>;
+    };
+    path: {
+        listId: string;
+    };
+};
+
+export type ReplaceAdNegativeKeywordListKeywordsResponse = ({
+    /**
+     * New criteria or campaign links created.
+     */
+    created?: number;
+    /**
+     * Existing criteria or campaign links removed.
+     */
+    removed?: number;
+    /**
+     * Resolved Google Ads customer id.
+     */
+    customerId?: string;
+});
+
+export type ReplaceAdNegativeKeywordListKeywordsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type ListCampaignNegativeKeywordListsData = {
+    path: {
+        campaignId: string;
+    };
+    query?: {
+        platform?: 'facebook' | 'instagram' | 'tiktok' | 'linkedin' | 'pinterest' | 'google' | 'twitter' | 'openai';
+    };
+};
+
+export type ListCampaignNegativeKeywordListsResponse = ({
+    lists?: Array<AdNegativeKeywordList>;
+    /**
+     * Resolved Google Ads customer id.
+     */
+    customerId?: string;
+    /**
+     * Last successful fetch time, or null without cache storage.
+     */
+    cachedAt?: (string) | null;
+    /**
+     * True when quota exhaustion caused the last successful cached result to be served.
+     */
+    stale?: boolean;
+});
+
+export type ListCampaignNegativeKeywordListsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type ReplaceCampaignNegativeKeywordListsData = {
+    body: {
+        /**
+         * Optional courtesy field. The resolved account or campaign determines support; other platforms return 501.
+         */
+        platform?: 'facebook' | 'instagram' | 'tiktok' | 'linkedin' | 'pinterest' | 'google' | 'twitter' | 'openai';
+        listIds: Array<(string)>;
+    };
+    path: {
+        campaignId: string;
+    };
+};
+
+export type ReplaceCampaignNegativeKeywordListsResponse = ({
+    /**
+     * New criteria or campaign links created.
+     */
+    created?: number;
+    /**
+     * Existing criteria or campaign links removed.
+     */
+    removed?: number;
+    /**
+     * Resolved Google Ads customer id.
+     */
+    customerId?: string;
+});
+
+export type ReplaceCampaignNegativeKeywordListsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
 export type ListAccountCalloutsData = {
     query: {
         /**
@@ -34926,9 +35309,13 @@ export type BoostPostData = {
          */
         instagramAccountId?: string;
         /**
-         * Meta only. Ad-set destination_type: where the click LANDS, as opposed to instagramAccountId which is who the ad runs as. Lead ads force ON_AD and ignore this.
+         * Meta only. Ad-set destination_type: where the click LANDS, as opposed to instagramAccountId which is who the ad runs as. Messaging destinations imply their matching CTA and require goal engagement. Lead ads use ON_AD; combining an instant form with a messaging destination is rejected.
          */
-        destinationType?: 'INSTAGRAM_PROFILE' | 'WEBSITE' | 'ON_AD' | 'MESSENGER' | 'WHATSAPP';
+        destinationType?: 'INSTAGRAM_PROFILE' | 'WEBSITE' | 'ON_AD' | 'MESSENGER' | 'WHATSAPP' | 'INSTAGRAM_DIRECT';
+        /**
+         * Meta WhatsApp only. E.164 number already paired with the Page. Omit to use the default pairing. Requires WHATSAPP destinationType or WHATSAPP_MESSAGE callToAction.
+         */
+        whatsappPhoneNumber?: string;
         /**
          * ISO 4217 currency code matching the ad account's currency. Meta only. Optional: Zernio resolves it from the ad account when omitted. The value selects the minor-unit exponent Zernio converts budget/bid amounts by before calling Meta (most currencies are cents; zero-decimal currencies like JPY/KRW are sent as-is).
          */
@@ -35121,7 +35508,7 @@ export type BoostPostData = {
             [key: string]: (number);
         };
         /**
-         * Destination URL for the CTA button. Send it together with `callToAction`.
+         * Website URL for non-messaging CTA buttons. Send it with `callToAction`. Omit for messaging boosts.
          *
          * **Meta**: adds a top-level `call_to_action` to the post-reference creative.
          * This is what gives a `traffic` boost a clickable destination without
@@ -35139,12 +35526,14 @@ export type BoostPostData = {
          */
         linkUrl?: string;
         /**
-         * CTA button label. Send it together with `linkUrl`: a CTA without a
-         * destination produces a button that goes nowhere, so sending one alone is a 400.
+         * CTA button label. Non-messaging CTAs require `linkUrl`.
+         * WHATSAPP_MESSAGE, MESSAGE_PAGE, and INSTAGRAM_MESSAGE do not
+         * require a URL and reject linkUrl.
          *
          * **Meta**: the CTA enum of POST /v1/ads/create plus
-         * `VIEW_INSTAGRAM_PROFILE`, which is accepted on boost only. For that
-         * value `linkUrl` is typically the Instagram profile URL.
+         * `VIEW_INSTAGRAM_PROFILE`, `WHATSAPP_MESSAGE`, `MESSAGE_PAGE`,
+         * and `INSTAGRAM_MESSAGE`. VIEW_INSTAGRAM_PROFILE requires linkUrl;
+         * the messaging CTAs select their destination automatically.
          *
          * **TikTok**: pass-through to `call_to_action` on the Spark Ad creative; the
          * platform validates the value. See TikTok's "Enumeration - Call-to-Action".
@@ -35187,7 +35576,8 @@ export type BoostPostData = {
         status?: 'ACTIVE' | 'PAUSED';
         /**
          * Meta only. Explicit ad-set `optimization_goal` override. When omitted,
-         * defaults to the value derived from `goal`. The value must be compatible
+         * defaults to the value derived from `goal`. Messaging boosts always
+         * use CONVERSATIONS and reject another optimizationGoal. Otherwise the value must be compatible
          * with the objective Meta derives from `goal`, not with the objective used
          * by `POST /v1/ads/create` for the same `goal` name: boost maps `goal:
          * "engagement"` to objective `OUTCOME_AWARENESS`, which accepts
