@@ -6483,9 +6483,9 @@ export const disableVoiceOnNumber = <ThrowOnError extends boolean = false>(optio
  * it if you miss the stock. Up to 20 watches at once.
  *
  * Countries and types marked `fulfilment: request` by
- * GET /v1/phone-numbers/countries can also be watched. Those are sourced
- * by a carrier request rather than held in stock, so a watch records
- * interest and no date is implied.
+ * GET /v1/phone-numbers/countries can also be watched, but anything with
+ * `preOrderable: true` does not need a watch: submit KYC and the carrier
+ * sources the number to order.
  *
  */
 export const createPhoneNumberStockWatch = <ThrowOnError extends boolean = false>(options: OptionsLegacyParser<CreatePhoneNumberStockWatchData, ThrowOnError>) => {

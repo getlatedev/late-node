@@ -26257,12 +26257,19 @@ export type ListPhoneNumberCountriesResponse = ({
          */
         inStock?: boolean;
         /**
+         * At least one out-of-stock type here can be pre-ordered (see `types[].preOrderable`).
+         */
+        preOrderable?: boolean;
+        /**
          * Every number type offered in this country (default first). Capabilities, KYC tier, monthly price, and stock are per type. The country-level fields above mirror the first (default) entry. Pass the chosen `numberType` to POST /v1/phone-numbers/purchase.
          *
          */
         types?: Array<{
             numberType?: 'local' | 'mobile' | 'national' | 'toll_free';
-            tier?: 1 | 2 | 3 | 4;
+            /**
+             * Null on a `fulfilment: request` type, whose document tier is only known once its requirements are read.
+             */
+            tier?: (1 | 2 | 3 | 4) | null;
             needsKyc?: boolean;
             /**
              * Price a NEW number of this type costs per month, in cents.
@@ -26275,6 +26282,14 @@ export type ListPhoneNumberCountriesResponse = ({
             smsAvailable?: boolean;
             callsAvailable?: boolean;
             inStock?: boolean;
+            /**
+             * `request`: the carrier stocks this type nowhere and only sources it to order, so it is always a pre-order.
+             */
+            fulfilment?: 'instant' | 'request';
+            /**
+             * Out of stock but orderable anyway. Submit KYC as usual (POST /v1/phone-numbers/kyc) and the carrier sources the number after review, usually about 3 weeks and never guaranteed. Only document tiers (3/4) qualify, and nothing is billed until the number is active.
+             */
+            preOrderable?: boolean;
         }>;
     }>;
 });
@@ -26354,6 +26369,10 @@ export type CheckPhoneNumberAvailabilityResponse = ({
      * Whether deliverable voice inventory exists right now.
      */
     available?: boolean;
+    /**
+     * Nothing deliverable now, but this pair can be pre-ordered: submit KYC as usual and the carrier sources the number after review (usually about 3 weeks, never guaranteed). Only document tiers (3/4) qualify.
+     */
+    preOrderable?: boolean;
     addressConstraint?: 'geo' | 'country' | 'none';
     /**
      * For `geo` only: the area(s) the registered address must be in.
@@ -26632,6 +26651,10 @@ export type CheckWhatsAppNumberAvailabilityResponse = ({
      * Whether deliverable voice inventory exists right now.
      */
     available?: boolean;
+    /**
+     * Nothing deliverable now, but this pair can be pre-ordered: submit KYC as usual and the carrier sources the number after review (usually about 3 weeks, never guaranteed). Only document tiers (3/4) qualify.
+     */
+    preOrderable?: boolean;
     addressConstraint?: 'geo' | 'country' | 'none';
     /**
      * For `geo` only: the area(s) the registered address must be in.
@@ -26819,6 +26842,10 @@ export type SubmitPhoneNumberKycData = {
 
 export type SubmitPhoneNumberKycResponse = ({
     status?: 'kyc_submitted' | 'kyc_reused' | 'kyc_already_submitted';
+    /**
+     * True when nothing was in stock and this submission placed a pre-order. The number stays `pending_regulatory` until the carrier sources it (usually about 3 weeks) and is not billed until active. A pre-order is one number: `quantity` above 1 is rejected with 400.
+     */
+    preOrder?: boolean;
     /**
      * The first/primary number, kept at the top level for backward compatibility. See `numbers` for the full set when `quantity` > 1.
      */
@@ -27632,6 +27659,10 @@ export type SubmitWhatsAppNumberKycData = {
 
 export type SubmitWhatsAppNumberKycResponse = ({
     status?: 'kyc_submitted' | 'kyc_reused' | 'kyc_already_submitted';
+    /**
+     * True when nothing was in stock and this submission placed a pre-order. The number stays `pending_regulatory` until the carrier sources it (usually about 3 weeks) and is not billed until active. A pre-order is one number: `quantity` above 1 is rejected with 400.
+     */
+    preOrder?: boolean;
     /**
      * The first/primary number, kept at the top level for backward compatibility. See `numbers` for the full set when `quantity` > 1.
      */
