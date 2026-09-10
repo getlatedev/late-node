@@ -338,6 +338,7 @@ try {
 | `connect.updateRedditSubreddits()` | Set default subreddit |
 | `connect.updateYoutubeDefaultPlaylist()` | Set default YouTube playlist |
 | `connect.assignGoogleBusinessLocation()` | Assign Google Business Profile location to another profile |
+| `connect.completeMetaAdsBusinessLogin()` | Complete Meta business login |
 | `connect.completeTelegramConnect()` | Check Telegram status |
 | `connect.completeWhatsAppPhoneSelection()` | Complete number selection |
 | `connect.configureTikTokAdsBrandIdentity()` | Set TikTok brand identity |

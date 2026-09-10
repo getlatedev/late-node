@@ -6677,7 +6677,7 @@ export type SocialAccount = {
     /**
      * Reference to the parent posting SocialAccount. Set for ads accounts that share
      * or derive from a posting account's OAuth token. null for standalone ads (Google Ads)
-     * and all posting accounts.
+     * and all posting accounts. Meta ads business-login accounts also have no parent.
      *
      */
     parentAccountId?: (string) | null;
@@ -6698,6 +6698,17 @@ export type SocialAccount = {
      * - displayPhoneNumber: Formatted phone number (e.g., "+1 555-123-4567")
      * - wabaId: WhatsApp Business Account ID
      * - phoneNumberId: Meta phone number ID
+     *
+     * For Meta ads business-login accounts:
+     * - tokenType: system-user
+     * - businessId: The owning Business Manager ID when there is one owner; null for multiple owners.
+     * - businessIds: Owning Business Manager IDs discovered from granted ad accounts.
+     * - grantedAdAccountIds: Ad-account IDs granted to the token.
+     * - adAccountBusinesses: Map from ad-account ID to its owning business ID or null.
+     * - availablePages: Granted Page IDs and names. No Page tokens are exposed.
+     * - selectedPageId: The Page selected for creatives and lead forms, or null.
+     * - scopedAdAccountIds: Existing sync scope preserved on reconnect.
+     * Non-expiring tokens have no tokenExpiresAt field. Parent posting reconnects do not replace this token.
      *
      * For LinkedIn accounts, profileData carries the profile details refreshed on each daily snapshot:
      * - profileData.bio: The member's headline for personal accounts, or the organization description for organization accounts. null when the member has not set one.
@@ -14762,7 +14773,7 @@ export type ConnectAdsData = {
         /**
          * Platform to connect ads for. Only platforms with ads support are accepted.
          *
-         * `instagram` requires an Instagram account connected with loginMethod=facebook_login whose
+         * In classic mode, `instagram` requires an Instagram account connected with loginMethod=facebook_login whose
          * token carries ads_management and ads_read. With an account connected through the default
          * instagram_login flow no ads account can be created; do not use this value for those accounts.
          *
@@ -14780,7 +14791,9 @@ export type ConnectAdsData = {
         accountId?: string;
         /**
          * Scope ad sync to a single platform ad account. Without this param,
-         * sync covers every ad account the connected token can see. Supported
+         * sync covers every ad account the connected token can see. Business-login reconnects
+         * preserve the existing scope; supplied IDs are checked against the new grant. To change
+         * that scope after migration, call this endpoint with the IDs and omit loginMode. Supported
          * on `facebook`/`instagram` (Meta, `act_<digits>`), `linkedin` (bare
          * numeric sponsored-account id), `googleads` (bare customer id digits)
          * and `twitter` (X Ads, base36 account id). `tiktok` scopes advertisers
@@ -14818,6 +14831,14 @@ export type ConnectAdsData = {
          */
         headless?: boolean;
         /**
+         * Meta ads authorization mode. Business login is opt-in for Facebook and Instagram; classic preserves the posting-account flow.
+         */
+        loginMode?: 'classic' | 'business';
+        /**
+         * Business login only. Facebook Page ID to select from the token grants for ad creatives and lead forms.
+         */
+        pageId?: string;
+        /**
          * Your Zernio profile ID
          */
         profileId: string;
@@ -14850,6 +14871,10 @@ export type ConnectAdsResponse = (({
     username?: string;
     displayName?: string;
     /**
+     * Present for an existing business-login connection.
+     */
+    tokenType?: 'system-user';
+    /**
      * Echo of the persisted ad-account scope when the caller passed
      * `adAccountId` / `adAccountIds`. Omitted when no scope is set.
      *
@@ -14863,6 +14888,23 @@ export type ConnectAdsResponse = (({
 export type ConnectAdsError = (unknown | {
     error?: string;
 });
+
+export type CompleteMetaAdsBusinessLoginData = {
+    query: {
+        /**
+         * Single-use authorization code returned by Meta.
+         */
+        code?: string;
+        /**
+         * Meta authorization error when the user declines the dialog.
+         */
+        error?: string;
+        /**
+         * Authenticated state from the initial connectAds response.
+         */
+        state: string;
+    };
+};
 
 export type GetShopifyConnectUrlData = {
     query: {
@@ -36494,6 +36536,14 @@ export type ListAdAccountsResponse = ({
         name?: string;
         currency?: string;
         /**
+         * Meta only. Owning Business Manager ID when available on the grant.
+         */
+        businessId?: string;
+        /**
+         * Owning business name when supplied by the platform.
+         */
+        businessName?: string;
+        /**
          * LinkedIn only. LinkedIn's own ad account status. In practice always `ACTIVE`, because the LinkedIn query filters to active accounts. Meta, Google, TikTok and Pinterest report `accountStatus` instead; X reports `approvalStatus`.
          */
         status?: string;
@@ -38172,7 +38222,7 @@ export type ListLeadsError = (ErrorResponse | {
 export type ListLeadFormsData = {
     query: {
         /**
-         * Connected facebook or linkedin ads account id.
+         * Connected Facebook, Meta ads business-login or LinkedIn ads account ID.
          */
         accountId: string;
         /**

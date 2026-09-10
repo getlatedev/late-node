@@ -304,6 +304,11 @@ describe('Endpoint Methods', () => {
       expect(client.connect.connectAds).toBeTypeOf('function');
     });
 
+    it('should have completeMetaAdsBusinessLogin method', () => {
+      expect(client.connect.completeMetaAdsBusinessLogin).toBeDefined();
+      expect(client.connect.completeMetaAdsBusinessLogin).toBeTypeOf('function');
+    });
+
     it('should have getShopifyConnectUrl method', () => {
       expect(client.connect.getShopifyConnectUrl).toBeDefined();
       expect(client.connect.getShopifyConnectUrl).toBeTypeOf('function');
