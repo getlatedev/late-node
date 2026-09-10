@@ -22643,7 +22643,7 @@ export type GetInboxPostCommentsResponse = ({
          */
         canHide?: boolean;
         /**
-         * Whether this comment can be liked (Facebook, X, Bluesky, Reddit)
+         * Whether this comment can be liked (Facebook, X, Bluesky, Reddit, LinkedIn)
          */
         canLike?: boolean;
         /**
@@ -22989,6 +22989,14 @@ export type LikeInboxCommentResponse = ({
      * (Bluesky only) URI to use for unliking
      */
     likeUri?: string;
+    /**
+     * LinkedIn only: the account already had this exact reaction, so nothing was created
+     */
+    alreadyReacted?: boolean;
+    /**
+     * LinkedIn only: the reaction type now in effect
+     */
+    reactionType?: string;
     platform?: string;
 });
 
@@ -23056,6 +23064,14 @@ export type LikePostResponse = ({
      * (Bluesky only) URI to use for unliking
      */
     likeUri?: string;
+    /**
+     * LinkedIn only: the account already had this exact reaction, so nothing was created
+     */
+    alreadyReacted?: boolean;
+    /**
+     * LinkedIn only: the reaction type now in effect
+     */
+    reactionType?: string;
 });
 
 export type LikePostError = (ErrorResponse | {
