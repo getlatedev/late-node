@@ -26405,6 +26405,11 @@ export type PurchasePhoneNumberData = {
          */
         areaCode?: string;
         /**
+         * One exact number to buy, in E.164, taken from GET /v1/phone-numbers/available. Hard constraint: when it is no longer available (bought by someone else, or WhatsApp's buy-time check rejects it) the purchase fails with 409 code PHONE_NUMBER_UNAVAILABLE instead of assigning another number; search again and pick another. Only for countries and types that activate instantly: a regulated one (202 kyc_required) returns 400 when phoneNumber is set.
+         *
+         */
+        phoneNumber?: string;
+        /**
          * A phone number is the unit; WhatsApp is one optional feature. Pass false to buy a STANDALONE number (Calls/SMS only): provisioning skips the Meta pre-verify/OTP steps and the number activates immediately. Omitted defaults to the WhatsApp provisioning path. WhatsApp can be connected to a standalone number later from the connect flow.
          *
          */
@@ -26472,7 +26477,7 @@ export type PurchasePhoneNumberError = (unknown | {
     error?: string;
 } | {
     error?: string;
-    code?: 'PURCHASE_VELOCITY' | 'AREA_CODE_UNAVAILABLE';
+    code?: 'PURCHASE_VELOCITY' | 'AREA_CODE_UNAVAILABLE' | 'PHONE_NUMBER_UNAVAILABLE';
 });
 
 export type ListPhoneNumberCountriesResponse = ({
@@ -26584,11 +26589,22 @@ export type SearchAvailablePhoneNumbersResponse = ({
      */
     requireSms?: boolean;
     numbers?: Array<{
+        /**
+         * E.164. Pass it as `phoneNumber` on POST /v1/phone-numbers/purchase to buy this exact number.
+         */
         phoneNumber?: string;
         /**
          * Provider capability list for this number (e.g. voice, sms, mms).
          */
         features?: Array<(string)>;
+        /**
+         * Town or rate center the number belongs to, as the carrier names it (e.g. WACO).
+         */
+        locality?: string;
+        /**
+         * true when the carrier added this number because too few matched your filters, so it may be outside the requested prefix or locality.
+         */
+        bestEffort?: boolean;
     }>;
 });
 
@@ -26776,6 +26792,11 @@ export type PurchaseWhatsAppPhoneNumberData = {
          */
         country?: string;
         /**
+         * One exact number to buy, in E.164, taken from GET /v1/phone-numbers/available. Fails with 409 code PHONE_NUMBER_UNAVAILABLE when it is no longer available.
+         *
+         */
+        phoneNumber?: string;
+        /**
          * Optional idempotency key. Send the same value when retrying a purchase: if a number was already bought under this key, the API returns { status: "already_purchased", numberId, phoneNumber } instead of provisioning a second number. Generate a fresh key for each genuinely new purchase.
          *
          */
@@ -26820,7 +26841,7 @@ export type PurchaseWhatsAppPhoneNumberError = (unknown | {
     error?: string;
 } | {
     error?: string;
-    code?: 'PURCHASE_VELOCITY' | 'AREA_CODE_UNAVAILABLE';
+    code?: 'PURCHASE_VELOCITY' | 'AREA_CODE_UNAVAILABLE' | 'PHONE_NUMBER_UNAVAILABLE';
 });
 
 export type ListWhatsAppNumberCountriesResponse = ({
@@ -26871,6 +26892,8 @@ export type SearchAvailableWhatsAppNumbersResponse = ({
     numberType?: string;
     numbers?: Array<{
         phoneNumber?: string;
+        locality?: string;
+        bestEffort?: boolean;
     }>;
 });
 

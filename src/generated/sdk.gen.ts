@@ -5797,8 +5797,9 @@ export const releasePhoneNumber = <ThrowOnError extends boolean = false>(options
 
 /**
  * Purchase phone number
- * Payment-first: you do not pick a specific number, the system provisions one and
- * auto-assigns it. With usage-based billing active and a payment method on file, the
+ * Payment-first: the system provisions a number and auto-assigns it, unless you pass
+ * `phoneNumber` to buy one exact number from `GET /v1/phone-numbers/available`. With
+ * usage-based billing active and a payment method on file, the
  * number provisions inline and bills per month on your usage-based invoice (there is
  * no checkout redirect). No payment method on file returns `402 PAYMENT_REQUIRED`;
  * a regulated country returns `202` with `status: "kyc_required"` and a `kycUrl`.
@@ -5840,7 +5841,9 @@ export const listPhoneNumberCountries = <ThrowOnError extends boolean = false>(o
  * country (default US). Optional filters narrow the results. The country
  * must be offerable (see GET /v1/phone-numbers/countries). Voice
  * capability is always required; pass `sms=true` to only see numbers that
- * can also text (SMS support is per-number, not per-country).
+ * can also text (SMS support is per-number, not per-country). Numbers a
+ * purchase would refuse are left out, and any result's `phoneNumber` can
+ * be bought exactly by passing it to POST /v1/phone-numbers/purchase.
  *
  */
 export const searchAvailablePhoneNumbers = <ThrowOnError extends boolean = false>(options?: OptionsLegacyParser<SearchAvailablePhoneNumbersData, ThrowOnError>) => {
@@ -5895,8 +5898,9 @@ export const getWhatsAppPhoneNumbers = <ThrowOnError extends boolean = false>(op
  * Deprecated alias of `/v1/phone-numbers/purchase`; same contract. New
  * integrations should use that path.
  *
- * Payment-first: you do not pick a specific number, the system provisions one and
- * auto-assigns it. With usage-based billing active and a payment method on file, the
+ * Payment-first: the system provisions a number and auto-assigns it, unless you pass
+ * `phoneNumber` to buy one exact number from `GET /v1/phone-numbers/available`. With
+ * usage-based billing active and a payment method on file, the
  * number provisions inline and bills per month on your usage-based invoice (there is
  * no checkout redirect). No payment method on file returns `402 PAYMENT_REQUIRED`;
  * a regulated country returns `202` with `status: "kyc_required"` and a `kycUrl`.
