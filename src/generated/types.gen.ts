@@ -20752,6 +20752,53 @@ export type CreateInboxConversationData = {
             value: string;
         }>;
         /**
+         * WhatsApp only. Per-card overrides for a CAROUSEL template, each addressed by the card's card_index. Carousel card body variables restart at {{1}} per card, so they cannot be expressed in the flat templateParams slot order; use this instead. A cardIndex naming a card the approved template does not have, a duplicate cardIndex, or a params count that does not match the card body's token count is rejected with 400 (INVALID_TEMPLATE_CARD_PARAM).
+         */
+        templateCards?: Array<{
+            /**
+             * The card's card_index in the approved template.
+             */
+            cardIndex: number;
+            /**
+             * Values for this card's own body variables, in the card's own {{1}}, {{2}}, ... order (or named-slot order of appearance).
+             */
+            params?: Array<(string)>;
+            /**
+             * Overrides this card's header asset for THIS send. Without it, the card's approved sample asset is sent.
+             */
+            headerMedia?: {
+                /**
+                 * Must match the card header's media type.
+                 */
+                type: 'image' | 'video' | 'document';
+                /**
+                 * Public URL of the asset to send. Must be reachable without auth.
+                 */
+                link?: string;
+                /**
+                 * A Meta media id (from the media upload endpoint), as an alternative to link.
+                 */
+                id?: string;
+            };
+            /**
+             * Values for this card's own buttons, each addressed by the button's index within the card.
+             */
+            buttons?: Array<{
+                /**
+                 * Zero-based position of the button within the card's buttons.
+                 */
+                index: number;
+                /**
+                 * The button kind, which decides how the value is sent.
+                 */
+                subType: 'quick_reply' | 'url';
+                /**
+                 * The value to send (quick_reply payload, or the URL dynamic suffix).
+                 */
+                value: string;
+            }>;
+        }>;
+        /**
          * WhatsApp only. Overrides a media-header template's header asset for THIS send, so a template with an image/video/document header can carry a different asset per message (e.g. each recipient their own invoice PDF). Without it, the template's approved sample asset is sent. Provide exactly one of link or id.
          */
         headerMedia?: {
@@ -20824,7 +20871,7 @@ export type CreateInboxConversationResponse = ({
 
 export type CreateInboxConversationError = ({
     error?: string;
-    code?: 'PLATFORM_NOT_SUPPORTED' | 'PLATFORM_LIMITATION' | 'TEMPLATE_REQUIRED' | 'INVALID_TEMPLATE_PARAMS' | 'INVALID_TEMPLATE_BUTTON_PARAM' | 'DIRECT_SEND_NOT_ELIGIBLE' | 'DIRECT_SEND_LIMITED' | 'DIRECT_SEND_BLOCKED';
+    code?: 'PLATFORM_NOT_SUPPORTED' | 'PLATFORM_LIMITATION' | 'TEMPLATE_REQUIRED' | 'INVALID_TEMPLATE_PARAMS' | 'INVALID_TEMPLATE_BUTTON_PARAM' | 'INVALID_TEMPLATE_CARD_PARAM' | 'DIRECT_SEND_NOT_ELIGIBLE' | 'DIRECT_SEND_LIMITED' | 'DIRECT_SEND_BLOCKED';
 } | {
     error?: string;
 } | unknown | {
