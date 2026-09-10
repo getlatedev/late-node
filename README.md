@@ -661,12 +661,14 @@ try {
 | `comments.hideInboxComment()` | Hide comment |
 | `comments.likeInboxComment()` | Like comment |
 | `comments.likePost()` | Like post |
+| `comments.pinInboxComment()` | Pin comment |
 | `comments.replyToInboxPost()` | Reply to comment |
 | `comments.sendPrivateReplyToComment()` | Send private reply |
 | `comments.setCommentModeration()` | Set comment moderation status |
 | `comments.unhideInboxComment()` | Unhide comment |
 | `comments.unlikeInboxComment()` | Unlike comment |
 | `comments.unlikePost()` | Unlike post |
+| `comments.unpinInboxComment()` | Unpin comment |
 
 ### Connected Apps
 | Method | Description |

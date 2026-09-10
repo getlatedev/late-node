@@ -7066,7 +7066,7 @@ export type TikTokPlatformData = {
      */
     draft?: boolean;
     /**
-     * One of the values returned by the TikTok creator info API for the account
+     * One of the values returned by the TikTok creator info API for the account. Accounts connected through the TikTok for Business app publish videos as public only: a non-public value on a video post is rejected at creation unless draft is true (photo posts keep every level).
      */
     privacyLevel?: string;
     /**
@@ -8498,7 +8498,7 @@ export type WebhookPayloadCallReceived = {
 export type event9 = 'call.received';
 
 /**
- * Webhook payload for comment received events (Instagram, Facebook, X, YouTube, LinkedIn, Bluesky, Reddit)
+ * Webhook payload for comment received events (Instagram, Facebook, X, YouTube, LinkedIn, Bluesky, Reddit, TikTok). TikTok events carry only the author id: the comment.update webhook has no username, picture or owner flag.
  */
 export type WebhookPayloadComment = {
     /**
@@ -8519,7 +8519,7 @@ export type WebhookPayloadComment = {
          * Platform's post ID
          */
         platformPostId: string;
-        platform: 'instagram' | 'facebook' | 'twitter' | 'youtube' | 'linkedin' | 'bluesky' | 'reddit';
+        platform: 'instagram' | 'facebook' | 'twitter' | 'youtube' | 'linkedin' | 'bluesky' | 'reddit' | 'tiktok';
         /**
          * Comment text content
          */
@@ -8653,7 +8653,7 @@ export type WebhookPayloadComment = {
 
 export type event10 = 'comment.received';
 
-export type platform10 = 'instagram' | 'facebook' | 'twitter' | 'youtube' | 'linkedin' | 'bluesky' | 'reddit';
+export type platform10 = 'instagram' | 'facebook' | 'twitter' | 'youtube' | 'linkedin' | 'bluesky' | 'reddit' | 'tiktok';
 
 /**
  * WhatsApp only. Who answers a conversation changed: Meta Business Agent took it over,
@@ -13182,7 +13182,7 @@ export type SyncExternalPostsResponse = ({
          */
         postsSynced?: number;
         /**
-         * True when no live fetch ran: the post was already stored, or the account was synced within the debounce window
+         * True when the account was synced within the debounce window and no live fetch ran.
          */
         skipped?: boolean;
     };
@@ -22581,7 +22581,7 @@ export type GetInboxPostCommentsData = {
     query: {
         accountId: string;
         /**
-         * (Reddit only) Get replies to a specific comment
+         * (Reddit and TikTok only) Get replies to a specific comment
          */
         commentId?: string;
         /**
@@ -22959,6 +22959,51 @@ export type UnhideInboxCommentResponse = ({
 export type UnhideInboxCommentError = (unknown | {
     error?: string;
 });
+
+export type PinInboxCommentData = {
+    body: {
+        /**
+         * The social account ID
+         */
+        accountId: string;
+    };
+    path: {
+        commentId: string;
+        postId: string;
+    };
+};
+
+export type PinInboxCommentResponse = ({
+    status?: string;
+    commentId?: string;
+    pinned?: boolean;
+    platform?: string;
+});
+
+export type PinInboxCommentError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type UnpinInboxCommentData = {
+    path: {
+        commentId: string;
+        postId: string;
+    };
+    query: {
+        accountId: string;
+    };
+};
+
+export type UnpinInboxCommentResponse = ({
+    status?: string;
+    commentId?: string;
+    pinned?: boolean;
+    platform?: string;
+});
+
+export type UnpinInboxCommentError = (ErrorResponse | {
+    error?: string;
+} | unknown);
 
 export type LikeInboxCommentData = {
     body: {
