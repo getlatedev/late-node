@@ -15103,15 +15103,19 @@ export type ConfigureTikTokAdsBrandIdentityError = (unknown | {
 });
 
 export type ListFacebookPagesData = {
-    query: {
+    query?: {
         /**
-         * Profile ID from your connection flow
+         * Profile ID from your classic connection flow. Required with tempToken.
          */
-        profileId: string;
+        profileId?: string;
         /**
-         * Temporary Facebook access token from the OAuth callback redirect
+         * Encrypted dashboard business-login grant. Send alone instead of profileId and tempToken. Expires after ten minutes.
          */
-        tempToken: string;
+        selectionToken?: string;
+        /**
+         * Temporary Facebook access token from the classic OAuth callback. Required with profileId.
+         */
+        tempToken?: string;
     };
 };
 
@@ -15149,38 +15153,47 @@ export type ListFacebookPagesError = (unknown | {
 });
 
 export type SelectFacebookPageData = {
-    body: {
-        /**
-         * Profile ID from your connection flow
-         */
-        profileId: string;
-        /**
-         * The Facebook Page ID selected by the user
-         */
-        pageId: string;
-        /**
-         * Temporary Facebook access token from OAuth
-         */
-        tempToken: string;
-        /**
-         * Decoded user profile object from the OAuth callback
-         */
-        userProfile: {
-            id?: string;
-            name?: string;
-            profilePicture?: string;
-        };
-        /**
-         * Optional custom redirect URL to return to after selection
-         */
-        redirect_url?: string;
+    body: ({
+    /**
+     * Profile ID from your classic connection flow.
+     */
+    profileId: string;
+    /**
+     * The Facebook Page ID selected by the user.
+     */
+    pageId: string;
+    /**
+     * Temporary Facebook access token from OAuth.
+     */
+    tempToken: string;
+    /**
+     * Decoded user profile object from the OAuth callback.
+     */
+    userProfile: {
+        id?: string;
+        name?: string;
+        profilePicture?: string;
     };
+    /**
+     * Optional custom redirect URL to return to after selection.
+     */
+    redirect_url?: string;
+} | {
+    /**
+     * Encrypted dashboard business-login grant. Expires after ten minutes.
+     */
+    selectionToken: string;
+    /**
+     * A Page ID from the granted Pages returned by listFacebookPages.
+     */
+    pageId: string;
+});
 };
 
 export type SelectFacebookPageResponse = ({
     message?: string;
     /**
-     * Redirect URL if custom redirect_url was provided
+     * Redirect URL when a custom redirect_url was provided or a business Page was selected.
      */
     redirect_url?: string;
     account?: {

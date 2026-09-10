@@ -1603,11 +1603,14 @@ export const handleOAuthCallback = <ThrowOnError extends boolean = false>(option
  * every previously scoped ad account (or every previous grant for an unscoped connection).
  * Missing or unverifiable grants return 409 before changing the account.
  *
- * Pass `pageId` to select a granted Page for creatives and lead forms. Otherwise the
- * previous Page or sole granted Page is selected. Multiple Pages without a selection
- * return 400 with available Page IDs; restart with pageId. With no Pages granted the
- * account can manage campaigns and sync insights but cannot create Page-based creatives
- * or list Page forms. Success redirects with connected=metaads, profileId and accountId.
+ * Pass `pageId` to select a granted Page for creatives and lead forms. API integrations
+ * otherwise reuse the previous Page or sole granted Page. Multiple Pages without a selection
+ * return 400 with available Page IDs for API integrations; restart with pageId.
+ * Dashboard session logins use the sole current grant automatically or open the existing
+ * Facebook Page picker for several grants, including reconnects. Selection completes
+ * the Meta Ads connection. With no Pages granted the callback returns
+ * 400 with instructions to connect again and grant a Page.
+ * Success redirects with connected=metaads, profileId and accountId.
  * Business login reports metadata.tokenType=system-user in GET /v1/accounts. An absent
  * Meta expires_in leaves tokenExpiresAt absent; no personal-token re-exchange occurs.
  * Subsequent classic requests can change the ad-account scope using the business token;
@@ -1655,7 +1658,7 @@ export const connectAds = <ThrowOnError extends boolean = false>(options: Option
 
 /**
  * Complete Meta business login
- * Facebook Login for Business redirect target. Meta supplies the single-use authorization code and the authenticated state returned by connectAds. The state expires after 30 minutes and binds the user, profile, Page selection and ad-account scope. No bearer token is sent by the browser. Success reconnects only metaads and redirects to the original redirect_url. Invalid state returns 400; inaccessible profiles or missing ads access cannot connect. No token is returned to the browser.
+ * Facebook Login for Business redirect target. Meta supplies the single-use authorization code and the authenticated state returned by connectAds. The state expires after 30 minutes and binds the user, profile, Page selection and ad-account scope. No bearer token is sent by the browser. Success reconnects only metaads and redirects to the original redirect_url. Invalid state returns 400; inaccessible profiles or missing ads access cannot connect. Dashboard logins with several Pages redirect to the Facebook Page picker with an encrypted selectionToken valid for ten minutes. Listing and selecting require the initiating user and current profile access. No plaintext platform token is returned to the browser.
  */
 export const completeMetaAdsBusinessLogin = <ThrowOnError extends boolean = false>(options: OptionsLegacyParser<CompleteMetaAdsBusinessLoginData, ThrowOnError>) => {
     return (options?.client ?? client).get<void, unknown, ThrowOnError>({
@@ -1739,9 +1742,9 @@ export const configureTikTokAdsBrandIdentity = <ThrowOnError extends boolean = f
 
 /**
  * List Facebook pages
- * Returns the list of Facebook Pages the user can manage after OAuth. Extract tempToken and userProfile from the OAuth redirect params and pass them here. Use the X-Connect-Token header if connecting via API key.
+ * Returns Facebook Pages after OAuth. Classic connections require profileId and tempToken from the OAuth redirect. Use X-Connect-Token for headless connections. The dashboard business-login picker instead sends only selectionToken, an encrypted grant valid for ten minutes. This requires the initiating user and current profile access and returns only Page IDs and names. X-Connect-Token cannot authorize business selection.
  */
-export const listFacebookPages = <ThrowOnError extends boolean = false>(options: OptionsLegacyParser<ListFacebookPagesData, ThrowOnError>) => {
+export const listFacebookPages = <ThrowOnError extends boolean = false>(options?: OptionsLegacyParser<ListFacebookPagesData, ThrowOnError>) => {
     return (options?.client ?? client).get<ListFacebookPagesResponse, ListFacebookPagesError, ThrowOnError>({
         ...options,
         url: '/v1/connect/facebook/select-page'
@@ -1750,7 +1753,7 @@ export const listFacebookPages = <ThrowOnError extends boolean = false>(options:
 
 /**
  * Select Facebook page
- * Complete the headless flow by saving the user's selected Facebook page. Pass the userProfile from the OAuth redirect and use X-Connect-Token if connecting via API key.
+ * Complete a classic Facebook Page connection with profileId, pageId, tempToken and userProfile. Use X-Connect-Token for headless connections. The dashboard business-login picker instead sends only selectionToken and pageId to complete a Meta Ads connection. The server verifies the initiating user, profile access, current grants and connection eligibility. The profile, platform token, ad-account scope and return URL come only from the encrypted grant. Business selection requires a session or bearer authentication for the initiating user; X-Connect-Token is not accepted. It returns redirect_url with connected=metaads on success or an eligibility error redirect.
  */
 export const selectFacebookPage = <ThrowOnError extends boolean = false>(options: OptionsLegacyParser<SelectFacebookPageData, ThrowOnError>) => {
     return (options?.client ?? client).post<SelectFacebookPageResponse, SelectFacebookPageError, ThrowOnError>({
