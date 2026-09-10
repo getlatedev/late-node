@@ -9986,6 +9986,7 @@ export const listGoogleAssetGroups = <ThrowOnError extends boolean = false>(opti
  * request with Google without creating or persisting resources. Read assets with
  * `GET /v1/ads/campaigns/{campaignId}/asset-groups`. The logo is required; video is
  * optional via `assetGroup.youtubeVideoId`. Brand guidelines are disabled at creation.
+ * All supplied asset links are validated together against Google's minimum asset requirements.
  * PMax rejects ACTIVE creation, portfolio bidding, bid caps, legacy creative fields
  * and attach shapes. Geo and language targeting are supported; omitted geo targets
  * all locations. PMax does not require top-level goal, headline, body or linkUrl.
