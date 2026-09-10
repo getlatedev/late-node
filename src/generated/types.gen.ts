@@ -32463,7 +32463,7 @@ export type CreateAdCampaignData = {
         isSkadnetworkAttribution?: boolean;
         promotedObject?: AdPromotedObject;
         /**
-         * Meta only. SKAdNetwork app promotion requires AUCTION.
+         * Meta only. Defaults to AUCTION and is explicitly sent on new campaigns, including validateOnly. SKAdNetwork app promotion requires AUCTION.
          */
         buyingType?: 'AUCTION' | 'RESERVED';
         /**
@@ -37166,7 +37166,7 @@ export type CreateStandaloneAdData = {
          */
         billingEvent?: string;
         /**
-         * Meta only. RESERVED = Reach & Frequency: requires `rfPredictionId` (a RESERVED prediction from /v1/ads/rf-predictions + /reserve). Budget, schedule and pricing come from the reservation, so budgetAmount/budgetType are not required and bid fields are ignored. Only the plain single-ad shape (no creatives[], adSetId, existingCampaignId or dynamicCreative).
+         * Meta only. Defaults to AUCTION and is explicitly sent on new campaigns, including validateOnly. Reusing existingCampaignId does not change the campaign. RESERVED = Reach & Frequency: requires `rfPredictionId` (a RESERVED prediction from /v1/ads/rf-predictions + /reserve). Budget, schedule and pricing come from the reservation, so budgetAmount/budgetType are not required and bid fields are ignored. Only the plain single-ad shape (no creatives[], adSetId, existingCampaignId or dynamicCreative).
          */
         buyingType?: 'AUCTION' | 'RESERVED';
         /**
