@@ -1407,6 +1407,14 @@ export type AnalyticsDeltaEntry = {
          * Instagram Reels skip rate, 0 to 1
          */
         reelsSkipRate: number;
+        /**
+         * TikTok business lane: share of viewers who watched to the end, 0 to 1
+         */
+        completionRate: number;
+        /**
+         * TikTok business lane: profile views attributed to the post
+         */
+        profileViews: number;
     };
 };
 
@@ -6082,6 +6090,14 @@ export type PostAnalytics = {
      * Instagram Reels only: percentage (0-100) of initial views that skipped the reel within its first 3 seconds, as reported by Meta. Meta labels the metric estimated and in development, so it can move between syncs. 0 for non-Reels media and other platforms. When a post is published to several accounts, the aggregate is weighted by views.
      */
     reelsSkipRate?: number;
+    /**
+     * TikTok accounts connected through the TikTok for Business app only: share of viewers who watched the video to the end, 0 to 1, as TikTok reports it (T+24-48h, only for posts active in the last 7 days). 0 for other platforms. When a post is published to several accounts, the aggregate is weighted by views.
+     */
+    completionRate?: number;
+    /**
+     * TikTok accounts connected through the TikTok for Business app only: profile views from users who reached the profile through this post (T+24-48h). 0 for other platforms.
+     */
+    profileViews?: number;
     /**
      * Instagram accounts connected with Facebook Login only: reposts of the media by other users, minus deleted reposts, on feed posts, reels and stories. Meta does not expose this metric for accounts connected with Instagram Login, so those always report 0. 0 for other platforms, including Threads, where reposts are counted in shares instead.
      */
@@ -11298,9 +11314,9 @@ export type GetAnalyticsData = {
          */
         profileId?: string;
         /**
-         * Sort by date, engagement, or a specific metric. Instagram-only metrics (follows, reposts, reels_skip_rate, ig_reels_*) sort a null value as 0.
+         * Sort by date, engagement, or a specific metric. Platform-specific metrics (follows, reposts, reels_skip_rate, ig_reels_*, completion_rate, profile_views) sort a null value as 0.
          */
-        sortBy?: 'date' | 'engagement' | 'impressions' | 'reach' | 'likes' | 'comments' | 'shares' | 'saves' | 'clicks' | 'views' | 'follows' | 'ig_reels_avg_watch_time' | 'ig_reels_video_view_total_time' | 'reposts' | 'reels_skip_rate';
+        sortBy?: 'date' | 'engagement' | 'impressions' | 'reach' | 'likes' | 'comments' | 'shares' | 'saves' | 'clicks' | 'views' | 'follows' | 'ig_reels_avg_watch_time' | 'ig_reels_video_view_total_time' | 'reposts' | 'reels_skip_rate' | 'completion_rate' | 'profile_views';
         /**
          * Filter by post source: late (posted via Zernio API), external (synced from platform), all (default)
          */
