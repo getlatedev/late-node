@@ -256,6 +256,14 @@ export type Ad = {
      */
     creative?: {
         /**
+         * Initial Performance Max asset group input. Use the asset-groups endpoint for current Google assets.
+         */
+        assetGroup?: GooglePmaxAssetGroupInput;
+        /**
+         * Google resource name of the created Performance Max asset group.
+         */
+        assetGroupResourceName?: string;
+        /**
          * Google RSA only. Replaces the complete headline list. No padding or truncation on update.
          */
         headlines?: Array<GoogleRsaHeadline>;
@@ -4472,6 +4480,70 @@ export type GoogleBusinessReview = {
  * Google's string rating
  */
 export type starRating = 'ONE' | 'TWO' | 'THREE' | 'FOUR' | 'FIVE';
+
+export type GooglePmaxAssetGroup = {
+    id: string;
+    resourceName: string;
+    name: string;
+    /**
+     * Asset-group status on Google. Campaign status independently controls delivery.
+     */
+    status: string;
+    finalUrls: Array<(string)>;
+    assets: Array<{
+        resourceName: string;
+        /**
+         * Google asset role, such as HEADLINE or LOGO.
+         */
+        fieldType: string;
+        status: string;
+        text?: string;
+        imageUrl?: string;
+        youtubeVideoId?: string;
+    }>;
+};
+
+/**
+ * Google Performance Max creative assets. At least one description must be 60 characters or fewer. Texts within each list must be distinct.
+ */
+export type GooglePmaxAssetGroupInput = {
+    /**
+     * Defaults to the request name.
+     */
+    name?: string;
+    /**
+     * Required destination URL.
+     */
+    finalUrl: string;
+    headlines: Array<(string)>;
+    longHeadline: string;
+    /**
+     * At least one description must be 60 characters or fewer.
+     */
+    descriptions: Array<(string)>;
+    businessName: string;
+    /**
+     * Public HTTP(S) image URLs. GIF, JPEG or PNG, at most 5120 KB per image. Google validates dimensions and aspect ratios.
+     */
+    images: {
+        /**
+         * Landscape marketing images. Aspect ratio 1.91:1, minimum 600 x 314 pixels.
+         */
+        landscape: Array<(string)>;
+        /**
+         * Square marketing images. Aspect ratio 1:1, minimum 300 x 300 pixels.
+         */
+        square: Array<(string)>;
+        /**
+         * Required square logos. Aspect ratio 1:1, minimum 128 x 128 pixels.
+         */
+        logo: Array<(string)>;
+    };
+    /**
+     * Optional existing YouTube video id. Google can generate video when omitted. Video uploads and arbitrary video URLs are not supported.
+     */
+    youtubeVideoId?: string;
+};
 
 export type GoogleRsaDescription = {
     text: string;
@@ -36912,6 +36984,25 @@ export type BoostPostError = (unknown | {
     error?: string;
 });
 
+export type ListGoogleAssetGroupsData = {
+    path: {
+        /**
+         * Google Ads campaign id.
+         */
+        campaignId: string;
+    };
+};
+
+export type ListGoogleAssetGroupsResponse = ({
+    assetGroups: Array<GooglePmaxAssetGroup>;
+    cachedAt: (string) | null;
+    stale: boolean;
+});
+
+export type ListGoogleAssetGroupsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
 export type CreateStandaloneAdData = {
     body: {
         accountId: string;
@@ -36981,19 +37072,19 @@ export type CreateStandaloneAdData = {
          */
         multiAdvertiser?: 'OPT_IN' | 'OPT_OUT';
         /**
-         * Meta only. Validates the complete inline campaign, ad set, creative and ad with execution_options validate_only. Nothing is uploaded or created, and validation bypasses Idempotency-Key storage. Supports a single image, existing video.id or existingCreativeId; media pools, new video uploads, creatives[], adSetId and RESERVED buying return 400. Existing campaign or creative nodes are marked skipped. Success returns 200 with per-node results; Meta rejection returns an error.
+         * Google Performance Max validates the complete atomic campaign and asset group with no resource creation or local persistence. Google validation still downloads image URLs and consumes quota. On Meta, validates the complete inline campaign, ad set, creative and ad with execution_options validate_only. Nothing is uploaded or created, and validation bypasses Idempotency-Key storage. Supports a single image, existing video.id or existingCreativeId; media pools, new video uploads, creatives[], adSetId and RESERVED buying return 400. Existing campaign or creative nodes are marked skipped. Success returns 200 with per-node results; Meta rejection returns an error.
          */
         validateOnly?: boolean;
         /**
-         * Budget in WHOLE currency units (USD: 50 = $50.00), NOT cents. Meta's own Marketing API takes this same number in minor units, so it is an easy and expensive mix-up. Required on legacy + multi-creative shapes. Inherited on attach. OpenAI Ads requires a $1 minimum (its budget is lifetime-only, see budgetType).
+         * Budget in WHOLE currency units (USD: 50 = $50.00), NOT cents. Meta's own Marketing API takes this same number in minor units, so it is an easy and expensive mix-up. Required on legacy, multi-creative and Performance Max shapes. Inherited on attach. OpenAI Ads requires a $1 minimum (its budget is lifetime-only, see budgetType).
          */
         budgetAmount?: number;
         /**
-         * Required on legacy + multi-creative shapes. Inherited on attach. OpenAI Ads accepts lifetime only (no daily-budget concept on the platform); sending daily returns 422. OpenAI Ads lifetime budgets require `endDate` to give the lifetime cap a spend window.
+         * Required on legacy, multi-creative and Performance Max shapes. Inherited on attach. OpenAI Ads accepts lifetime only (no daily-budget concept on the platform); sending daily returns 422. OpenAI Ads lifetime budgets require `endDate` to give the lifetime cap a spend window.
          */
         budgetType?: 'daily' | 'lifetime';
         /**
-         * Meta, TikTok, and LinkedIn. Publish state of the created entities. Omitted or ACTIVE publishes live (default, back-compat); PAUSED creates them paused so you can review before they spend. On Meta the pause is held on the campaign this call creates, leaving the ad set and ad switched on, so a single PUT /v1/ads/campaigns/{campaignId}/status with `active` brings the whole thing live. It is held at every level instead when the pause cannot rely on the campaign: `existingCampaignId` (that campaign may be running and is never touched) or `campaignStatus: ACTIVE`. On TikTok the whole campaign > ad group > ad hierarchy stays paused. On LinkedIn the whole campaign group, campaign, and creative hierarchy stays PAUSED (intendedStatus PAUSED on each).
+         * Google Performance Max accepts PAUSED only and always creates a paused campaign. Meta, TikTok, and LinkedIn: publish state of the created entities. Omitted or ACTIVE publishes live (default, back-compat); PAUSED creates them paused so you can review before they spend. On Meta the pause is held on the campaign this call creates, leaving the ad set and ad switched on, so a single PUT /v1/ads/campaigns/{campaignId}/status with `active` brings the whole thing live. It is held at every level instead when the pause cannot rely on the campaign: `existingCampaignId` (that campaign may be running and is never touched) or `campaignStatus: ACTIVE`. On TikTok the whole campaign > ad group > ad hierarchy stays paused. On LinkedIn the whole campaign group, campaign, and creative hierarchy stays PAUSED (intendedStatus PAUSED on each).
          */
         status?: 'ACTIVE' | 'PAUSED';
         /**
@@ -37689,9 +37780,10 @@ export type CreateStandaloneAdData = {
          */
         audienceId?: string;
         /**
-         * Google only
+         * Google only. Performance Max requires assetGroup and is always created PAUSED.
          */
-        campaignType?: 'display' | 'search';
+        campaignType?: 'display' | 'search' | 'pmax';
+        assetGroup?: GooglePmaxAssetGroupInput;
         /**
          * Google Search only. Keywords on the new ad group; entries are strings (BROAD) or { text, matchType }. Editable later via PUT /v1/ads/{adId} targeting.keywords.
          */
@@ -37829,7 +37921,7 @@ export type CreateStandaloneAdData = {
          */
         roasAverageFloor?: number;
         /**
-         * Google only. Attach an existing portfolio bid strategy (numeric id from GET /v1/ads/bid-strategies) to the new campaign instead of a standard one. Exclusive with bidStrategy.
+         * Google Search and Display only. Performance Max rejects portfolio bidding. Attach an existing portfolio bid strategy (numeric id from GET /v1/ads/bid-strategies) to the new campaign instead of a standard one. Exclusive with bidStrategy.
          */
         portfolioBidStrategyId?: string;
         /**
@@ -37981,7 +38073,7 @@ export type CreateStandaloneAdResponse = ({
      */
     validateOnly?: boolean;
     results?: Array<{
-        node?: 'campaign' | 'adSet' | 'creative' | 'ad';
+        node?: 'campaign' | 'adSet' | 'creative' | 'ad' | 'performanceMaxCampaign';
         status?: 'validated' | 'skipped';
         /**
          * Why the node could not be validated (only on skipped).

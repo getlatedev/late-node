@@ -444,6 +444,7 @@ import {
   listDiscordScheduledEvents,
   listFacebookPages,
   listFormLeads,
+  listGoogleAssetGroups,
   listGoogleBusinessLocations,
   listGoogleBusinessMedia,
   listGoogleBusinessPlaceActions,
@@ -1687,6 +1688,7 @@ export class Zernio {
     listCampaignNegativeKeywordLists: this._bind(listCampaignNegativeKeywordLists),
     replaceCampaignNegativeKeywordLists: this._bind(replaceCampaignNegativeKeywordLists),
     boostPost: this._bind(boostPost),
+    listGoogleAssetGroups: this._bind(listGoogleAssetGroups),
     createStandaloneAd: this._bind(createStandaloneAd),
   };
 
@@ -2059,6 +2061,8 @@ export class Zernio {
     replaceCampaignNegativeKeywordLists: this._bind(replaceCampaignNegativeKeywordLists),
     /** @deprecated Use `zernio.adcampaigns.boostPost` instead. */
     boostPost: this._bind(boostPost),
+    /** @deprecated Use `zernio.adcampaigns.listGoogleAssetGroups` instead. */
+    listGoogleAssetGroups: this._bind(listGoogleAssetGroups),
     /** @deprecated Use `zernio.adcampaigns.createStandaloneAd` instead. */
     createStandaloneAd: this._bind(createStandaloneAd),
     /** @deprecated Use `zernio.adaccounts.getAdComments` instead. */

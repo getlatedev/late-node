@@ -451,6 +451,7 @@ try {
 | `adCampaigns.listCampaignAssets()` | List campaign assets |
 | `adCampaigns.listCampaignNegativeKeywordLists()` | List campaign negative lists |
 | `adCampaigns.listCampaignNegativeKeywords()` | List campaign-level negative keywords |
+| `adCampaigns.listGoogleAssetGroups()` | List Performance Max asset groups |
 | `adCampaigns.bulkUpdateAdCampaignStatus()` | Pause or resume many campaigns |
 | `adCampaigns.createAdCampaign()` | Create a standalone campaign |
 | `adCampaigns.createAdSet()` | Create a standalone ad group |
