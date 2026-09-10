@@ -9062,6 +9062,30 @@ export type WebhookPayloadMessage = {
             product_retailer_id?: string;
         };
         /**
+         * WhatsApp only. The location pin the user shared, forwarded
+         * verbatim from Meta. The message `text` is only the emoji preview
+         * (`📍 <name>`); the coordinates live here.
+         *
+         */
+        location?: {
+            /**
+             * Latitude in decimal degrees.
+             */
+            latitude?: number;
+            /**
+             * Longitude in decimal degrees.
+             */
+            longitude?: number;
+            /**
+             * Location name, when the user shared a named place.
+             */
+            name?: string;
+            /**
+             * Street address, when Meta sends one.
+             */
+            address?: string;
+        };
+        /**
          * WhatsApp only. Contact cards the user shared, forwarded verbatim
          * from Meta. Read `contactsOrigin` before treating any number here
          * as the sender's own.
@@ -9498,9 +9522,48 @@ export type WebhookPayloadMessageSent = {
     conversation: InboxWebhookConversation;
     account: InboxWebhookAccount;
     /**
-     * Platform-specific context for the sent message. The key is present only when the send carried some context, and absent otherwise: it is never null and never an empty object.
+     * Platform-specific context for the sent message: a quote-reply reference, a WhatsApp location pin or WhatsApp contact cards. The key is present only when the send carried some context, and absent otherwise: it is never null and never an empty object. Read it to tell a location or contact-card message from a text one without a GET on the message.
      */
     metadata?: {
+        /**
+         * WhatsApp only. The location pin this message carries, in the same
+         * shape the inbox send API accepts. Present on API sends that passed
+         * `location`, and on Coexistence echoes of a pin shared from the
+         * WhatsApp Business app. The message `text` is only the emoji
+         * preview (`📍 <name>`); the pin itself lives here.
+         *
+         */
+        location?: {
+            /**
+             * Latitude in decimal degrees.
+             */
+            latitude?: number;
+            /**
+             * Longitude in decimal degrees.
+             */
+            longitude?: number;
+            /**
+             * Location name, when one was given.
+             */
+            name?: string;
+            /**
+             * Street address, when one was given.
+             */
+            address?: string;
+        };
+        /**
+         * WhatsApp only. The contact cards this message carries. On API
+         * sends this is the `contacts` array exactly as given to the inbox
+         * send API (`name`, `phones[].phone` / `type`, `emails[]`); on
+         * Coexistence echoes of a card shared from the WhatsApp Business
+         * app it is Meta's shape (`phones[].wa_id`, `vcard`). The message
+         * `text` is only the emoji preview (`👤 <name>`); the cards live
+         * here.
+         *
+         */
+        contacts?: Array<{
+            [key: string]: unknown;
+        }>;
         /**
          * `platformMessageId` of the message this send is a quote-reply to.
          *
