@@ -396,6 +396,7 @@ try {
 | `adAccounts.listHighDemandPeriods()` | High demand periods / budget schedules |
 | `adAccounts.listMetaBusinesses()` | Businesses list |
 | `adAccounts.listValueRuleSets()` | List value rule sets |
+| `adAccounts.createAdAccount()` | Create Meta ad account |
 | `adAccounts.createAdNegativeKeywordList()` | Create a negative keyword list |
 | `adAccounts.createCustomConversion()` | Create or reuse a custom conversion |
 | `adAccounts.createHighDemandPeriod()` | Schedule a budget increase |

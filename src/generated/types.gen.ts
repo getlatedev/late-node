@@ -36296,6 +36296,106 @@ export type GetAdAccountFinanceError = (unknown | {
     error?: string;
 });
 
+export type CreateAdAccountData = {
+    body: {
+        /**
+         * Zernio metaads SocialAccount ID.
+         */
+        accountId: string;
+        /**
+         * Business portfolio that will own the account.
+         */
+        businessId: string;
+        /**
+         * Ad account name. Whitespace is trimmed.
+         */
+        name: string;
+        /**
+         * Uppercase ISO 4217 currency supported by Meta.
+         */
+        currency: string;
+        /**
+         * Numeric Meta timezone ID from the linked timezone list. For example 1 is America/Los_Angeles.
+         */
+        timezoneId: number;
+        /**
+         * End advertiser business or page ID. NONE uses the owning business.
+         */
+        endAdvertiser?: string;
+        /**
+         * Media agency business or page ID. NONE for self-serve customers.
+         */
+        mediaAgency?: string;
+        /**
+         * Partner business or page ID. NONE for self-serve customers.
+         */
+        partner?: string;
+        /**
+         * Request Meta invoicing. Eligibility is determined by Meta.
+         */
+        invoice?: boolean;
+        /**
+         * Existing Meta invoice group ID.
+         */
+        invoiceGroupId?: string;
+        /**
+         * Addresses for Meta invoices.
+         */
+        invoicingEmails?: Array<(string)>;
+        /**
+         * Meta insertion-order invoicing option.
+         */
+        io?: boolean;
+        /**
+         * Purchase order number.
+         */
+        poNumber?: string;
+        /**
+         * Existing Meta funding reference. Does not add a payment method.
+         */
+        fundingId?: string;
+        /**
+         * Meta Business Manager creation flag.
+         */
+        adAccountCreatedFromBmFlag?: boolean;
+    };
+};
+
+export type CreateAdAccountResponse = ({
+    /**
+     * New Meta ad account ID for subsequent ads calls.
+     */
+    adAccountId: string;
+    /**
+     * Owning business portfolio ID.
+     */
+    businessId: string;
+    /**
+     * Whether the connection scope and discovery schedule were updated.
+     */
+    connectionUpdated: boolean;
+    /**
+     * Always true as a delivery prerequisite. This is not a live funding-source check. Confirm payment or invoicing in Ads Manager.
+     */
+    paymentMethodRequired: boolean;
+    /**
+     * Open the created account in Ads Manager.
+     */
+    adsManagerUrl: string;
+    /**
+     * Payment setup instructions for the user.
+     */
+    nextSteps: string;
+    /**
+     * Recovery instructions if the account could not be attached to the connection.
+     */
+    warnings: Array<(string)>;
+});
+
+export type CreateAdAccountError = (ErrorResponse | {
+    error?: string;
+});
+
 export type ListAdAccountsData = {
     query: {
         /**

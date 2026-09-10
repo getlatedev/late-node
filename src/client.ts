@@ -52,6 +52,7 @@ import {
   connectWhatsAppCredentials,
   connectWhatsAppEmbeddedSignup,
   createAccountGroup,
+  createAdAccount,
   createAdAudience,
   createAdCampaign,
   createAdCreative,
@@ -1784,6 +1785,7 @@ export class Zernio {
     updateAccountStructuredSnippets: this._bind(updateAccountStructuredSnippets),
     removeAccountStructuredSnippet: this._bind(removeAccountStructuredSnippet),
     getAdAccountFinance: this._bind(getAdAccountFinance),
+    createAdAccount: this._bind(createAdAccount),
     listAdAccounts: this._bind(listAdAccounts),
     updateAdAccount: this._bind(updateAdAccount),
     getDsaDefaults: this._bind(getDsaDefaults),
@@ -2135,6 +2137,8 @@ export class Zernio {
     removeAccountStructuredSnippet: this._bind(removeAccountStructuredSnippet),
     /** @deprecated Use `zernio.adaccounts.getAdAccountFinance` instead. */
     getAdAccountFinance: this._bind(getAdAccountFinance),
+    /** @deprecated Use `zernio.adaccounts.createAdAccount` instead. */
+    createAdAccount: this._bind(createAdAccount),
     /** @deprecated Use `zernio.adaccounts.listAdAccounts` instead. */
     listAdAccounts: this._bind(listAdAccounts),
     /** @deprecated Use `zernio.adaccounts.updateAdAccount` instead. */
