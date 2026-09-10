@@ -723,6 +723,14 @@ describe('Endpoint Methods', () => {
 
   });
 
+  describe('tools', () => {
+    it('should have downloadTikTokVideo method', () => {
+      expect(client.tools.downloadTikTokVideo).toBeDefined();
+      expect(client.tools.downloadTikTokVideo).toBeTypeOf('function');
+    });
+
+  });
+
   describe('usage', () => {
     it('should have getBilling method', () => {
       expect(client.usage.getBilling).toBeDefined();

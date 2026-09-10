@@ -284,6 +284,11 @@ try {
 |--------|-------------|
 | `media.getMediaPresignedUrl()` | Get upload URL |
 
+### Tools
+| Method | Description |
+|--------|-------------|
+| `tools.downloadTikTokVideo()` | Download a TikTok video |
+
 ### Users
 | Method | Description |
 |--------|-------------|

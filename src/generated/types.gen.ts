@@ -11409,7 +11409,7 @@ export type GetYouTubeChannelInsightsResponse = (InstagramAccountInsightsRespons
 
 export type GetYouTubeChannelInsightsError = (unknown | {
     error?: string;
-} | YouTubeScopeMissingResponse);
+} | YouTubeScopeMissingResponse | ErrorResponse);
 
 export type GetLinkedInOrgAggregateAnalyticsData = {
     query: {
@@ -11867,7 +11867,7 @@ export type GetYouTubeDemographicsError = ({
         requiresReauthorization?: boolean;
         reauthorizeUrl?: string;
     };
-});
+} | ErrorResponse);
 
 export type GetDailyMetricsData = {
     query?: {
@@ -12230,7 +12230,7 @@ export type GetGoogleBusinessPerformanceError = ({
 } | {
     error?: string;
     code?: string;
-});
+} | ErrorResponse);
 
 export type GetGoogleBusinessSearchKeywordsData = {
     query: {
@@ -12269,7 +12269,7 @@ export type GetGoogleBusinessSearchKeywordsError = ({
 } | {
     error?: string;
     code?: string;
-});
+} | ErrorResponse);
 
 export type GetInboxVolumeData = {
     query: {
@@ -13200,7 +13200,7 @@ export type SyncExternalPostsResponse = ({
     posts?: Array<ExternalPostSummary>;
 });
 
-export type SyncExternalPostsError = (ErrorResponse);
+export type SyncExternalPostsError = (ErrorResponse | unknown);
 
 export type GetPostData = {
     path: {
@@ -14129,7 +14129,7 @@ export type GetAccountPostsResponse = ({
 
 export type GetAccountPostsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetInstagramFollowStatusData = {
     path: {
@@ -18085,7 +18085,7 @@ export type GetLinkedInPostAnalyticsError = ({
 } | {
     error?: string;
     code?: string;
-});
+} | ErrorResponse);
 
 export type GetLinkedInPostReactionsData = {
     path: {
@@ -31295,7 +31295,7 @@ export type ListCommentAutomationsResponse = ({
 
 export type ListCommentAutomationsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type CreateCommentAutomationData = {
     body: {
@@ -31313,7 +31313,7 @@ export type CreateCommentAutomationData = {
          */
         platformPostId?: string;
         /**
-         * Zernio post ID. Optional and never required. Use it INSTEAD of platformPostId to bind a per-post automation to a not-yet-published Zernio post: the automation stays pending and arms itself when that post publishes. For a post already live on the platform, pass platformPostId alone and omit this.
+         * Zernio post ID (24 hexadecimal characters); platform IDs return 400. Optional and never required. Use it INSTEAD of platformPostId to bind a per-post automation to a not-yet-published Zernio post: the automation stays pending and arms itself when that post publishes. For a post already live on the platform, pass platformPostId alone and omit this.
          */
         postId?: string;
         /**
@@ -31453,7 +31453,7 @@ export type CreateCommentAutomationResponse = ({
 
 export type CreateCommentAutomationError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetCommentAutomationData = {
     path: {
@@ -38165,7 +38165,7 @@ export type ListLeadsData = {
         formId?: string;
         limit?: number;
         /**
-         * Unix seconds; only leads created at/after this timestamp.
+         * Unix seconds; only leads created at/after this timestamp. Millisecond timestamps return 400 with instructions to divide by 1000.
          */
         since?: number;
     };
@@ -42206,3 +42206,59 @@ export type SetPartnershipAdPermissionResponse = ({
 export type SetPartnershipAdPermissionError = (ErrorResponse | {
     error?: string;
 } | unknown);
+
+export type DownloadTikTokVideoData = {
+    query: {
+        /**
+         * Return a download URL or the available formats.
+         */
+        action?: 'download' | 'formats';
+        /**
+         * Format ID from the formats response. Omit to select the first available format.
+         */
+        formatId?: string;
+        /**
+         * TikTok video URL or numeric video ID.
+         */
+        url: string;
+    };
+};
+
+export type DownloadTikTokVideoResponse = ({
+    success: boolean;
+    title: string;
+    /**
+     * Selected format label for action=download.
+     */
+    format?: string;
+    /**
+     * Media download URL for action=download.
+     */
+    downloadUrl?: string;
+    /**
+     * Duration in seconds for action=formats.
+     */
+    duration?: number;
+    /**
+     * Thumbnail URL for action=formats.
+     */
+    cover?: string;
+    /**
+     * Available formats for action=formats.
+     */
+    formats?: Array<{
+        id?: string;
+        label?: string;
+        ext?: string;
+        type?: string;
+        height?: number;
+        width?: number;
+        fps?: number;
+        hasAudio?: boolean;
+        hasVideo?: boolean;
+    }>;
+});
+
+export type DownloadTikTokVideoError = (unknown | {
+    error?: string;
+} | ErrorResponse);
