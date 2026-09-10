@@ -26401,7 +26401,7 @@ export type ListPhoneNumberCountriesResponse = ({
              */
             fulfilment?: 'instant' | 'request';
             /**
-             * Out of stock but orderable anyway. Submit KYC as usual (POST /v1/phone-numbers/kyc) and the carrier sources the number after review, usually about 3 weeks and never guaranteed. Only document tiers (3/4) qualify, and nothing is billed until the number is active.
+             * Out of stock but orderable anyway. Submit KYC as usual (POST /v1/phone-numbers/kyc): we buy regular stock the moment it returns, otherwise the carrier sources the number. Usually 2 to 4 weeks, never guaranteed. Only document tiers (3/4) qualify, and nothing is billed until the number is active.
              */
             preOrderable?: boolean;
         }>;
@@ -26484,7 +26484,7 @@ export type CheckPhoneNumberAvailabilityResponse = ({
      */
     available?: boolean;
     /**
-     * Nothing deliverable now, but this pair can be pre-ordered: submit KYC as usual and the carrier sources the number after review (usually about 3 weeks, never guaranteed). Only document tiers (3/4) qualify.
+     * Nothing deliverable now, but this pair can be pre-ordered: submit KYC as usual and we buy regular stock the moment it returns, otherwise the carrier sources the number (usually 2 to 4 weeks, never guaranteed). Only document tiers (3/4) qualify.
      */
     preOrderable?: boolean;
     addressConstraint?: 'geo' | 'country' | 'none';
@@ -26766,7 +26766,7 @@ export type CheckWhatsAppNumberAvailabilityResponse = ({
      */
     available?: boolean;
     /**
-     * Nothing deliverable now, but this pair can be pre-ordered: submit KYC as usual and the carrier sources the number after review (usually about 3 weeks, never guaranteed). Only document tiers (3/4) qualify.
+     * Nothing deliverable now, but this pair can be pre-ordered: submit KYC as usual and we buy regular stock the moment it returns, otherwise the carrier sources the number (usually 2 to 4 weeks, never guaranteed). Only document tiers (3/4) qualify.
      */
     preOrderable?: boolean;
     addressConstraint?: 'geo' | 'country' | 'none';
@@ -26957,7 +26957,7 @@ export type SubmitPhoneNumberKycData = {
 export type SubmitPhoneNumberKycResponse = ({
     status?: 'kyc_submitted' | 'kyc_reused' | 'kyc_already_submitted';
     /**
-     * True when nothing was in stock and this submission placed a pre-order. The number stays `pending_regulatory` until the carrier sources it (usually about 3 weeks) and is not billed until active. A pre-order is one number: `quantity` above 1 is rejected with 400.
+     * True when nothing was in stock and this submission placed a pre-order. The number stays `pending_regulatory` until we get it, from regular stock the moment it returns or sourced by the carrier (usually 2 to 4 weeks), and is not billed until active. Releasing it (DELETE /v1/phone-numbers/{id}) cancels the pre-order. A pre-order is one number: `quantity` above 1 is rejected with 400.
      */
     preOrder?: boolean;
     /**
@@ -27774,7 +27774,7 @@ export type SubmitWhatsAppNumberKycData = {
 export type SubmitWhatsAppNumberKycResponse = ({
     status?: 'kyc_submitted' | 'kyc_reused' | 'kyc_already_submitted';
     /**
-     * True when nothing was in stock and this submission placed a pre-order. The number stays `pending_regulatory` until the carrier sources it (usually about 3 weeks) and is not billed until active. A pre-order is one number: `quantity` above 1 is rejected with 400.
+     * True when nothing was in stock and this submission placed a pre-order. The number stays `pending_regulatory` until we get it, from regular stock the moment it returns or sourced by the carrier (usually 2 to 4 weeks), and is not billed until active. Releasing it (DELETE /v1/phone-numbers/{id}) cancels the pre-order. A pre-order is one number: `quantity` above 1 is rejected with 400.
      */
     preOrder?: boolean;
     /**
@@ -34734,7 +34734,7 @@ export type GetAdCommentsResponse = ({
          */
         effectiveStoryId?: string;
         /**
-         * TikTok-only video item ID. Null when the ad and comments do not expose it.
+         * TikTok-only video item ID from stored ad fields or returned comments. Null does not prevent listing; ad details are not fetched to populate it.
          */
         tiktokItemId?: (string) | null;
         /**

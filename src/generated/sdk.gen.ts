@@ -9027,12 +9027,22 @@ export const updateAdTrackingTags = <ThrowOnError extends boolean = false>(optio
  * each page to this ad. A page can be empty while `pagination.hasMore` is true.
  * Reuse `pagination.cursor` with the same `limit`; the cursor retains the date window.
  * `placement` is Meta-only and returns a 400 for TikTok.
+ * Listing needs no identity or video item ID. When the ad group is stored, each
+ * page makes one comment-list call and no ad-detail lookup, including for external
+ * ads that TikTok no longer returns from ad details. `meta.tiktokItemId: null`
+ * does not prevent listing. If the ad group is missing, Zernio fetches ad details;
+ * unavailable details return 404 ad_not_found, and no ad group returns 400 ad_not_commentable.
  *
  * TikTok returns replies as separate comments with `parentId`; nested reply fetching
- * is not supported. `canReply` requires a first-level comment and an identity with
- * comment-management permission. `canDelete` reflects TikTok's own-comment deletion
- * capability. `canHide` is supported and `canLike` is false. Use the ad comment
- * reply, hide and delete operations below to moderate TikTok comments.
+ * is not supported. `canReply` requires a first-level comment, comment-management
+ * permission, a video item ID and a supported TT_USER or CUSTOMIZED_USER identity.
+ * `canDelete` requires TikTok's own-comment deletion capability, a video item ID
+ * and a supported identity. Both flags are false when identity or item is unknown.
+ * Listing uses stored and comment-specific fields without fetching identity.
+ * A direct reply or delete request can lazily resolve missing fields and succeed
+ * even after a false flag. `canHide` is true because visibility changes need only
+ * advertiser and comment IDs. `canLike` is false. Use the ad comment reply, hide
+ * and delete operations below to moderate TikTok comments.
  * Other platforms return feature_not_available.
  *
  * Requires the Ads add-on. Response shape matches GET /v1/inbox/comments/{postId}.
@@ -9055,6 +9065,14 @@ export const getAdComments = <ThrowOnError extends boolean = false>(options: Opt
  * Reply to an ad comment
  * Reply to a first-level TikTok ad comment. Requires a TT_USER or CUSTOMIZED_USER identity with comment-management permission. Replies to replies are rejected. The response commentId identifies the new reply. This operation is not idempotent; do not blindly retry an uncertain response.
  *
+ * Unknown identity and video item fields are resolved only when needed for this
+ * action, then persisted for reuse. Comment-specific fields take precedence.
+ * If TikTok no longer returns the ad needed to resolve identity, 404 ad_not_found
+ * directs you to check deletion or archival in TikTok Ads Manager. Listing can
+ * still succeed. Unsupported or unavailable identity returns 403 feature_not_available.
+ * Denied access to ad details returns 403 insufficient_permissions with reconnect
+ * guidance and the upstream platformError.
+ *
  * Requires Ads access. The ad is resolved within the caller's accessible profiles.
  * Before moderation, Zernio verifies that the comment belongs to this ad using
  * TikTok's ad-group comment listing. The default search window is the last 30 days.
@@ -9073,7 +9091,7 @@ export const replyToAdComment = <ThrowOnError extends boolean = false>(options: 
 
 /**
  * Hide or unhide an ad comment
- * Hide or restore a TikTok ad comment. Send hidden=true to hide it or hidden=false to make it public again.
+ * Hide or restore a TikTok ad comment. Send hidden=true to hide it or hidden=false to make it public again. Identity and video item ID are not required; no identity lookup is performed.
  *
  * Requires Ads access. The ad is resolved within the caller's accessible profiles.
  * Before moderation, Zernio verifies that the comment belongs to this ad using
@@ -9094,6 +9112,14 @@ export const hideAdComment = <ThrowOnError extends boolean = false>(options: Opt
 /**
  * Delete an ad comment
  * Delete your own TikTok ad comment or reply. TikTok must return can_delete=true for the comment. Other users' comments can be hidden instead.
+ *
+ * Unknown identity and video item fields are resolved only when needed for this
+ * action, then persisted for reuse. Comment-specific fields take precedence.
+ * If TikTok no longer returns the ad needed to resolve identity, 404 ad_not_found
+ * directs you to check deletion or archival in TikTok Ads Manager. Listing can
+ * still succeed. Unsupported or unavailable identity returns 403 feature_not_available.
+ * Denied access to ad details returns 403 insufficient_permissions with reconnect
+ * guidance and the upstream platformError.
  *
  * Requires Ads access. The ad is resolved within the caller's accessible profiles.
  * Before moderation, Zernio verifies that the comment belongs to this ad using
