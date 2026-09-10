@@ -9637,8 +9637,11 @@ export type event21 = 'post.scheduled' | 'post.published' | 'post.failed' | 'pos
  * and for `post.tiktok.url_resolved` (same shape, fired when a
  * published TikTok post's public URL is backfilled). Terminal events
  * fire once per platform target inside a post as that platform
- * reaches a terminal state (published or permanent failure). The
- * `post` envelope mirrors the shape of `WebhookPayloadPost` so
+ * reaches a terminal state (published or permanent failure), except
+ * that a target which later fails background reconciliation emits
+ * `post.platform.failed` a second time, after its own
+ * `post.platform.published`. The `post` envelope mirrors the shape
+ * of `WebhookPayloadPost` so
  * consumers can reuse rendering logic; the `platform` block
  * identifies which specific platform transitioned; the `account`
  * block identifies the connected account behind that
