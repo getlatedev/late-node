@@ -464,6 +464,8 @@ import {
   listLocalServicesLeads,
   listLogs,
   listMetaBusinesses,
+  listPartnershipAdContent,
+  listPartnershipAdPermissions,
   listPhoneNumberCountries,
   listPhoneNumberPortIns,
   listPhoneNumberStockWatches,
@@ -481,6 +483,7 @@ import {
   listSmsRegistrations,
   listSmsSenderIds,
   listSnapchatProfiles,
+  listTikTokAdPixels,
   listTrackingTagSharedAccounts,
   listTrackingTags,
   listUsers,
@@ -598,6 +601,7 @@ import {
   setConversationThreadControl,
   setInstagramIceBreakers,
   setMessengerMenu,
+  setPartnershipAdPermission,
   setRedditPostFlair,
   setTelegramCommands,
   setWhatsAppFlowsEncryptionKey,
@@ -1729,6 +1733,9 @@ export class Zernio {
     deleteAdVideo: this._bind(deleteAdVideo),
     listAdCatalogs: this._bind(listAdCatalogs),
     listAdCatalogProductSets: this._bind(listAdCatalogProductSets),
+    listPartnershipAdContent: this._bind(listPartnershipAdContent),
+    listPartnershipAdPermissions: this._bind(listPartnershipAdPermissions),
+    setPartnershipAdPermission: this._bind(setPartnershipAdPermission),
   };
 
   /**
@@ -1796,6 +1803,7 @@ export class Zernio {
     getDsaRecommendations: this._bind(getDsaRecommendations),
     listCustomConversions: this._bind(listCustomConversions),
     createCustomConversion: this._bind(createCustomConversion),
+    listTikTokAdPixels: this._bind(listTikTokAdPixels),
   };
 
   /**
@@ -2157,6 +2165,8 @@ export class Zernio {
     listCustomConversions: this._bind(listCustomConversions),
     /** @deprecated Use `zernio.adaccounts.createCustomConversion` instead. */
     createCustomConversion: this._bind(createCustomConversion),
+    /** @deprecated Use `zernio.adaccounts.listTikTokAdPixels` instead. */
+    listTikTokAdPixels: this._bind(listTikTokAdPixels),
     /** @deprecated Use `zernio.adcreatives.generateAdPreviews` instead. */
     generateAdPreviews: this._bind(generateAdPreviews),
     /** @deprecated Use `zernio.adcreatives.getAdPreviews` instead. */
@@ -2187,6 +2197,12 @@ export class Zernio {
     listAdCatalogs: this._bind(listAdCatalogs),
     /** @deprecated Use `zernio.adcreatives.listAdCatalogProductSets` instead. */
     listAdCatalogProductSets: this._bind(listAdCatalogProductSets),
+    /** @deprecated Use `zernio.adcreatives.listPartnershipAdContent` instead. */
+    listPartnershipAdContent: this._bind(listPartnershipAdContent),
+    /** @deprecated Use `zernio.adcreatives.listPartnershipAdPermissions` instead. */
+    listPartnershipAdPermissions: this._bind(listPartnershipAdPermissions),
+    /** @deprecated Use `zernio.adcreatives.setPartnershipAdPermission` instead. */
+    setPartnershipAdPermission: this._bind(setPartnershipAdPermission),
     /** @deprecated Use `zernio.adaudiences.listAdAudiences` instead. */
     listAdAudiences: this._bind(listAdAudiences),
     /** @deprecated Use `zernio.adaudiences.createAdAudience` instead. */

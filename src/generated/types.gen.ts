@@ -18287,7 +18287,7 @@ export type ListInstagramStoriesResponse = ({
 
 export type ListInstagramStoriesError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetInstagramPublishingLimitData = {
     path: {
@@ -18315,7 +18315,7 @@ export type GetInstagramPublishingLimitResponse = ({
 
 export type GetInstagramPublishingLimitError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type SearchInstagramAudioData = {
     path: {
@@ -18425,7 +18425,7 @@ export type GetInstagramStoryInsightsResponse = ({
 
 export type GetInstagramStoryInsightsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetPinterestBoardsData = {
     path: {
@@ -32020,7 +32020,7 @@ export type CreateBidStrategyResponse = ({
 
 export type CreateBidStrategyError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type UpdateBidStrategyData = {
     body: {
@@ -32315,7 +32315,7 @@ export type RemoveAdKeywordResponse = ({
 
 export type RemoveAdKeywordError = (ErrorResponse | {
     error?: string;
-} | unknown);
+});
 
 export type ListAdCampaignsData = {
     query?: {
@@ -32468,7 +32468,7 @@ export type CreateAdCampaignResponse = ({
 
 export type CreateAdCampaignError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type UpdateAdCampaignStatusData = {
     body: {
@@ -32535,7 +32535,7 @@ export type GetCampaignBiddingResponse = (({
 
 export type GetCampaignBiddingError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type UpdateAdCampaignData = {
     body: {
@@ -32620,7 +32620,7 @@ export type UpdateAdCampaignResponse = ({
 
 export type UpdateAdCampaignError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type DeleteAdCampaignData = {
     body: {
@@ -32646,7 +32646,7 @@ export type DeleteAdCampaignResponse = ({
     adCount?: number;
 });
 
-export type DeleteAdCampaignError = ({
+export type DeleteAdCampaignError = (ErrorResponse | {
     error?: string;
 } | unknown);
 
@@ -33191,7 +33191,7 @@ export type GetAdSetDetailsResponse = ({
 
 export type GetAdSetDetailsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type UpdateAdSetData = {
     body: {
@@ -34138,7 +34138,7 @@ export type GenerateAdPreviewsResponse = ({
 
 export type GenerateAdPreviewsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetAdPreviewsData = {
     path: {
@@ -34271,7 +34271,7 @@ export type GenerateKeywordIdeasResponse = ({
 
 export type GenerateKeywordIdeasError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GenerateKeywordHistoricalMetricsData = {
     body: {
@@ -34316,7 +34316,7 @@ export type GenerateKeywordHistoricalMetricsResponse = ({
 
 export type GenerateKeywordHistoricalMetricsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type QueryAdInsightsData = {
     query: {
@@ -34429,7 +34429,7 @@ export type QueryAdInsightsResponse = ({
 
 export type QueryAdInsightsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type CreateAdInsightsReportData = {
     body: {
@@ -34491,7 +34491,7 @@ export type CreateAdInsightsReportResponse = ({
 
 export type CreateAdInsightsReportError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetAdInsightsReportData = {
     path: {
@@ -34529,7 +34529,7 @@ export type GetAdInsightsReportResponse = ({
 
 export type GetAdInsightsReportError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetAdAnalyticsData = {
     path: {
@@ -34959,7 +34959,7 @@ export type GetAdsActivityLogResponse = ({
 
 export type GetAdsActivityLogError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type CreateRfPredictionData = {
     body: {
@@ -35011,7 +35011,7 @@ export type CreateRfPredictionResponse = ({
 
 export type CreateRfPredictionError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetRfPredictionData = {
     path: {
@@ -35031,7 +35031,7 @@ export type GetRfPredictionResponse = ({
 
 export type GetRfPredictionError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type CancelRfReservationData = {
     path: {
@@ -35047,7 +35047,7 @@ export type CancelRfReservationResponse = (unknown);
 
 export type CancelRfReservationError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ReserveRfPredictionData = {
     body: {
@@ -35066,7 +35066,7 @@ export type ReserveRfPredictionResponse = ({
 
 export type ReserveRfPredictionError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ListAdStudiesData = {
     query: {
@@ -35108,7 +35108,7 @@ export type ListAdStudiesResponse = ({
 
 export type ListAdStudiesError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ListAdsInstagramAccountsData = {
     query: {
@@ -35275,7 +35275,7 @@ export type ListMetaBusinessesResponse = ({
 
 export type ListMetaBusinessesError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ListAdLabelsData = {
     query: {
@@ -35313,7 +35313,7 @@ export type ListAdLabelsResponse = ({
 
 export type ListAdLabelsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ListHighDemandPeriodsData = {
     query: {
@@ -35358,7 +35358,7 @@ export type ListHighDemandPeriodsResponse = ({
 
 export type ListHighDemandPeriodsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type CreateHighDemandPeriodData = {
     body: {
@@ -35408,7 +35408,7 @@ export type CreateHighDemandPeriodResponse = ({
 
 export type CreateHighDemandPeriodError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ListAdCreativesData = {
     query: {
@@ -35450,7 +35450,7 @@ export type ListAdCreativesResponse = ({
 
 export type ListAdCreativesError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type CreateAdCreativeData = {
     body: {
@@ -35519,7 +35519,7 @@ export type CreateAdCreativeResponse = ({
 
 export type CreateAdCreativeError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetAdCreativeData = {
     path: {
@@ -35551,7 +35551,7 @@ export type GetAdCreativeResponse = ({
 
 export type GetAdCreativeError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type UpdateAdCreativeData = {
     body: {
@@ -35577,7 +35577,7 @@ export type UpdateAdCreativeResponse = ({
 
 export type UpdateAdCreativeError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type DeleteAdCreativeData = {
     path: {
@@ -35601,7 +35601,7 @@ export type DeleteAdCreativeResponse = ({
 
 export type DeleteAdCreativeError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ListValueRuleSetsData = {
     query: {
@@ -35637,7 +35637,7 @@ export type ListValueRuleSetsResponse = ({
 
 export type ListValueRuleSetsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type CreateValueRuleSetData = {
     body: {
@@ -35667,7 +35667,7 @@ export type CreateValueRuleSetResponse = ({
 
 export type CreateValueRuleSetError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetValueRuleSetData = {
     path: {
@@ -35690,7 +35690,7 @@ export type GetValueRuleSetResponse = ({
 
 export type GetValueRuleSetError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type UpdateValueRuleSetData = {
     body: {
@@ -35724,7 +35724,7 @@ export type UpdateValueRuleSetResponse = ({
 
 export type UpdateValueRuleSetError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type DeleteValueRuleSetData = {
     path: {
@@ -35748,7 +35748,7 @@ export type DeleteValueRuleSetResponse = ({
 
 export type DeleteValueRuleSetError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ListAdNegativeKeywordListsData = {
     query: {
@@ -36408,7 +36408,7 @@ export type GetAdAccountFinanceResponse = ({
 
 export type GetAdAccountFinanceError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type CreateAdAccountData = {
     body: {
@@ -36611,9 +36611,9 @@ export type ListAdAccountsResponse = ({
     stale?: boolean;
 });
 
-export type ListAdAccountsError = ({
+export type ListAdAccountsError = (ErrorResponse | {
     error?: string;
-} | unknown | ErrorResponse);
+} | unknown);
 
 export type UpdateAdAccountData = {
     body: {
@@ -36646,7 +36646,7 @@ export type UpdateAdAccountResponse = ({
 
 export type UpdateAdAccountError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetDsaDefaultsData = {
     query: {
@@ -36671,7 +36671,7 @@ export type GetDsaDefaultsResponse = ({
 
 export type GetDsaDefaultsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetDsaRecommendationsData = {
     query: {
@@ -36693,7 +36693,7 @@ export type GetDsaRecommendationsResponse = ({
 
 export type GetDsaRecommendationsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type BoostPostData = {
     body: {
@@ -37032,7 +37032,7 @@ export type BoostPostResponse = ({
 
 export type BoostPostError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ListGoogleAssetGroupsData = {
     path: {
@@ -38143,7 +38143,7 @@ export type CreateStandaloneAdResponse = ({
 
 export type CreateStandaloneAdError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ListLeadsData = {
     query?: {
@@ -38587,7 +38587,7 @@ export type UploadAdImageResponse = ({
 
 export type UploadAdImageError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ListAdImagesData = {
     query: {
@@ -38629,7 +38629,7 @@ export type ListAdImagesResponse = ({
 
 export type ListAdImagesError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type UploadAdVideoData = {
     body: {
@@ -38672,7 +38672,7 @@ export type UploadAdVideoResponse = ({
 
 export type UploadAdVideoError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ListAdVideosData = {
     query: {
@@ -38766,7 +38766,7 @@ export type SearchAdInterestsResponse = ({
     }>;
 });
 
-export type SearchAdInterestsError = ({
+export type SearchAdInterestsError = (ErrorResponse | {
     error?: string;
 } | unknown);
 
@@ -38826,7 +38826,7 @@ export type SearchAdTargetingResponse = ({
 
 export type SearchAdTargetingError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type SearchAdLibraryData = {
     query?: {
@@ -38975,7 +38975,7 @@ export type EstimateAdReachResponse = ({
 
 export type EstimateAdReachError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetLinkedInBidPricingData = {
     body: {
@@ -39047,7 +39047,7 @@ export type GetLinkedInBidPricingResponse = ({
 
 export type GetLinkedInBidPricingError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetLinkedInSupplyForecastData = {
     body: {
@@ -39120,7 +39120,7 @@ export type GetLinkedInSupplyForecastResponse = ({
 
 export type GetLinkedInSupplyForecastError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ListAdCatalogsData = {
     query: {
@@ -39220,7 +39220,7 @@ export type ListAdAudiencesResponse = ({
     }>;
 });
 
-export type ListAdAudiencesError = ({
+export type ListAdAudiencesError = (ErrorResponse | {
     error?: string;
 } | unknown);
 
@@ -39395,7 +39395,7 @@ export type CreateAdAudienceResponse = ({
 
 export type CreateAdAudienceError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetAdAudienceData = {
     path: {
@@ -39625,7 +39625,7 @@ export type SendConversionsResponse = ({
 
 export type SendConversionsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type AdjustConversionsData = {
     body: {
@@ -39701,7 +39701,7 @@ export type AdjustConversionsResponse = ({
 
 export type AdjustConversionsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ListConversionActionsData = {
     query: {
@@ -39815,7 +39815,7 @@ export type ListConversionDestinationsResponse = ({
 
 export type ListConversionDestinationsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type CreateConversionDestinationData = {
     body: {
@@ -39926,7 +39926,7 @@ export type CreateConversionDestinationResponse = ({
 
 export type CreateConversionDestinationError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetConversionDestinationData = {
     path: {
@@ -39948,7 +39948,7 @@ export type GetConversionDestinationResponse = ({
 
 export type GetConversionDestinationError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type UpdateConversionDestinationData = {
     body: {
@@ -40001,7 +40001,7 @@ export type UpdateConversionDestinationResponse = ({
 
 export type UpdateConversionDestinationError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type DeleteConversionDestinationData = {
     path: {
@@ -40020,7 +40020,7 @@ export type DeleteConversionDestinationResponse = (void);
 
 export type DeleteConversionDestinationError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ListConversionAssociationsData = {
     path: {
@@ -40046,7 +40046,7 @@ export type ListConversionAssociationsResponse = ({
 
 export type ListConversionAssociationsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type AddConversionAssociationsData = {
     body: {
@@ -40073,7 +40073,7 @@ export type AddConversionAssociationsResponse = ({
 
 export type AddConversionAssociationsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type RemoveConversionAssociationsData = {
     path: {
@@ -40103,7 +40103,7 @@ export type RemoveConversionAssociationsResponse = ({
 
 export type RemoveConversionAssociationsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetConversionMetricsData = {
     path: {
@@ -40138,7 +40138,7 @@ export type GetConversionMetricsResponse = ({
 
 export type GetConversionMetricsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ListWhatsAppConversionsData = {
     query: {
@@ -40318,7 +40318,7 @@ export type CreateMessagingAdResponse = ((CtwaSingleResponse | CtwaMultiResponse
 
 export type CreateMessagingAdError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type CreateCallAdData = {
     body: (CtwaAdRequestBody & {
@@ -40337,7 +40337,7 @@ export type CreateCallAdResponse = ((CtwaSingleResponse | CtwaMultiResponse));
 
 export type CreateCallAdError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type CreateCtwaAdData = {
     body: CtwaAdRequestBody;
@@ -40347,7 +40347,7 @@ export type CreateCtwaAdResponse = ((CtwaSingleResponse | CtwaMultiResponse));
 
 export type CreateCtwaAdError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ListCustomConversionsData = {
     path: {
@@ -40371,7 +40371,7 @@ export type ListCustomConversionsResponse = ({
 
 export type ListCustomConversionsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type CreateCustomConversionData = {
     body: {
@@ -40410,7 +40410,7 @@ export type CreateCustomConversionResponse = (CustomConversionResult);
 
 export type CreateCustomConversionError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetBusinessAgentStatusData = {
     path: {
@@ -41492,7 +41492,7 @@ export type ListTrackingTagsResponse = ({
 
 export type ListTrackingTagsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type CreateTrackingTagData = {
     body: {
@@ -41521,7 +41521,7 @@ export type CreateTrackingTagResponse = ({
 
 export type CreateTrackingTagError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetTrackingTagData = {
     path: {
@@ -41538,7 +41538,7 @@ export type GetTrackingTagResponse = ({
     tag?: TrackingTag;
 });
 
-export type GetTrackingTagError = ({
+export type GetTrackingTagError = (ErrorResponse | {
     error?: string;
 } | unknown);
 
@@ -41576,7 +41576,7 @@ export type UpdateTrackingTagResponse = ({
 
 export type UpdateTrackingTagError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ListTrackingTagSharedAccountsData = {
     path: {
@@ -41593,7 +41593,7 @@ export type ListTrackingTagSharedAccountsResponse = ({
     sharedAccounts?: Array<SharedAdAccount>;
 });
 
-export type ListTrackingTagSharedAccountsError = ({
+export type ListTrackingTagSharedAccountsError = (ErrorResponse | {
     error?: string;
 } | unknown);
 
@@ -41620,7 +41620,7 @@ export type AddTrackingTagSharedAccountResponse = ({
 
 export type AddTrackingTagSharedAccountError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type RemoveTrackingTagSharedAccountData = {
     path: {
@@ -41642,7 +41642,7 @@ export type RemoveTrackingTagSharedAccountResponse = (void);
 
 export type RemoveTrackingTagSharedAccountError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type GetTrackingTagStatsData = {
     path: {
@@ -41682,7 +41682,7 @@ export type GetTrackingTagStatsResponse = ({
 
 export type GetTrackingTagStatsError = (unknown | {
     error?: string;
-});
+} | ErrorResponse);
 
 export type ListBlogsData = {
     path: {
@@ -42086,5 +42086,123 @@ export type CheckVerificationResponse = ((Verification & {
 }));
 
 export type CheckVerificationError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type ListTikTokAdPixelsData = {
+    query: {
+        /**
+         * Zernio SocialAccount ID.
+         */
+        accountId: string;
+        /**
+         * Advertiser belonging to this connection.
+         */
+        advertiserId?: string;
+        /**
+         * Filter by a Pixel Code.
+         */
+        code?: string;
+    };
+};
+
+export type ListTikTokAdPixelsResponse = ({
+    advertiserId?: string;
+    pixels?: Array<{
+        pixelId?: string;
+        pixelCode?: string;
+        name?: string;
+        events?: Array<(string)>;
+        eventDetails?: Array<{
+            name?: string;
+            optimizationEvent?: (string) | null;
+            custom?: boolean;
+        }>;
+    }>;
+});
+
+export type ListTikTokAdPixelsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type ListPartnershipAdContentData = {
+    query: {
+        /**
+         * Zernio SocialAccount ID.
+         */
+        accountId: string;
+        /**
+         * Creator username. Required unless postUrl is supplied.
+         */
+        creatorUsername?: string;
+        /**
+         * Return only creators with account-level permission.
+         */
+        onlyAllowlisted?: boolean;
+        /**
+         * Instagram post permalink. Required unless creatorUsername is supplied.
+         */
+        postUrl?: string;
+    };
+};
+
+export type ListPartnershipAdContentResponse = ({
+    media?: Array<{
+        id?: string;
+        permalink?: string;
+        ownerId?: string;
+        hasPermissionForPartnershipAd?: boolean;
+        isCreatorAllowlisted?: boolean;
+        eligibilityErrors?: Array<(string)>;
+        recommendedCampaignObjectives?: Array<(string)>;
+    }>;
+});
+
+export type ListPartnershipAdContentError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type ListPartnershipAdPermissionsData = {
+    query: {
+        /**
+         * Zernio SocialAccount ID.
+         */
+        accountId: string;
+        /**
+         * Filter by creator username.
+         */
+        creatorUsername?: string;
+    };
+};
+
+export type ListPartnershipAdPermissionsResponse = ({
+    permissions?: Array<{
+        id?: string;
+        permissionType?: string;
+        status?: string;
+    }>;
+});
+
+export type ListPartnershipAdPermissionsError = (ErrorResponse | {
+    error?: string;
+} | unknown);
+
+export type SetPartnershipAdPermissionData = {
+    body: {
+        accountId: string;
+        creatorUsername: string;
+        revoke?: boolean;
+    };
+};
+
+export type SetPartnershipAdPermissionResponse = ({
+    permission?: {
+        id?: string;
+        permissionType?: string;
+        status?: string;
+    };
+});
+
+export type SetPartnershipAdPermissionError = (ErrorResponse | {
     error?: string;
 } | unknown);

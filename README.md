@@ -394,12 +394,13 @@ try {
 | `adAccounts.listAdStudies()` | A/B tests and lift studies |
 | `adAccounts.listAdvertisableApplications()` | List advertisable apps |
 | `adAccounts.listCustomConversions()` | List custom conversions |
-| `adAccounts.listHighDemandPeriods()` | High demand periods / budget schedules |
+| `adAccounts.listHighDemandPeriods()` | List high-demand periods |
 | `adAccounts.listMetaBusinesses()` | Businesses list |
+| `adAccounts.listTikTokAdPixels()` | List TikTok ad pixels |
 | `adAccounts.listValueRuleSets()` | List value rule sets |
 | `adAccounts.createAdAccount()` | Create Meta ad account |
 | `adAccounts.createAdNegativeKeywordList()` | Create a negative keyword list |
-| `adAccounts.createCustomConversion()` | Create or reuse a custom conversion |
+| `adAccounts.createCustomConversion()` | Create custom conversion |
 | `adAccounts.createHighDemandPeriod()` | Schedule a budget increase |
 | `adAccounts.createValueRuleSet()` | Create a value rule set |
 | `adAccounts.getAdAccountFinance()` | Ad account finances |
@@ -407,7 +408,7 @@ try {
 | `adAccounts.getAdNegativeKeywordList()` | Get a negative keyword list |
 | `adAccounts.getAdsActivityLog()` | Ad account change / audit log |
 | `adAccounts.getDsaDefaults()` | Get ad account DSA defaults |
-| `adAccounts.getDsaRecommendations()` | List DSA beneficiary/payor suggestions |
+| `adAccounts.getDsaRecommendations()` | Get DSA recommendations |
 | `adAccounts.getIosFourteenCampaignLimits()` | Get iOS 14 campaign limits |
 | `adAccounts.getValueRuleSet()` | Read a value rule set |
 | `adAccounts.updateAccountCallouts()` | Update account callouts |
@@ -448,7 +449,7 @@ try {
 | `adCampaigns.listAdKeywords()` | List Search keywords |
 | `adCampaigns.listAds()` | List ads |
 | `adCampaigns.listAdSets()` | List ad sets |
-| `adCampaigns.listBidStrategies()` | List Google Ads portfolio bid strategies |
+| `adCampaigns.listBidStrategies()` | List portfolio bid strategies |
 | `adCampaigns.listCampaignAssets()` | List campaign assets |
 | `adCampaigns.listCampaignNegativeKeywordLists()` | List campaign negative lists |
 | `adCampaigns.listCampaignNegativeKeywords()` | List campaign-level negative keywords |
@@ -456,10 +457,10 @@ try {
 | `adCampaigns.bulkUpdateAdCampaignStatus()` | Pause or resume many campaigns |
 | `adCampaigns.createAdCampaign()` | Create a standalone campaign |
 | `adCampaigns.createAdSet()` | Create a standalone ad group |
-| `adCampaigns.createBidStrategy()` | Create a Google Ads portfolio bid strategy |
+| `adCampaigns.createBidStrategy()` | Create portfolio bid strategy |
 | `adCampaigns.createStandaloneAd()` | Create standalone ad |
 | `adCampaigns.getAd()` | Get ad details |
-| `adCampaigns.getAdSetDetails()` | Live ad-set details incl. learning phase |
+| `adCampaigns.getAdSetDetails()` | Get live ad-set details |
 | `adCampaigns.getAdsTimeline()` | Get daily account metrics |
 | `adCampaigns.getAdTree()` | Get campaign tree |
 | `adCampaigns.getCampaignBidding()` | Read a campaign's current bidding |
@@ -472,13 +473,13 @@ try {
 | `adCampaigns.updateAdSet()` | Update an ad set |
 | `adCampaigns.updateAdSetStatus()` | Pause or resume a single ad set |
 | `adCampaigns.updateAdStatus()` | Pause or resume a single ad |
-| `adCampaigns.updateBidStrategy()` | Update a Google Ads portfolio bid strategy |
+| `adCampaigns.updateBidStrategy()` | Update portfolio bid strategy |
 | `adCampaigns.updateCampaignAssets()` | Update campaign assets |
 | `adCampaigns.updateCampaignTargeting()` | Edit a Google campaign's device, location, or language targeting |
 | `adCampaigns.deleteAd()` | Cancel an ad |
 | `adCampaigns.deleteAdCampaign()` | Delete a campaign |
 | `adCampaigns.deleteAdSet()` | Delete an ad set |
-| `adCampaigns.addAdKeywords()` | Add Search keywords to an ad group |
+| `adCampaigns.addAdKeywords()` | Add Search ad-group keywords |
 | `adCampaigns.attachAdGroupAssets()` | Attach ad-group assets |
 | `adCampaigns.attachCampaignAssets()` | Attach campaign assets |
 | `adCampaigns.boostPost()` | Boost post as ad |
@@ -499,6 +500,8 @@ try {
 | `adCreatives.listAdCreatives()` | Creative library |
 | `adCreatives.listAdImages()` | Ad image library |
 | `adCreatives.listAdVideos()` | Ad video library |
+| `adCreatives.listPartnershipAdContent()` | List partnership ad content |
+| `adCreatives.listPartnershipAdPermissions()` | List partnership permissions |
 | `adCreatives.createAdCreative()` | Create a standalone creative |
 | `adCreatives.getAdCreative()` | Creative details |
 | `adCreatives.getAdMedia()` | Direct video and image URLs for an ad |
@@ -507,21 +510,22 @@ try {
 | `adCreatives.deleteAdCreative()` | Delete a creative |
 | `adCreatives.deleteAdVideo()` | Delete an ad video |
 | `adCreatives.generateAdPreviews()` | Render pre-create ad previews |
+| `adCreatives.setPartnershipAdPermission()` | Set partnership permission |
 | `adCreatives.uploadAdImage()` | Upload an ad image from base64 |
 | `adCreatives.uploadAdVideo()` | Upload an ad video |
 
 ### Ad Insights
 | Method | Description |
 |--------|-------------|
-| `adInsights.listLocalServicesLeadConversations()` | Conversations of a Local Services lead |
+| `adInsights.listLocalServicesLeadConversations()` | List lead conversations |
 | `adInsights.listLocalServicesLeads()` | Google Local Services Ads leads |
-| `adInsights.createAdInsightsReport()` | Submit an async insights report run |
+| `adInsights.createAdInsightsReport()` | Submit async insights report |
 | `adInsights.getAdAnalytics()` | Get ad analytics |
 | `adInsights.getAdInsightsReport()` | Poll an async insights report run |
 | `adInsights.getAdsSearchTerms()` | Google Ads search terms report |
 | `adInsights.getCampaignAnalytics()` | Get campaign analytics |
-| `adInsights.generateKeywordHistoricalMetrics()` | Historical keyword metrics (Google Keyword Planner) |
-| `adInsights.generateKeywordIdeas()` | Generate keyword ideas (Google Keyword Planner) |
+| `adInsights.generateKeywordHistoricalMetrics()` | Get historical keyword metrics |
+| `adInsights.generateKeywordIdeas()` | Generate keyword ideas |
 | `adInsights.queryAdInsights()` | Flexible live insights query |
 
 ### Ad Library
@@ -533,7 +537,7 @@ try {
 | Method | Description |
 |--------|-------------|
 | `adTargeting.getLinkedInBidPricing()` | Suggested bid and budget bounds |
-| `adTargeting.getLinkedInSupplyForecast()` | Impressions, clicks and spend forecast |
+| `adTargeting.getLinkedInSupplyForecast()` | Forecast ad delivery |
 | `adTargeting.estimateAdReach()` | Estimate audience reach |
 | `adTargeting.searchAdInterests()` | Search targeting interests |
 | `adTargeting.searchAdTargeting()` | Search targeting options |
@@ -679,10 +683,10 @@ try {
 ### Conversions
 | Method | Description |
 |--------|-------------|
-| `conversions.listConversionActions()` | List conversion actions and their tag snippets |
+| `conversions.listConversionActions()` | List conversion actions |
 | `conversions.listConversionAssociations()` | List associated campaigns |
 | `conversions.listConversionDestinations()` | List conversion destinations |
-| `conversions.createConversionAction()` | Create a website conversion action |
+| `conversions.createConversionAction()` | Create website conversion action |
 | `conversions.createConversionDestination()` | Create a conversion destination |
 | `conversions.getConversionDestination()` | Get a conversion destination |
 | `conversions.getConversionMetrics()` | Get attribution metrics |
@@ -879,10 +883,10 @@ try {
 ### Reach and Frequency
 | Method | Description |
 |--------|-------------|
-| `reachAndFrequency.createRfPrediction()` | Create a Reach & Frequency prediction |
-| `reachAndFrequency.getRfPrediction()` | Read a Reach & Frequency prediction |
-| `reachAndFrequency.cancelRfReservation()` | Cancel a Reach & Frequency reservation |
-| `reachAndFrequency.reserveRfPrediction()` | Reserve a Reach & Frequency prediction |
+| `reachAndFrequency.createRfPrediction()` | Create reach-frequency prediction |
+| `reachAndFrequency.getRfPrediction()` | Get reach-frequency prediction |
+| `reachAndFrequency.cancelRfReservation()` | Cancel reach-frequency booking |
+| `reachAndFrequency.reserveRfPrediction()` | Reserve reach-frequency inventory |
 
 ### Reviews (Inbox)
 | Method | Description |
